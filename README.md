@@ -9,7 +9,7 @@
 
 ## 🌐 Live Website
 
-**[revestitchingpvt.com](https://revestitchingpvt.com)**
+**[revestitching.com](https://revestitching.com)**
 
 ---
 
@@ -149,7 +149,7 @@ npm run dev
 
 📧 **Email:** [info@revestitching.com](mailto:info@revestitching.com)
 
-🌐 **Website:** [revestitchingpvt.com](https://revestitchingpvt.com)
+🌐 **Website:** [revestitchingpvt.com](https://revestitching.com)
 
 ---
 
