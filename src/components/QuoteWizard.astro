@@ -1,0 +1,1229 @@
+---
+/**
+ * QuoteWizard.astro
+ * 5-step multi-step quote request form for Reves Titching
+ * Usage: <QuoteWizard /> on any page
+ */
+
+export interface QuoteFormData {
+  selectedProduct: string;
+  fabricType: string;
+  gsmRange: number;
+  quantity: number;
+  sizeRange: string[];
+  colorQuantity: number;
+  customizations: string[];
+  deliveryDate: string;
+  shippingDestination: string;
+  sampleRequired: boolean;
+  rushOrder: boolean;
+  companyName: string;
+  contactPerson: string;
+  email: string;
+  phone: string;
+  additionalNotes: string;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  moq: number;
+  priceRange: string;
+}
+
+const products: Product[] = [
+  { id: "t-shirts",    name: "Premium Cotton T-Shirts", moq: 500, priceRange: "$3.50 – $8.00" },
+  { id: "polo-shirts", name: "Corporate Polo Shirts",   moq: 300, priceRange: "$5.00 – $12.00" },
+  { id: "hoodies",     name: "Premium Hoodies",         moq: 250, priceRange: "$8.00 – $18.00" },
+  { id: "joggers",     name: "Athletic Joggers",        moq: 400, priceRange: "$6.00 – $15.00" },
+  { id: "sweatshirts", name: "Sweatshirts Collection",  moq: 350, priceRange: "$7.00 – $16.00" },
+  { id: "ladies-wear", name: "Ladies' Wear",            moq: 300, priceRange: "$4.00 – $14.00" },
+  { id: "kids-wear",   name: "Kids' Wear Range",        moq: 500, priceRange: "$3.00 – $10.00" },
+  { id: "custom",      name: "Custom / Other",          moq: 200, priceRange: "Get a Quote" },
+];
+
+const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
+---
+
+<section id="quote-wizard-section" class="bg-gray-50 py-16 sm:py-24">
+  <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+
+    <!-- ─── Section Header ─── -->
+    <div class="mb-10 text-center">
+      <span class="inline-block rounded-full bg-green-100 px-4 py-1 text-sm font-semibold text-green-800">
+        Free &amp; No Obligation
+      </span>
+      <h2 class="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+        Request a Custom Quote
+      </h2>
+      <p class="mx-auto mt-3 max-w-2xl text-lg text-gray-600">
+        Tell us what you need and we'll respond within 24 hours with a detailed quotation.
+      </p>
+    </div>
+
+    <!-- ─── Wizard Card ─── -->
+    <div class="overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-gray-200">
+
+      <!-- ─── Progress Bar ─── -->
+      <div class="border-b border-gray-100 bg-gray-50/60 px-6 py-5 sm:px-10" role="navigation" aria-label="Quote wizard progress">
+        <div class="relative flex items-center justify-between">
+          <!-- connecting line background -->
+          <div class="absolute left-0 top-1/2 z-0 h-0.5 w-full -translate-y-1/2 bg-gray-200" aria-hidden="true"></div>
+          <!-- animated fill line -->
+          <div id="progress-fill" class="absolute left-0 top-1/2 z-0 h-0.5 -translate-y-1/2 bg-green-800 transition-all duration-500" style="width:0%" aria-hidden="true"></div>
+
+          {stepLabels.map((label, i) => (
+            <div class="relative z-10 flex flex-col items-center" data-progress-dot={i + 1}>
+              <div
+                class:list={[
+                  "flex h-9 w-9 items-center justify-center rounded-full border-2 text-sm font-bold transition-all duration-300",
+                  i === 0
+                    ? "border-green-800 bg-green-800 text-white"
+                    : "border-gray-300 bg-white text-gray-400",
+                ]}
+                id={`dot-${i + 1}`}
+                aria-current={i === 0 ? "step" : undefined}
+              >
+                <span class="dot-number">{i + 1}</span>
+                <!-- checkmark (hidden by default) -->
+                <svg class="dot-check hidden h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <span class="mt-1.5 hidden text-xs font-medium text-gray-500 sm:block" id={`label-${i + 1}`}>
+                {label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- ─── Steps Container ─── -->
+      <div id="steps-container" class="relative min-h-[480px]">
+
+        <!-- ════════════════════════════════════════════
+             STEP 1 — Product Selection
+             ════════════════════════════════════════════ -->
+        <div id="step-1" class="wizard-step px-6 py-8 sm:px-10" data-step="1">
+          <h3 class="text-xl font-bold text-gray-900">Select Your Product</h3>
+          <p class="mt-1 text-sm text-gray-500">Choose the garment category you're interested in.</p>
+
+          <div id="step1-error" class="mt-4 hidden rounded-lg bg-red-50 p-3 text-sm text-red-700" role="alert">
+            <span class="font-medium">Please select a product</span> to continue.
+          </div>
+
+          <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {products.map((p) => (
+              <button
+                type="button"
+                class="product-card group relative flex flex-col items-center rounded-xl border-2 border-gray-200 bg-white p-4 text-center transition-all duration-200 hover:border-green-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2"
+                data-product-id={p.id}
+                data-product-moq={p.moq}
+                aria-pressed="false"
+                aria-label={`Select ${p.name}`}
+              >
+                {/* icon area */}
+                <div class="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-green-50 text-green-800 transition-colors group-hover:bg-green-100">
+                  <svg class="h-8 w-8" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    {p.id === "t-shirts" && <path d="M20 14L12 22L19 27V52H45V27L52 22L44 14L38 20C36 22 28 22 26 20Z"/>}
+                    {p.id === "polo-shirts" && <><path d="M20 14L12 22L19 27V52H45V27L52 22L44 14L38 20C36 22 28 22 26 20Z"/><path d="M28 14V22" stroke-width="2"/></>}
+                    {p.id === "hoodies" && <><path d="M20 14L12 22L19 27V52H45V27L52 22L44 14L38 20C36 22 28 22 26 20Z"/><path d="M26 14C26 14 24 6 32 6C40 6 38 14 38 14" stroke-width="2"/></>}
+                    {p.id === "joggers" && <path d="M22 12H42L44 34L40 54H36L32 34L28 54H24L20 34Z"/>}
+                    {p.id === "sweatshirts" && <><path d="M20 14L12 22L19 27V52H45V27L52 22L44 14L38 20C36 22 28 22 26 20Z"/><line x1="19" y1="27" x2="45" y2="27" stroke-dasharray="3 3"/></>}
+                    {p.id === "ladies-wear" && <path d="M24 10L20 24L16 24L22 52H42L48 24L44 24L40 10C38 14 26 14 24 10Z"/>}
+                    {p.id === "kids-wear" && <><path d="M22 18L16 24L21 28V46H43V28L48 24L42 18L38 22C36 24 28 24 26 22Z"/><circle cx="32" cy="36" r="4" fill="currentColor" opacity="0.2"/></>}
+                    {p.id === "custom" && <><path d="M38 8L14 32L12 44L24 42L48 18Z"/><path d="M34 12L44 22" stroke-width="2"/></>}
+                  </svg>
+                </div>
+                <span class="text-sm font-semibold text-gray-900">{p.name}</span>
+                <span class="mt-1 rounded bg-green-50 px-2 py-0.5 text-xs font-medium text-green-800">
+                  MOQ: {p.moq}
+                </span>
+                <span class="mt-1 text-xs text-gray-500">{p.priceRange}</span>
+                {/* selected indicator */}
+                <div class="selected-badge pointer-events-none absolute -right-1.5 -top-1.5 hidden h-6 w-6 items-center justify-center rounded-full bg-green-800 text-white">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════
+             STEP 2 — Specifications
+             ════════════════════════════════════════════ -->
+        <div id="step-2" class="wizard-step hidden px-6 py-8 sm:px-10" data-step="2">
+          <h3 class="text-xl font-bold text-gray-900">Product Specifications</h3>
+          <p class="mt-1 text-sm text-gray-500">Define the technical details of your order.</p>
+
+          <div id="step2-error" class="mt-4 hidden rounded-lg bg-red-50 p-3 text-sm text-red-700" role="alert"></div>
+
+          <div class="mt-6 space-y-6">
+            <!-- Fabric Type -->
+            <div>
+              <label for="fabric-type" class="block text-sm font-medium text-gray-700">Fabric Type <span class="text-red-500">*</span></label>
+              <select id="fabric-type" name="fabricType" required class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 shadow-sm transition focus:border-green-700 focus:outline-none focus:ring-2 focus:ring-green-600/30">
+                <option value="">Select fabric…</option>
+                <option value="single-jersey">Single Jersey</option>
+                <option value="double-jersey">Double Jersey</option>
+                <option value="terry-fleece">Terry Fleece</option>
+                <option value="lycra-rib">Lycra Rib</option>
+                <option value="interlock">Interlock</option>
+                <option value="custom-fabric">Custom Fabric</option>
+              </select>
+            </div>
+
+            <!-- GSM Range -->
+            <div>
+              <label for="gsm-range" class="block text-sm font-medium text-gray-700">
+                GSM Range: <span id="gsm-value" class="font-bold text-green-800">180</span> g/m²
+              </label>
+              <input type="range" id="gsm-range" name="gsmRange" min="120" max="400" step="10" value="180"
+                class="gsm-slider mt-2 h-2 w-full cursor-pointer appearance-none rounded-full bg-gray-200 accent-green-800"
+                aria-valuenow="180" aria-valuemin="120" aria-valuemax="400"
+              />
+              <div class="mt-1 flex justify-between text-xs text-gray-400">
+                <span>120 GSM</span>
+                <span>Light</span>
+                <span>Mid</span>
+                <span>Heavy</span>
+                <span>400 GSM</span>
+              </div>
+            </div>
+
+            <!-- Quantity & Colors row -->
+            <div class="grid gap-6 sm:grid-cols-2">
+              <div>
+                <label for="quantity" class="block text-sm font-medium text-gray-700">
+                  Quantity <span class="text-red-500">*</span>
+                  <span id="moq-hint" class="ml-1 text-xs font-normal text-gray-400">(Min: 200)</span>
+                </label>
+                <input type="number" id="quantity" name="quantity" min="200" placeholder="e.g. 1000"
+                  class="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-sm transition focus:border-green-700 focus:outline-none focus:ring-2 focus:ring-green-600/30"
+                />
+              </div>
+              <div>
+                <label for="color-qty" class="block text-sm font-medium text-gray-700">Number of Colors</label>
+                <div class="mt-1 flex items-center gap-3">
+                  <button type="button" id="color-minus" class="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-300 text-gray-600 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-600" aria-label="Decrease color count">−</button>
+                  <input type="number" id="color-qty" name="colorQuantity" value="1" min="1" max="50" readonly class="h-10 w-16 rounded-lg border border-gray-300 text-center text-sm font-semibold shadow-sm"/>
+                  <button type="button" id="color-plus" class="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-300 text-gray-600 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-600" aria-label="Increase color count">+</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Size Range -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Size Range <span class="text-red-500">*</span></label>
+              <div class="mt-2 flex flex-wrap gap-2" role="group" aria-label="Select sizes">
+                {["XS","S","M","L","XL","XXL","3XL","4XL","5XL"].map((s) => (
+                  <button
+                    type="button"
+                    class="size-btn rounded-lg border-2 border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 transition-all hover:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-1"
+                    data-size={s}
+                    aria-pressed="false"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════
+             STEP 3 — Customization
+             ════════════════════════════════════════════ -->
+        <div id="step-3" class="wizard-step hidden px-6 py-8 sm:px-10" data-step="3">
+          <h3 class="text-xl font-bold text-gray-900">Customization Options</h3>
+          <p class="mt-1 text-sm text-gray-500">Select all the finishes and branding you need. All options are optional.</p>
+
+          <div class="mt-6 grid gap-3 sm:grid-cols-2">
+            {([
+              { id: "screen-printing",  label: "Screen Printing",    info: "Ideal for bold, spot-color designs. We support up to 12 colors with pantone matching. Best for large runs (500+)." },
+              { id: "dtg-printing",     label: "DTG Printing",       info: "Direct-to-garment for photo-realistic, unlimited-color artwork. Best for complex designs or smaller runs." },
+              { id: "embroidery",       label: "Embroidery",         info: "Available in flat, 3D puff, and chain stitch. Up to 15 thread colors per design. Premium, durable finish." },
+              { id: "heat-transfer",    label: "Heat Transfer",      info: "Versatile method for multi-color and photographic prints. Excellent wash durability and soft hand feel." },
+              { id: "sublimation",      label: "Sublimation",        info: "Full-color all-over printing with vibrant results. Colors won't crack or peel. Best on polyester blends." },
+              { id: "custom-labels",    label: "Custom Labels",      info: "Woven or printed main labels, size labels, and care/wash labels. Complete brand identity package." },
+              { id: "custom-hang-tags", label: "Custom Hang Tags",   info: "Professional hang tags in various sizes, shapes, and finishes including foil stamping and embossing." },
+              { id: "custom-packaging", label: "Custom Packaging",   info: "Individual polybags, tissue paper wrapping, branded boxes, and custom shipping cartons available." },
+            ] as const).map((opt) => (
+              <label
+                class="customization-card group flex cursor-pointer items-start gap-3 rounded-xl border-2 border-gray-200 p-4 transition-all hover:border-green-600 hover:bg-green-50/30"
+                data-custom-id={opt.id}
+              >
+                <input
+                  type="checkbox"
+                  name="customizations"
+                  value={opt.id}
+                  class="mt-0.5 h-5 w-5 shrink-0 rounded border-gray-300 text-green-800 accent-green-800 focus:ring-green-600"
+                />
+                <div class="flex-1">
+                  <span class="text-sm font-semibold text-gray-900">{opt.label}</span>
+                  <button
+                    type="button"
+                    class="info-toggle ml-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 text-xs font-bold text-gray-500 transition hover:bg-green-100 hover:text-green-800 focus:outline-none"
+                    aria-label={`More info about ${opt.label}`}
+                    data-info={opt.info}
+                  >?</button>
+                  <p class="info-text mt-1 hidden text-xs leading-relaxed text-gray-500">{opt.info}</p>
+                </div>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════
+             STEP 4 — Delivery & Timeline
+             ════════════════════════════════════════════ -->
+        <div id="step-4" class="wizard-step hidden px-6 py-8 sm:px-10" data-step="4">
+          <h3 class="text-xl font-bold text-gray-900">Delivery &amp; Timeline</h3>
+          <p class="mt-1 text-sm text-gray-500">Tell us when and where you need the order.</p>
+
+          <div id="step4-error" class="mt-4 hidden rounded-lg bg-red-50 p-3 text-sm text-red-700" role="alert"></div>
+
+          <div class="mt-6 space-y-6">
+            <!-- Date & Destination row -->
+            <div class="grid gap-6 sm:grid-cols-2">
+              <div>
+                <label for="delivery-date" class="block text-sm font-medium text-gray-700">Target Delivery Date <span class="text-red-500">*</span></label>
+                <input type="date" id="delivery-date" name="deliveryDate" required
+                  class="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-sm transition focus:border-green-700 focus:outline-none focus:ring-2 focus:ring-green-600/30"
+                />
+              </div>
+              <div>
+                <label for="shipping-dest" class="block text-sm font-medium text-gray-700">Shipping Destination <span class="text-red-500">*</span></label>
+                <select id="shipping-dest" name="shippingDestination" required class="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm shadow-sm transition focus:border-green-700 focus:outline-none focus:ring-2 focus:ring-green-600/30">
+                  <option value="">Select destination…</option>
+                  <option value="uk">United Kingdom</option>
+                  <option value="eu">European Union</option>
+                  <option value="us">United States</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Toggle cards -->
+            <div class="grid gap-4 sm:grid-cols-2">
+              <!-- Sample Required -->
+              <div class="rounded-xl border-2 border-gray-200 p-5">
+                <p class="text-sm font-semibold text-gray-900">Sample Required?</p>
+                <p class="mt-0.5 text-xs text-gray-500">Pre-production sample before bulk order</p>
+                <div class="mt-3 flex gap-3" role="radiogroup" aria-label="Sample required">
+                  <button type="button" class="toggle-btn flex-1 rounded-lg border-2 border-gray-200 py-2 text-sm font-medium text-gray-600 transition hover:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600" data-group="sample" data-value="yes" aria-pressed="false">Yes</button>
+                  <button type="button" class="toggle-btn flex-1 rounded-lg border-2 border-green-800 bg-green-800 py-2 text-sm font-medium text-white transition hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-600" data-group="sample" data-value="no" aria-pressed="true">No</button>
+                </div>
+                <p id="sample-note" class="mt-2 hidden text-xs text-green-700">
+                  ✦ Sample turnaround: 7–10 business days. Sample cost applies and is deducted from bulk order.
+                </p>
+              </div>
+              <!-- Rush Order -->
+              <div class="rounded-xl border-2 border-gray-200 p-5">
+                <p class="text-sm font-semibold text-gray-900">Rush Order?</p>
+                <p class="mt-0.5 text-xs text-gray-500">Expedited 15–25 day production</p>
+                <div class="mt-3 flex gap-3" role="radiogroup" aria-label="Rush order">
+                  <button type="button" class="toggle-btn flex-1 rounded-lg border-2 border-gray-200 py-2 text-sm font-medium text-gray-600 transition hover:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600" data-group="rush" data-value="yes" aria-pressed="false">Yes</button>
+                  <button type="button" class="toggle-btn flex-1 rounded-lg border-2 border-green-800 bg-green-800 py-2 text-sm font-medium text-white transition hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-600" data-group="rush" data-value="no" aria-pressed="true">No</button>
+                </div>
+                <p id="rush-note" class="mt-2 hidden text-xs text-amber-700">
+                  ⚡ Rush orders ship in 15–25 days. A 15-20% surcharge may apply depending on order size.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════
+             STEP 5 — Contact & Files
+             ════════════════════════════════════════════ -->
+        <div id="step-5" class="wizard-step hidden px-6 py-8 sm:px-10" data-step="5">
+          <h3 class="text-xl font-bold text-gray-900">Contact Information</h3>
+          <p class="mt-1 text-sm text-gray-500">How can we reach you with your quote?</p>
+
+          <div id="step5-error" class="mt-4 hidden rounded-lg bg-red-50 p-3 text-sm text-red-700" role="alert"></div>
+
+          <div class="mt-6 space-y-6">
+            <div class="grid gap-6 sm:grid-cols-2">
+              <div>
+                <label for="company-name" class="block text-sm font-medium text-gray-700">Company Name <span class="text-red-500">*</span></label>
+                <input type="text" id="company-name" name="companyName" required placeholder="Acme Apparel Ltd."
+                  class="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-sm transition focus:border-green-700 focus:outline-none focus:ring-2 focus:ring-green-600/30"
+                />
+              </div>
+              <div>
+                <label for="contact-person" class="block text-sm font-medium text-gray-700">Contact Person <span class="text-red-500">*</span></label>
+                <input type="text" id="contact-person" name="contactPerson" required placeholder="Jane Smith"
+                  class="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-sm transition focus:border-green-700 focus:outline-none focus:ring-2 focus:ring-green-600/30"
+                />
+              </div>
+            </div>
+
+            <div class="grid gap-6 sm:grid-cols-2">
+              <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email Address <span class="text-red-500">*</span></label>
+                <input type="email" id="email" name="email" required placeholder="jane@acmeapparel.co.uk"
+                  class="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-sm transition focus:border-green-700 focus:outline-none focus:ring-2 focus:ring-green-600/30"
+                />
+              </div>
+              <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700">Phone <span class="text-xs font-normal text-gray-400">(optional)</span></label>
+                <input type="tel" id="phone" name="phone" placeholder="+44 7700 900000"
+                  class="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-sm transition focus:border-green-700 focus:outline-none focus:ring-2 focus:ring-green-600/30"
+                />
+              </div>
+            </div>
+
+            <!-- File Upload — Tech Pack -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Upload Tech Pack</label>
+              <div
+                id="techpack-drop"
+                class="drop-zone mt-1 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 px-6 py-8 text-center transition-colors hover:border-green-600 hover:bg-green-50/30"
+                role="button"
+                tabindex="0"
+                aria-label="Upload tech pack file"
+              >
+                <svg class="mx-auto h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0L8 8m4-4l4 4M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+                <p class="mt-2 text-sm text-gray-600"><span class="font-semibold text-green-800">Click to upload</span> or drag &amp; drop</p>
+                <p class="mt-1 text-xs text-gray-400">PDF, AI, PNG, JPG — Max 10 MB</p>
+                <input type="file" id="techpack-input" class="hidden" accept=".pdf,.ai,.png,.jpg,.jpeg" />
+              </div>
+              <ul id="techpack-list" class="mt-2 space-y-1"></ul>
+            </div>
+
+            <!-- File Upload — Reference Images -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Upload Reference Images</label>
+              <div
+                id="refimg-drop"
+                class="drop-zone mt-1 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 px-6 py-6 text-center transition-colors hover:border-green-600 hover:bg-green-50/30"
+                role="button"
+                tabindex="0"
+                aria-label="Upload reference images"
+              >
+                <svg class="mx-auto h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.41a2.25 2.25 0 013.182 0l2.909 2.91m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+                <p class="mt-2 text-sm text-gray-600"><span class="font-semibold text-green-800">Click to upload</span> or drag &amp; drop</p>
+                <p class="mt-1 text-xs text-gray-400">PNG, JPG — Multiple files allowed, max 10 MB each</p>
+                <input type="file" id="refimg-input" class="hidden" accept=".png,.jpg,.jpeg,.webp" multiple />
+              </div>
+              <ul id="refimg-list" class="mt-2 space-y-1"></ul>
+            </div>
+
+            <!-- Notes -->
+            <div>
+              <label for="notes" class="block text-sm font-medium text-gray-700">Additional Notes</label>
+              <textarea id="notes" name="additionalNotes" rows="3" placeholder="Any specific requirements, reference links, or questions…"
+                class="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-sm transition focus:border-green-700 focus:outline-none focus:ring-2 focus:ring-green-600/30"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════
+             SUCCESS SCREEN
+             ════════════════════════════════════════════ -->
+        <div id="step-success" class="wizard-step hidden px-6 py-12 text-center sm:px-10" data-step="success">
+          <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
+            <svg class="h-10 w-10 text-green-800 success-check" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" class="success-path"/>
+            </svg>
+          </div>
+          <h3 class="mt-6 text-2xl font-bold text-gray-900">Quote Request Submitted!</h3>
+          <p class="mt-2 text-gray-600">Thank you for your interest. Our team will review your requirements.</p>
+
+          <div class="mx-auto mt-6 max-w-sm rounded-xl bg-green-50 p-5">
+            <p class="text-sm text-gray-600">Your reference number</p>
+            <p id="ref-number" class="mt-1 text-xl font-bold tracking-wide text-green-800">RVS-2025-00000</p>
+            <p class="mt-3 text-sm text-gray-600">
+              ⏱ We'll respond within <span class="font-semibold text-green-800">24 hours</span> with a detailed quotation.
+            </p>
+          </div>
+
+          <!-- Summary -->
+          <div id="summary" class="mx-auto mt-8 max-w-lg rounded-xl border border-gray-200 bg-white text-left">
+            <div class="border-b border-gray-100 px-5 py-3">
+              <h4 class="text-sm font-bold text-gray-900">Order Summary</h4>
+            </div>
+            <dl id="summary-list" class="divide-y divide-gray-100 px-5 text-sm">
+              <!-- populated by JS -->
+            </dl>
+          </div>
+
+          <button type="button" id="btn-new-quote" class="mt-8 inline-flex items-center gap-2 rounded-lg bg-green-800 px-6 py-2.5 text-sm font-semibold text-white shadow transition hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            Start New Quote
+          </button>
+        </div>
+
+      </div><!-- /steps-container -->
+
+      <!-- ─── Navigation Buttons ─── -->
+      <div id="wizard-nav" class="flex items-center justify-between border-t border-gray-100 bg-gray-50/60 px-6 py-4 sm:px-10">
+        <button type="button" id="btn-back"
+          class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40"
+          disabled
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+
+        <span id="step-indicator" class="text-xs font-medium text-gray-400">Step 1 of 5</span>
+
+        <button type="button" id="btn-next"
+          class="inline-flex items-center gap-2 rounded-lg bg-green-800 px-6 py-2.5 text-sm font-semibold text-white shadow transition hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2"
+        >
+          Next
+          <svg id="next-arrow" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          <svg id="next-send" class="hidden h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>
+        </button>
+      </div>
+
+    </div><!-- /wizard card -->
+  </div>
+</section>
+
+<!-- ─── Styles ─── -->
+<style>
+  /* step transitions */
+  .wizard-step {
+    animation: fadeIn 0.35s ease-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* product card selected state */
+  .product-card[aria-pressed="true"] {
+    @apply border-green-800 bg-green-50 shadow-md ring-2 ring-green-600/30;
+  }
+  .product-card[aria-pressed="true"] .selected-badge {
+    @apply flex;
+  }
+
+  /* size button selected */
+  .size-btn[aria-pressed="true"] {
+    @apply border-green-800 bg-green-800 text-white;
+  }
+
+  /* customization card checked */
+  .customization-card:has(input:checked) {
+    @apply border-green-700 bg-green-50/50;
+  }
+
+  /* range slider thumb */
+  .gsm-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #166534;
+    cursor: pointer;
+    border: 3px solid white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .gsm-slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #166534;
+    cursor: pointer;
+    border: 3px solid white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+
+  /* drop zone drag-over state */
+  .drop-zone.drag-over {
+    @apply border-green-600 bg-green-50;
+  }
+
+  /* success checkmark animation */
+  .success-path {
+    stroke-dasharray: 30;
+    stroke-dashoffset: 30;
+    animation: drawCheck 0.6s ease-out 0.3s forwards;
+  }
+  @keyframes drawCheck {
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* toggle button active state (applied via JS) */
+  .toggle-btn.active {
+    @apply border-green-800 bg-green-800 text-white;
+  }
+  .toggle-btn:not(.active) {
+    @apply border-gray-200 bg-white text-gray-600;
+  }
+
+  /* validation shake */
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+  }
+  .shake {
+    animation: shake 0.4s ease-in-out;
+  }
+
+  /* file list item */
+  .file-item {
+    @apply flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2 text-sm;
+  }
+</style>
+
+<!-- ─── Client Script ─── -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // ───────────────── STATE ─────────────────
+    let currentStep = 1;
+    const totalSteps = 5;
+
+    const formData: Record<string, any> = {
+      selectedProduct: "",
+      productMOQ: 200,
+      fabricType: "",
+      gsmRange: 180,
+      quantity: "",
+      sizeRange: [] as string[],
+      colorQuantity: 1,
+      customizations: [] as string[],
+      deliveryDate: "",
+      shippingDestination: "",
+      sampleRequired: false,
+      rushOrder: false,
+      companyName: "",
+      contactPerson: "",
+      email: "",
+      phone: "",
+      additionalNotes: "",
+      techPackFiles: [] as File[],
+      referenceImages: [] as File[],
+    };
+
+    const productNames: Record<string, string> = {
+      "t-shirts": "Premium Cotton T-Shirts",
+      "polo-shirts": "Corporate Polo Shirts",
+      hoodies: "Premium Hoodies",
+      joggers: "Athletic Joggers",
+      sweatshirts: "Sweatshirts Collection",
+      "ladies-wear": "Ladies' Wear",
+      "kids-wear": "Kids' Wear Range",
+      custom: "Custom / Other",
+    };
+
+    // ───────────────── DOM REFS ─────────────────
+    const $  = (s: string) => document.querySelector(s) as HTMLElement | null;
+    const $$ = (s: string) => document.querySelectorAll(s);
+
+    const btnBack    = $<HTMLButtonElement>("#btn-back")!;
+    const btnNext    = $<HTMLButtonElement>("#btn-next")!;
+    const nextArrow  = $("#next-arrow")!;
+    const nextSend   = $("#next-send")!;
+    const stepInd    = $("#step-indicator")!;
+    const wizardNav  = $("#wizard-nav")!;
+    const progFill   = $("#progress-fill")!;
+
+    // ───────────────── NAVIGATION ─────────────────
+    function goTo(step: number | "success") {
+      // hide current
+      const cur = $(`.wizard-step:not(.hidden)`)!;
+      cur.classList.add("hidden");
+
+      // show target
+      const target = step === "success" ? $("#step-success")! : $(`#step-${step}`)!;
+      target.classList.remove("hidden");
+      // re-trigger animation
+      target.style.animation = "none";
+      target.offsetHeight; // reflow
+      target.style.animation = "";
+
+      if (step === "success") {
+        wizardNav.classList.add("hidden");
+        updateProgressBar(totalSteps + 1);
+        return;
+      }
+
+      currentStep = step as number;
+      updateUI();
+      // scroll to top of wizard
+      $("#quote-wizard-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function updateUI() {
+      // back button
+      (btnBack as HTMLButtonElement).disabled = currentStep === 1;
+
+      // next button text
+      if (currentStep === totalSteps) {
+        btnNext.innerHTML = `Submit Quote <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>`;
+      } else {
+        btnNext.innerHTML = `Next <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>`;
+      }
+
+      stepInd.textContent = `Step ${currentStep} of ${totalSteps}`;
+      updateProgressBar(currentStep);
+    }
+
+    function updateProgressBar(step: number) {
+      const pct = ((step - 1) / (totalSteps - 1)) * 100;
+      progFill.style.width = Math.min(pct, 100) + "%";
+
+      for (let i = 1; i <= totalSteps; i++) {
+        const dot = $(`#dot-${i}`)!;
+        const numEl = dot.querySelector(".dot-number") as HTMLElement;
+        const checkEl = dot.querySelector(".dot-check") as HTMLElement;
+        const label = $(`#label-${i}`);
+
+        if (i < step) {
+          // completed
+          dot.className = "flex h-9 w-9 items-center justify-center rounded-full border-2 text-sm font-bold transition-all duration-300 border-green-800 bg-green-800 text-white";
+          numEl.classList.add("hidden");
+          checkEl.classList.remove("hidden");
+          if (label) label.className = "mt-1.5 hidden text-xs font-medium text-green-800 sm:block";
+        } else if (i === step && step <= totalSteps) {
+          // current
+          dot.className = "flex h-9 w-9 items-center justify-center rounded-full border-2 text-sm font-bold transition-all duration-300 border-green-800 bg-green-800 text-white";
+          dot.setAttribute("aria-current", "step");
+          numEl.classList.remove("hidden");
+          checkEl.classList.add("hidden");
+          if (label) label.className = "mt-1.5 hidden text-xs font-medium text-green-800 sm:block";
+        } else {
+          // future
+          dot.className = "flex h-9 w-9 items-center justify-center rounded-full border-2 text-sm font-bold transition-all duration-300 border-gray-300 bg-white text-gray-400";
+          dot.removeAttribute("aria-current");
+          numEl.classList.remove("hidden");
+          checkEl.classList.add("hidden");
+          if (label) label.className = "mt-1.5 hidden text-xs font-medium text-gray-500 sm:block";
+        }
+      }
+    }
+
+    // ───────────────── VALIDATION ─────────────────
+    function clearErrors() {
+      $$("[id$='-error']").forEach((el) => {
+        (el as HTMLElement).classList.add("hidden");
+        (el as HTMLElement).textContent = "";
+      });
+      $$(".border-red-500").forEach((el) => el.classList.remove("border-red-500"));
+    }
+
+    function showError(stepNum: number, msg: string) {
+      const errEl = $(`#step${stepNum}-error`);
+      if (errEl) {
+        errEl.innerHTML = `<span class="font-medium">${msg}</span>`;
+        errEl.classList.remove("hidden");
+        errEl.classList.add("shake");
+        setTimeout(() => errEl.classList.remove("shake"), 500);
+      }
+    }
+
+    function validateStep(step: number): boolean {
+      clearErrors();
+
+      if (step === 1) {
+        if (!formData.selectedProduct) {
+          const errEl = $("#step1-error")!;
+          errEl.classList.remove("hidden");
+          errEl.classList.add("shake");
+          setTimeout(() => errEl.classList.remove("shake"), 500);
+          return false;
+        }
+        return true;
+      }
+
+      if (step === 2) {
+        const errors: string[] = [];
+        if (!formData.fabricType) errors.push("Please select a fabric type.");
+        if (!formData.quantity || Number(formData.quantity) < formData.productMOQ) {
+          errors.push(`Quantity must be at least ${formData.productMOQ} (minimum order).`);
+        }
+        if (formData.sizeRange.length === 0) errors.push("Please select at least one size.");
+        if (errors.length) {
+          showError(2, errors.join("<br>"));
+          return false;
+        }
+        return true;
+      }
+
+      if (step === 3) {
+        // all optional
+        return true;
+      }
+
+      if (step === 4) {
+        const errors: string[] = [];
+        if (!formData.deliveryDate) errors.push("Please select a target delivery date.");
+        if (!formData.shippingDestination) errors.push("Please select a shipping destination.");
+        // validate date is in future
+        if (formData.deliveryDate) {
+          const sel = new Date(formData.deliveryDate);
+          const minDays = formData.rushOrder ? 15 : 30;
+          const minDate = new Date();
+          minDate.setDate(minDate.getDate() + minDays);
+          if (sel < minDate) {
+            errors.push(`Delivery date must be at least ${minDays} days from today.`);
+          }
+        }
+        if (errors.length) {
+          showError(4, errors.join("<br>"));
+          return false;
+        }
+        return true;
+      }
+
+      if (step === 5) {
+        const errors: string[] = [];
+        if (!formData.companyName.trim()) errors.push("Company name is required.");
+        if (!formData.contactPerson.trim()) errors.push("Contact person is required.");
+        if (!formData.email.trim()) {
+          errors.push("Email address is required.");
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+          errors.push("Please enter a valid email address.");
+        }
+        if (errors.length) {
+          showError(5, errors.join("<br>"));
+          return false;
+        }
+        return true;
+      }
+
+      return true;
+    }
+
+    // ───────────────── STEP 1: Product Cards ─────────────────
+    $$(".product-card").forEach((card) => {
+      card.addEventListener("click", () => {
+        // deselect all
+        $$(".product-card").forEach((c) => c.setAttribute("aria-pressed", "false"));
+        // select this
+        card.setAttribute("aria-pressed", "true");
+        formData.selectedProduct = (card as HTMLElement).dataset.productId!;
+        formData.productMOQ = Number((card as HTMLElement).dataset.productMoq) || 200;
+
+        // update MOQ hint in step 2
+        const moqHint = $("#moq-hint");
+        if (moqHint) moqHint.textContent = `(Min: ${formData.productMOQ})`;
+        const qtyInput = $<HTMLInputElement>("#quantity");
+        if (qtyInput) qtyInput.min = String(formData.productMOQ);
+
+        // hide error
+        $("#step1-error")?.classList.add("hidden");
+      });
+    });
+
+    // ───────────────── STEP 2: Specs ─────────────────
+    // Fabric
+    $<HTMLSelectElement>("#fabric-type")?.addEventListener("change", (e) => {
+      formData.fabricType = (e.target as HTMLSelectElement).value;
+    });
+
+    // GSM slider
+    $<HTMLInputElement>("#gsm-range")?.addEventListener("input", (e) => {
+      const v = (e.target as HTMLInputElement).value;
+      formData.gsmRange = Number(v);
+      const display = $("#gsm-value");
+      if (display) display.textContent = v;
+    });
+
+    // Quantity
+    $<HTMLInputElement>("#quantity")?.addEventListener("input", (e) => {
+      formData.quantity = (e.target as HTMLInputElement).value;
+    });
+
+    // Color qty +/−
+    $("#color-minus")?.addEventListener("click", () => {
+      if (formData.colorQuantity > 1) {
+        formData.colorQuantity--;
+        ($<HTMLInputElement>("#color-qty")!).value = String(formData.colorQuantity);
+      }
+    });
+    $("#color-plus")?.addEventListener("click", () => {
+      if (formData.colorQuantity < 50) {
+        formData.colorQuantity++;
+        ($<HTMLInputElement>("#color-qty")!).value = String(formData.colorQuantity);
+      }
+    });
+
+    // Size toggles
+    $$(".size-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const size = (btn as HTMLElement).dataset.size!;
+        const pressed = btn.getAttribute("aria-pressed") === "true";
+        btn.setAttribute("aria-pressed", String(!pressed));
+        if (pressed) {
+          formData.sizeRange = formData.sizeRange.filter((s: string) => s !== size);
+        } else {
+          formData.sizeRange.push(size);
+        }
+      });
+    });
+
+    // ───────────────── STEP 3: Customization ─────────────────
+    // checkbox sync
+    $$<HTMLInputElement>('input[name="customizations"]').forEach((cb) => {
+      cb.addEventListener("change", () => {
+        formData.customizations = Array.from(
+          $$<HTMLInputElement>('input[name="customizations"]:checked')
+        ).map((c) => c.value);
+      });
+    });
+
+    // info toggles
+    $$(".info-toggle").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const card = (btn as HTMLElement).closest(".customization-card")!;
+        const info = card.querySelector(".info-text") as HTMLElement;
+        info.classList.toggle("hidden");
+      });
+    });
+
+    // ───────────────── STEP 4: Delivery ─────────────────
+    // Set min date on date input
+    const dateInput = $<HTMLInputElement>("#delivery-date")!;
+    const minDate = new Date();
+    minDate.setDate(minDate.getDate() + 30);
+    dateInput.min = minDate.toISOString().split("T")[0];
+
+    dateInput.addEventListener("change", (e) => {
+      formData.deliveryDate = (e.target as HTMLInputElement).value;
+    });
+
+    $<HTMLSelectElement>("#shipping-dest")?.addEventListener("change", (e) => {
+      formData.shippingDestination = (e.target as HTMLSelectElement).value;
+    });
+
+    // Toggle buttons (sample / rush)
+    $$(".toggle-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const group = (btn as HTMLElement).dataset.group!;
+        const value = (btn as HTMLElement).dataset.value!;
+
+        // update all buttons in group
+        $$(`.toggle-btn[data-group="${group}"]`).forEach((b) => {
+          const isThis = b === btn;
+          b.setAttribute("aria-pressed", String(isThis));
+          if (isThis) {
+            b.classList.add("active");
+          } else {
+            b.classList.remove("active");
+          }
+        });
+
+        if (group === "sample") {
+          formData.sampleRequired = value === "yes";
+          const note = $("#sample-note")!;
+          if (value === "yes") note.classList.remove("hidden");
+          else note.classList.add("hidden");
+        }
+        if (group === "rush") {
+          formData.rushOrder = value === "yes";
+          const note = $("#rush-note")!;
+          if (value === "yes") {
+            note.classList.remove("hidden");
+            // update min date
+            const rush = new Date();
+            rush.setDate(rush.getDate() + 15);
+            dateInput.min = rush.toISOString().split("T")[0];
+          } else {
+            note.classList.add("hidden");
+            const norm = new Date();
+            norm.setDate(norm.getDate() + 30);
+            dateInput.min = norm.toISOString().split("T")[0];
+          }
+        }
+      });
+    });
+
+    // ───────────────── STEP 5: Contact & Files ─────────────────
+    // text inputs
+    const inputMap: Record<string, string> = {
+      "company-name": "companyName",
+      "contact-person": "contactPerson",
+      email: "email",
+      phone: "phone",
+      notes: "additionalNotes",
+    };
+    Object.entries(inputMap).forEach(([id, key]) => {
+      $(`#${id}`)?.addEventListener("input", (e) => {
+        formData[key] = (e.target as HTMLInputElement).value;
+      });
+    });
+
+    // ─── File Upload Helper ───
+    function setupFileUpload(
+      dropId: string,
+      inputId: string,
+      listId: string,
+      stateKey: string,
+      multiple: boolean,
+      maxSizeMB: number
+    ) {
+      const drop = $(`#${dropId}`)!;
+      const input = $<HTMLInputElement>(`#${inputId}`)!;
+      const list = $(`#${listId}`)!;
+      const allowedExts = input.accept.split(",").map((e) => e.trim().toLowerCase());
+
+      function addFiles(files: FileList | null) {
+        if (!files) return;
+        Array.from(files).forEach((file) => {
+          // validate extension
+          const ext = "." + file.name.split(".").pop()!.toLowerCase();
+          if (!allowedExts.some((a) => a === ext || a === file.type)) {
+            alert(`File type "${ext}" is not allowed.`);
+            return;
+          }
+          // validate size
+          if (file.size > maxSizeMB * 1024 * 1024) {
+            alert(`"${file.name}" exceeds ${maxSizeMB} MB limit.`);
+            return;
+          }
+          if (!multiple) {
+            (formData as any)[stateKey] = [file];
+          } else {
+            (formData as any)[stateKey].push(file);
+          }
+        });
+        renderFileList();
+      }
+
+      function renderFileList() {
+        const files: File[] = (formData as any)[stateKey];
+        list.innerHTML = "";
+        files.forEach((file, idx) => {
+          const li = document.createElement("li");
+          li.className = "file-item";
+          const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+          li.innerHTML = `
+            <span class="truncate text-gray-700">📎 ${file.name} <span class="text-gray-400">(${sizeMB} MB)</span></span>
+            <button type="button" class="ml-2 shrink-0 text-red-500 hover:text-red-700 focus:outline-none" data-remove="${idx}" aria-label="Remove ${file.name}">&times;</button>
+          `;
+          li.querySelector("[data-remove]")!.addEventListener("click", () => {
+            (formData as any)[stateKey].splice(idx, 1);
+            renderFileList();
+          });
+          list.appendChild(li);
+        });
+      }
+
+      // click to upload
+      drop.addEventListener("click", () => input.click());
+      drop.addEventListener("keydown", (e) => {
+        if ((e as KeyboardEvent).key === "Enter" || (e as KeyboardEvent).key === " ") {
+          e.preventDefault();
+          input.click();
+        }
+      });
+      input.addEventListener("change", () => {
+        addFiles(input.files);
+        input.value = "";
+      });
+
+      // drag & drop
+      drop.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        drop.classList.add("drag-over");
+      });
+      drop.addEventListener("dragleave", () => drop.classList.remove("drag-over"));
+      drop.addEventListener("drop", (e) => {
+        e.preventDefault();
+        drop.classList.remove("drag-over");
+        addFiles((e as DragEvent).dataTransfer?.files ?? null);
+      });
+    }
+
+    setupFileUpload("techpack-drop", "techpack-input", "techpack-list", "techPackFiles", false, 10);
+    setupFileUpload("refimg-drop", "refimg-input", "refimg-list", "referenceImages", true, 10);
+
+    // ───────────────── SUBMISSION ─────────────────
+    function generateRefNumber(): string {
+      const year = new Date().getFullYear();
+      const rand = Math.floor(10000 + Math.random() * 90000);
+      return `RVS-${year}-${rand}`;
+    }
+
+    function buildSummary() {
+      const dl = $("#summary-list")!;
+      dl.innerHTML = "";
+
+      const rows: [string, string][] = [
+        ["Product", productNames[formData.selectedProduct] || formData.selectedProduct],
+        ["Fabric", formData.fabricType.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase())],
+        ["GSM", `${formData.gsmRange} g/m²`],
+        ["Quantity", String(formData.quantity)],
+        ["Sizes", formData.sizeRange.join(", ")],
+        ["Colors", String(formData.colorQuantity)],
+      ];
+
+      if (formData.customizations.length) {
+        rows.push([
+          "Customizations",
+          formData.customizations
+            .map((c: string) => c.replace(/-/g, " ").replace(/\b\w/g, (ch: string) => ch.toUpperCase()))
+            .join(", "),
+        ]);
+      }
+
+      rows.push(["Destination", formData.shippingDestination.toUpperCase()]);
+      rows.push(["Delivery", formData.deliveryDate]);
+      if (formData.sampleRequired) rows.push(["Sample", "Yes"]);
+      if (formData.rushOrder) rows.push(["Rush Order", "Yes"]);
+      rows.push(["Company", formData.companyName]);
+      rows.push(["Contact", `${formData.contactPerson} — ${formData.email}`]);
+
+      rows.forEach(([label, value]) => {
+        const div = document.createElement("div");
+        div.className = "flex justify-between gap-4 py-2.5";
+        div.innerHTML = `<dt class="font-medium text-gray-500">${label}</dt><dd class="text-right font-semibold text-gray-900">${value}</dd>`;
+        dl.appendChild(div);
+      });
+    }
+
+async function submitQuote() {
+  const payload = new FormData();
+
+  // Text fields
+  payload.append('selectedProduct', formData.selectedProduct);
+  payload.append('fabricType', formData.fabricType);
+  payload.append('gsmRange', String(formData.gsmRange));
+  payload.append('quantity', String(formData.quantity));
+  payload.append('sizeRange', JSON.stringify(formData.sizeRange));
+  payload.append('colorQuantity', String(formData.colorQuantity));
+  payload.append('customizations', JSON.stringify(formData.customizations));
+  payload.append('sampleRequired', String(formData.sampleRequired));
+  payload.append('rushOrder', String(formData.rushOrder));
+  payload.append('deliveryDate', formData.deliveryDate);
+  payload.append('shippingDestination', formData.shippingDestination);
+  payload.append('companyName', formData.companyName);
+  payload.append('contactPerson', formData.contactPerson);
+  payload.append('email', formData.email);
+  payload.append('phone', formData.phone);
+  payload.append('additionalNotes', formData.additionalNotes);
+
+  // Files
+  if (formData.techPackFiles.length > 0) {
+    payload.append('techPack', formData.techPackFiles[0]);
+  }
+  formData.referenceImages.forEach((file) => {
+    payload.append('referenceImages', file);
+  });
+
+  try {
+    const res = await fetch('/api/quote/submit', {
+      method: 'POST',
+      body: payload,
+    });
+
+    const result = await res.json();
+
+    if (!res.ok || !result.success) {
+      throw new Error(result.error || 'Submission failed');
+    }
+
+    // Show success screen
+    const refNumber = document.getElementById('ref-number');
+    if (refNumber) refNumber.textContent = result.referenceNumber;
+    buildSummary();
+    goTo('success');
+
+  } catch (err) {
+    alert('Something went wrong. Please try again.\n' + (err as Error).message);
+    btnNext.disabled = false;
+    btnNext.innerHTML = `Submit Quote <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>`;
+  }
+}
+
+    // ───────────────── BUTTON HANDLERS ─────────────────
+    btnNext.addEventListener("click", () => {
+      if (currentStep < totalSteps) {
+        if (validateStep(currentStep)) {
+          goTo(currentStep + 1);
+        }
+      } else {
+        // final step → submit
+        if (validateStep(currentStep)) {
+          // show loading state
+          btnNext.disabled = true;
+          btnNext.innerHTML = `<svg class="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" class="opacity-25"/><path d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="3" stroke-linecap="round" class="opacity-75"/></svg> Submitting…`;
+          // simulate network delay
+          setTimeout(() => {
+            submitQuote();
+            btnNext.disabled = false;
+          }, 1200);
+        }
+      }
+    });
+
+    btnBack.addEventListener("click", () => {
+      if (currentStep > 1) {
+        clearErrors();
+        goTo(currentStep - 1);
+      }
+    });
+
+    // New Quote button
+    $("#btn-new-quote")?.addEventListener("click", () => {
+      // reset state
+      formData.selectedProduct = "";
+      formData.fabricType = "";
+      formData.gsmRange = 180;
+      formData.quantity = "";
+      formData.sizeRange = [];
+      formData.colorQuantity = 1;
+      formData.customizations = [];
+      formData.deliveryDate = "";
+      formData.shippingDestination = "";
+      formData.sampleRequired = false;
+      formData.rushOrder = false;
+      formData.companyName = "";
+      formData.contactPerson = "";
+      formData.email = "";
+      formData.phone = "";
+      formData.additionalNotes = "";
+      formData.techPackFiles = [];
+      formData.referenceImages = [];
+
+      // reset form elements
+      $$(".product-card").forEach((c) => c.setAttribute("aria-pressed", "false"));
+      $$(".size-btn").forEach((b) => b.setAttribute("aria-pressed", "false"));
+      $$<HTMLInputElement>('input[name="customizations"]').forEach((c) => (c.checked = false));
+      $$<HTMLInputElement>("input, textarea, select").forEach((el) => {
+        if (el.type === "checkbox") el.checked = false;
+        else if (el.tagName === "SELECT") (el as HTMLSelectElement).selectedIndex = 0;
+        else if (el.type === "range") (el as HTMLInputElement).value = "180";
+        else el.value = "";
+      });
+      ($("#gsm-value")!).textContent = "180";
+      ($("#color-qty") as HTMLInputElement).value = "1";
+      $$("#techpack-list")?.forEach((l) => (l.innerHTML = ""));
+      $$("#refimg-list")?.forEach((l) => (l.innerHTML = ""));
+
+      // reset toggle buttons
+      $$('.toggle-btn[data-value="no"]').forEach((b) => {
+        b.setAttribute("aria-pressed", "true");
+        b.classList.add("active");
+      });
+      $$('.toggle-btn[data-value="yes"]').forEach((b) => {
+        b.setAttribute("aria-pressed", "false");
+        b.classList.remove("active");
+      });
+      $("#sample-note")?.classList.add("hidden");
+      $("#rush-note")?.classList.add("hidden");
+
+      wizardNav.classList.remove("hidden");
+      goTo(1);
+    });
+
+    // ───────────────── KEYBOARD: Enter to next ─────────────────
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && e.target instanceof HTMLInputElement && e.target.type !== "file") {
+        e.preventDefault();
+        btnNext.click();
+      }
+    });
+
+    // ───────────────── INIT ─────────────────
+    updateUI();
+  });
+</script>

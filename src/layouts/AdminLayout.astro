@@ -32,19 +32,30 @@ const currentPath = Astro.url.pathname;
             <a href="/admin" class="text-lg font-bold text-zinc-900">
               🏭 <span class="text-primary">Reve</span> Admin
             </a>
-            <div class="hidden sm:flex items-center gap-1">
-              <a
-                href="/admin"
-                class:list={[
-                  'px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                  currentPath === '/admin'
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-zinc-600 hover:bg-zinc-100',
-                ]}
-              >
-                Dashboard
-              </a>
-            </div>
+<div class="hidden sm:flex items-center gap-1">
+  <a
+    href="/admin"
+    class:list={[
+      'px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+      currentPath === '/admin' && !currentPath.includes('/quote')
+        ? 'bg-primary/10 text-primary'
+        : 'text-zinc-600 hover:bg-zinc-100',
+    ]}
+  >
+    Dashboard
+  </a>
+  <a
+    href="/admin/quotes"
+    class:list={[
+      'px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+      currentPath.includes('/quote')
+        ? 'bg-primary/10 text-primary'
+        : 'text-zinc-600 hover:bg-zinc-100',
+    ]}
+  >
+    Quotes
+  </a>
+</div>
           </div>
           <button
             onclick="fetch('/api/auth/logout',{method:'POST'}).then(()=>window.location.href='/admin/login')"

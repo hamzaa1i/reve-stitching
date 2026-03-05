@@ -23,3 +23,30 @@ export const supabaseConfig = {
   url: supabaseUrl,
   anonKey: supabaseAnonKey,
 };
+
+// ═══════════════════════════════════════════════════
+// QUOTE SYSTEM CLIENT (singleton with caching)
+// ═══════════════════════════════════════════════════
+
+let _supabase: ReturnType<typeof createClient> | null = null;
+
+/**
+ * Singleton Supabase client for quote system
+ * Uses service role key with caching for performance
+ */
+export function getSupabase() {
+  if (_supabase) return _supabase;
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('Missing Supabase credentials');
+  }
+  
+  _supabase = createClient(supabaseUrl, supabaseServiceKey, {
+    auth: { 
+      autoRefreshToken: false, 
+      persistSession: false 
+    }
+  });
+  
+  return _supabase;
+}
