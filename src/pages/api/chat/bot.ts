@@ -102,25 +102,26 @@ CONTACT:
 - Response time: Within 24 hours (same day during business hours)`;
 
 export const POST: APIRoute = async ({ request }) => {
-    // Simple rate limiting: max 10 requests per minute per IP
-    const clientIP = request.headers.get('x-forwarded-for') || 'unknown';
-    const now = Date.now();
-    
-    if (!global.rateLimitMap) global.rateLimitMap = new Map();
-    const userRequests = global.rateLimitMap.get(clientIP) || [];
-    const recentRequests = userRequests.filter((time: number) => now - time < 60000);
-    
-    if (recentRequests.length >= 10) {
-      return new Response(JSON.stringify({ 
-        error: 'Too many requests. Please wait a moment.' 
-      }), {
-        status: 429,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-    
-    recentRequests.push(now);
-    global.rateLimitMap.set(clientIP, recentRequests);
+  // Rate limiting
+  const clientIP = request.headers.get('x-forwarded-for') || 'unknown';
+  const now = Date.now();
+  
+  if (!(global as any).rateLimitMap) (global as any).rateLimitMap = new Map();
+  const userRequests = (global as any).rateLimitMap.get(clientIP) || [];
+  const recentRequests = userRequests.filter((time: number) => now - time < 60000);
+  
+  if (recentRequests.length >= 10) {
+    return new Response(JSON.stringify({ 
+      error: 'Too many requests. Please wait a moment.' 
+    }), {
+      status: 429,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+  
+  recentRequests.push(now);
+  (global as any).rateLimitMap.set(clientIP, recentRequests);
+
   try {
     const { message, history } = await request.json();
 
@@ -131,7 +132,7 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    const apiKey = import.meta.env.GEMINI_API_KEY;
+    const apiKey = import.meta.env.OPENROUTER_API_KEY;
     if (!apiKey) {
       return new Response(JSON.stringify({ error: 'AI not configured.' }), {
         status: 500,
@@ -139,54 +140,44 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    // Build conversation history for context
-    const contents: any[] = [];
+    // Build conversation
+    const messages: any[] = [
+      { role: 'system', content: SYSTEM_PROMPT },
+    ];
 
-    // Add recent history (last 10 messages for context)
+    // Add recent history
     if (history && Array.isArray(history)) {
       const recent = history.slice(-10);
       for (const msg of recent) {
-        contents.push({
-          role: msg.sender === 'user' ? 'user' : 'model',
-          parts: [{ text: msg.text }],
+        messages.push({
+          role: msg.sender === 'user' ? 'user' : 'assistant',
+          content: msg.text,
         });
       }
     }
 
     // Add current message
-    contents.push({
-      role: 'user',
-      parts: [{ text: message }],
-    });
+    messages.push({ role: 'user', content: message });
 
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: {
-            parts: [{ text: SYSTEM_PROMPT }],
-          },
-          contents,
-          generationConfig: {
-            temperature: 0.7,
-            topP: 0.9,
-            maxOutputTokens: 500,
-          },
-          safetySettings: [
-            { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
-            { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
-            { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
-            { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
-          ],
-        }),
-      }
-    );
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://revestitching.com',
+        'X-Title': 'Reve Stitching Chatbot',
+      },
+      body: JSON.stringify({
+        model: 'meta-llama/llama-3.1-8b-instruct:free',
+        messages,
+        temperature: 0.7,
+        max_tokens: 500,
+      }),
+    });
 
     if (!res.ok) {
       const err = await res.text();
-      console.error('Gemini API error:', err);
+      console.error('OpenRouter API error:', err);
       return new Response(JSON.stringify({ error: 'AI request failed.' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
@@ -194,7 +185,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const data = await res.json();
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    const reply = data.choices?.[0]?.message?.content;
 
     if (!reply) {
       return new Response(JSON.stringify({ error: 'No response from AI.' }), {
