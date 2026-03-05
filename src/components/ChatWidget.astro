@@ -799,7 +799,7 @@
     }
 
     // ━━━ Handle User Message ━━━
-    function handleUserMessage(text: string): void {
+    async function handleUserMessage(text: string): Promise<void> {
       const mode = getMode();
 
       if (mode === 'live') {
@@ -812,20 +812,88 @@
       if (quickContainer) quickContainer.innerHTML = '';
       showTyping();
 
-      const delay = 800 + Math.random() * 700;
-      setTimeout(() => {
-        hideTyping();
-        const response = findBotResponse(text);
+      // Try AI first, fall back to keyword matching
+      try {
+        const history = getMsgHistory().slice(-10).map(m => ({
+          text: m.text,
+          sender: m.sender,
+        }));
 
-        // Special: human request
-        if (response.answer === '__REQUEST_HUMAN__') {
-          requestHuman();
+        const res = await fetch('/api/chat/bot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, history }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          hideTyping();
+
+          if (data.reply === '__REQUEST_HUMAN__' || data.reply?.includes('__REQUEST_HUMAN__')) {
+            requestHuman();
+            return;
+          }
+
+          addMessage(data.reply, 'bot');
+          // Show contextual quick replies based on content
+          const aiQuickReplies = getQuickRepliesForAIResponse(data.reply);
+          setTimeout(() => showQuickReplies(aiQuickReplies), 300);
           return;
         }
+      } catch (e) {
+        console.warn('AI bot failed, using keyword fallback:', e);
+      }
 
-        addMessage(response.answer, 'bot');
-        setTimeout(() => showQuickReplies(response.followUp), 300);
-      }, delay);
+      // Fallback to keyword matching
+      hideTyping();
+      const response = findBotResponse(text);
+
+      if (response.answer === '__REQUEST_HUMAN__') {
+        requestHuman();
+        return;
+      }
+
+      addMessage(response.answer, 'bot');
+      setTimeout(() => showQuickReplies(response.followUp), 300);
+    }
+
+    // Determine quick replies based on AI response content
+    function getQuickRepliesForAIResponse(reply: string): string[] {
+      const lower = reply.toLowerCase();
+      const suggestions: string[] = [];
+
+      if (lower.includes('product') || lower.includes('garment') || lower.includes('manufacture')) {
+        suggestions.push('Product range');
+      }
+      if (lower.includes('moq') || lower.includes('minimum')) {
+        suggestions.push('MOQ details');
+      }
+      if (lower.includes('price') || lower.includes('quote') || lower.includes('cost')) {
+        suggestions.push('Get a quote');
+      }
+      if (lower.includes('quality') || lower.includes('aql') || lower.includes('inspection')) {
+        suggestions.push('Quality standards');
+      }
+      if (lower.includes('certif') || lower.includes('sedex') || lower.includes('iso')) {
+        suggestions.push('Certifications');
+      }
+      if (lower.includes('fabric') || lower.includes('cotton') || lower.includes('jersey')) {
+        suggestions.push('Fabric types');
+      }
+      if (lower.includes('sample')) {
+        suggestions.push('Sample request');
+      }
+      if (lower.includes('lead time') || lower.includes('delivery') || lower.includes('shipping')) {
+        suggestions.push('Lead time');
+      }
+
+      // Always offer these if not enough suggestions
+      if (suggestions.length < 2) suggestions.push('Get a quote');
+      if (suggestions.length < 3) suggestions.push('Request human');
+      if (suggestions.length < 4) suggestions.push('Product range');
+
+      // Remove duplicates and limit to 4
+      return [...new Set(suggestions)].slice(0, 4);
     }
 
     // ━━━ Restore History ━━━
