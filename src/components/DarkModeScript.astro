@@ -1,0 +1,26 @@
+---
+// This script runs BEFORE the page renders to prevent flash
+---
+
+<script is:inline>
+  // Check for saved preference or system preference
+  const theme = (() => {
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+      return localStorage.getItem('theme');
+    }
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    return 'light';
+  })();
+
+  // Apply theme immediately
+  if (theme === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+
+  // Store theme
+  window.localStorage.setItem('theme', theme);
+</script>

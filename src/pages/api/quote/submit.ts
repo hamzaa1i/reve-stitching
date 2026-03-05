@@ -7,6 +7,22 @@ import type { QuoteRequest } from '../../../lib/types/quote';
 
 export const prerender = false;
 
+function getContentType(filename: string): string {
+    const ext = filename.toLowerCase().split('.').pop();
+    const types: Record<string, string> = {
+      'pdf': 'application/pdf',
+      'ai': 'application/postscript',
+      'eps': 'application/postscript',
+      'doc': 'application/msword',
+      'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'png': 'image/png',
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'webp': 'image/webp',
+    };
+    return types[ext || ''] || 'application/octet-stream';
+  }
+
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
@@ -76,7 +92,7 @@ export const POST: APIRoute = async ({ request }) => {
             const { error: uploadError } = await supabase.storage
               .from('quote-uploads')
               .upload(path, buffer, {
-                contentType: 'application/pdf',
+                contentType: getContentType(body.techPackName as string),
                 upsert: false,
               });
             
@@ -102,7 +118,7 @@ export const POST: APIRoute = async ({ request }) => {
               const { error: uploadError } = await supabase.storage
                 .from('quote-uploads')
                 .upload(path, buffer, {
-                  contentType: 'image/jpeg',
+                    contentType: getContentType(body.referenceImageNames[i] as string),
                   upsert: false,
                 });
               
