@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getServiceClient } from '../../../lib/supabase';
+import { notifyNewChat } from '../../../lib/notifications';
 
 export const prerender = false;
 
@@ -44,6 +45,12 @@ export const POST: APIRoute = async ({ request }) => {
       .single();
 
     if (error) throw error;
+
+    await notifyNewChat({
+      sessionId: data.id,
+      visitorName: visitorName?.trim(),
+      visitorEmail: visitorEmail?.trim(),
+    });
 
     return new Response(JSON.stringify({ sessionId: data.id }), {
       status: 201,

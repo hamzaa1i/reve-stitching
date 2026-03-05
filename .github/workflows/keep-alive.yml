@@ -1,0 +1,12 @@
+name: Keep Supabase Alive
+on:
+  schedule:
+    - cron: '0 12 */6 * *'  # Every 6 days at noon UTC
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping database
+        run: curl https://revestitching.com/api/keep-alive

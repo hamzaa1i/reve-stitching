@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getServiceClient } from '../../lib/supabase';
+import { notifyNewContact } from '../../lib/notifications';
 
 export const prerender = false;
 
@@ -27,6 +28,14 @@ export const POST: APIRoute = async ({ request }) => {
     });
 
     if (error) throw error;
+
+    await notifyNewContact({
+      name: name.trim(),
+      email: email.trim(),
+      company: company?.trim(),
+      subject: subject.trim(),
+      message: message.trim(),
+    });
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
