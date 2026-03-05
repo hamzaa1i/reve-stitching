@@ -133,8 +133,7 @@ if (session.status === 'waiting') {
   sessionStatus: session.status,
 }}>
   (async () => {
-    // Dynamic import of Supabase client
-    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/+esm');
 
     const supabase = createClient(supabaseUrl, supabaseKey, {
       global: {
@@ -147,18 +146,16 @@ if (session.status === 'waiting') {
     const input = document.getElementById('admin-chat-input');
     const closeBtn = document.getElementById('close-session-btn');
 
-    // Scroll to bottom
     function scrollToBottom() {
       if (messagesDiv) messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
     scrollToBottom();
 
-    // Add message to UI
-    function appendMessage(text, sender) {
+    function appendMessage(text, sender, timestamp) {
       if (!messagesDiv) return;
       const div = document.createElement('div');
       div.className = 'flex ' + (sender === 'admin' ? 'justify-end' : 'justify-start');
-      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const time = timestamp ? new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       div.innerHTML =
         '<div class="max-w-[70%]">' +
           '<div class="rounded-2xl px-4 py-3 text-sm leading-relaxed ' +
@@ -174,7 +171,6 @@ if (session.status === 'waiting') {
       scrollToBottom();
     }
 
-    // Send message
     if (form && input) {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -192,7 +188,6 @@ if (session.status === 'waiting') {
       });
     }
 
-    // Real-time subscription for visitor messages
     if (sessionStatus !== 'closed') {
       supabase
         .channel('admin-chat-' + sessionId)
@@ -203,13 +198,12 @@ if (session.status === 'waiting') {
           filter: 'session_id=eq.' + sessionId,
         }, (payload) => {
           if (payload.new.sender === 'visitor') {
-            appendMessage(payload.new.message, 'visitor');
+            appendMessage(payload.new.message, 'visitor', payload.new.created_at);
           }
         })
         .subscribe();
     }
 
-    // Close session
     if (closeBtn) {
       closeBtn.addEventListener('click', async () => {
         if (!confirm('Close this chat session?')) return;
@@ -219,7 +213,6 @@ if (session.status === 'waiting') {
           .update({ status: 'closed' })
           .eq('id', sessionId);
 
-        // Send system message
         await supabase.from('chat_messages').insert({
           session_id: sessionId,
           sender: 'admin',
