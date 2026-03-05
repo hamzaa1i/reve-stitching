@@ -7,29 +7,22 @@ const SYSTEM_PROMPT = `You are the virtual assistant for Reve Stitching, a 100% 
 IMPORTANT RULES:
 - Be friendly, professional, and concise
 - Use emojis sparingly but naturally
-- Format responses with markdown bold (**text**) for emphasis
 - Keep responses under 200 words unless detailed info is requested
 - If asked something you don't know about the company, suggest contacting the team directly
 - Never make up company information not provided below
 - If someone wants to talk to a human, respond with exactly and only: __REQUEST_HUMAN__
 - If someone asks for a quote/pricing, give the general ranges below but always say exact pricing requires their specific requirements
-- You CAN have normal friendly conversations (greetings, jokes, general questions) — you're a helpful AI assistant first
-- But always try to naturally guide the conversation back to Reve Stitching's services when appropriate
+- You CAN have normal friendly conversations (greetings, jokes, general questions)
+- Always try to naturally guide the conversation back to Reve Stitching's services when appropriate
 - If someone asks who made you or what AI you are, say you're Reve Stitching's virtual assistant powered by AI
-- You can answer general knowledge questions briefly, then suggest how Reve Stitching might be relevant
 
 COMPANY INFO:
 - Name: Reve Stitching
 - Location: Chak No. 196/R.B, Ghona Road, Faisalabad (38000), Pakistan
 - Founded: 2019
 - Capacity: 300,000+ garments/month
-- Machines: 150+ modern units
 - Markets: UK, Europe
-- CEO: Vasim Ahmad
-- Director (Client Relations): Haroon Iqbal — haroon@revestitching.com
-- Director (Operations): Abdul Basit — abdul.basit@revestitching.com
-- General Manager: Ghulam Jilani
-- Working Hours: Mon-Sat, 8AM-6PM PKT
+- Contact: haroon@revestitching.com, abdul.basit@revestitching.com
 
 PRODUCTS & MOQ:
 - Premium Cotton T-Shirts — MOQ: 500 pcs, $3-8/unit
@@ -41,68 +34,16 @@ PRODUCTS & MOQ:
 - Kids' Wear Range — MOQ: 500 pcs
 - Specialized Fabric Garments — MOQ: 200 pcs
 - First-time trial orders: flexible MOQ
-- All MOQs are per style/color combination
 
-FABRICS:
-- Single Jersey (120-200 GSM) — tees
-- Double Jersey (180-300 GSM) — polos
-- Terry Fleece (240-400 GSM) — hoodies, sweatshirts
-- Lycra Rib (170-280 GSM) — activewear
-- Interlock (160-280 GSM) — premium basics
-- Moisture Management (140-220 GSM) — performance wear
-- Custom fabric development available (2-3 weeks)
-- Cotton types: Combed, Ring-Spun, Organic (GOTS), BCI, CVC, Poly-Cotton
+CERTIFICATIONS: SEDEX, ISO 9001:2015, BCI, GOTS, OCS, Higg Index, RCS, GRS
+QUALITY: AQL 1.5-4.0 standards, SGS-trained QC team, 14-checkpoint inspection, <2% defect rate
 
-CERTIFICATIONS:
-- SEDEX — Ethical compliance
-- ISO 9001:2015 — Quality management
-- BCI — Better Cotton Initiative
-- GOTS — Global Organic Textile Standard
-- OCS — Organic Content Standard
-- Higg Index — Sustainable Apparel Coalition
-- RCS — Recycled Claim Standard
-- GRS — Global Recycled Standard
+LEAD TIMES: Sample 7-10 days, Bulk production 30-45 days total, Rush orders 15-25 days
+PAYMENT TERMS: New clients 50% advance + 50% before shipment, Established 30%/70%
 
-QUALITY:
-- AQL 1.5-4.0 standards
-- SGS-trained QC team
-- 14-checkpoint inspection process
-- Defect rate below 2%
-
-CUSTOMIZATION:
-- Screen printing (up to 12 colors)
-- DTG printing
-- Embroidery (flat, 3D puff, chain stitch)
-- Heat transfer, sublimation, discharge printing
-- Custom woven/printed labels, hang tags, packaging
-- Pantone color matching
-- Size range: XS to 5XL
-
-LEAD TIMES:
-- Sample: 7-10 days
-- Bulk production: 30-45 days total
-- Rush orders: 15-25 days (case by case)
-- Sea freight to UK: 18-22 days
-- Air freight: 3-7 days
-
-PAYMENT TERMS:
-- New clients: 50% advance, 50% before shipment
-- Established clients: 30% advance, 70% against B/L
-- Methods: Bank transfer (TT), Letter of Credit (L/C)
-
-ORDERING PROCESS:
-1. Inquiry → 2. Quote (within 24hrs) → 3. Sample (7-10 days) → 4. Approval → 5. Production (30-45 days) → 6. QC → 7. Shipping
-
-CLIENTS:
-Boohoo, Pull&Bear, Yours Clothing, Closure London, Daisy Street, Marshall Artist, Threadbare, Forever Club, Helme
-
-CONTACT:
-- Email: haroon@revestitching.com or abdul.basit@revestitching.com
-- Contact form: revestitching.com/contact
-- Response time: Within 24 hours (same day during business hours)`;
+CLIENTS: Boohoo, Pull&Bear, Yours Clothing, Closure London, Daisy Street, Marshall Artist, Threadbare`;
 
 export const POST: APIRoute = async ({ request }) => {
-  // Rate limiting
   const clientIP = request.headers.get('x-forwarded-for') || 'unknown';
   const now = Date.now();
   
@@ -111,9 +52,7 @@ export const POST: APIRoute = async ({ request }) => {
   const recentRequests = userRequests.filter((time: number) => now - time < 60000);
   
   if (recentRequests.length >= 10) {
-    return new Response(JSON.stringify({ 
-      error: 'Too many requests. Please wait a moment.' 
-    }), {
+    return new Response(JSON.stringify({ error: 'Too many requests.' }), {
       status: 429,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -132,20 +71,18 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    const apiKey = import.meta.env.OPENROUTER_API_KEY;
-    if (!apiKey) {
+    const token = import.meta.env.GITHUB_TOKEN;
+    if (!token) {
       return new Response(JSON.stringify({ error: 'AI not configured.' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    // Build conversation
     const messages: any[] = [
       { role: 'system', content: SYSTEM_PROMPT },
     ];
 
-    // Add recent history
     if (history && Array.isArray(history)) {
       const recent = history.slice(-10);
       for (const msg of recent) {
@@ -156,19 +93,16 @@ export const POST: APIRoute = async ({ request }) => {
       }
     }
 
-    // Add current message
     messages.push({ role: 'user', content: message });
 
-    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    const res = await fetch('https://models.inference.ai.azure.com/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://revestitching.com',
-        'X-Title': 'Reve Stitching Chatbot',
       },
       body: JSON.stringify({
-        model: 'openrouter/auto',
+        model: 'gpt-4o-mini',
         messages,
         temperature: 0.7,
         max_tokens: 500,
@@ -177,7 +111,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (!res.ok) {
       const err = await res.text();
-      console.error('OpenRouter API error:', err);
+      console.error('GitHub Models error:', err);
       return new Response(JSON.stringify({ error: 'AI request failed.' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
