@@ -168,7 +168,7 @@ export const POST: APIRoute = async ({ request }) => {
         'X-Title': 'Reve Stitching Chatbot',
       },
       body: JSON.stringify({
-        model: 'meta-llama/llama-3.1-8b-instruct:free',
+        model: 'openrouter/auto',
         messages,
         temperature: 0.7,
         max_tokens: 500,
