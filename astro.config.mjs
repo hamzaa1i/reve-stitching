@@ -4,7 +4,11 @@ import vercel from '@astrojs/vercel/serverless';
 
 export default defineConfig({
   output: 'hybrid',
-  adapter: vercel(),
+  adapter: vercel({
+    // Explicitly set runtime to Node 20
+    functionPerRoute: false,
+    imageService: true,
+  }),
   integrations: [
     tailwind({ applyBaseStyles: false }),
   ],
