@@ -1,26 +1,24 @@
 ---
-// This script runs BEFORE the page renders to prevent flash
+// Runs BEFORE page renders — prevents flash. Handles navigation.
 ---
 
 <script is:inline>
-  // Check for saved preference or system preference
-  const theme = (() => {
-    if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-      return localStorage.getItem('theme');
+  (function() {
+    var theme = localStorage.getItem('theme') || 'light';
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
     }
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-    return 'light';
   })();
 
-  // Apply theme immediately
-  if (theme === 'dark') {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-  }
-
-  // Store theme
-  window.localStorage.setItem('theme', theme);
+  // Fix dark mode on Astro page navigation
+  document.addEventListener('astro:after-swap', function() {
+    var theme = localStorage.getItem('theme') || 'light';
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  });
 </script>
