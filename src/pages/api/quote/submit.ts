@@ -134,11 +134,76 @@ export const POST: APIRoute = async ({ request }) => {
           }
         }
 
-    // AI summary
-    let ai_summary: string | null = null;
-    let estimated_price_range: string | null = null;
-    let suggested_moq: number | null = null;
-    let ai_flags: string | null = null;
+ // AI summary + Tech Pack Analysis
+ let ai_summary: string | null = null;
+ let estimated_price_range: string | null = null;
+ let suggested_moq: number | null = null;
+ let ai_flags: string | null = null;
+ let ai_extracted_data: any = null;
+ let ai_confidence_score: number | null = null;
+ let ai_missing_fields: string[] | null = null;
+ let action_items: any = null;
+
+ try {
+   // Run both AI tasks in parallel
+   const [summaryResult, techPackResult] = await Promise.all([
+     generateAISummary({
+       product_type, fabric_type, gsm, quantity, sizes,
+       color_count, customizations, has_sample, is_rush,
+       target_date, destination, notes,
+     }),
+     // NEW: Analyze tech pack if uploaded
+     (async () => {
+       if (body.techPackBase64 || (body.referenceImagesBase64 && body.referenceImagesBase64.length > 0)) {
+         const { analyzeTechPack } = await import('../../../lib/services/techpack-analyzer');
+         return analyzeTechPack(
+           body.techPackBase64,
+           body.referenceImagesBase64,
+           { product_type, fabric_type, quantity }
+         );
+       }
+       return null;
+     })(),
+   ]);
+
+   // Apply summary results
+   ai_summary = summaryResult.ai_summary;
+   estimated_price_range = summaryResult.estimated_price_range;
+   suggested_moq = summaryResult.suggested_moq;
+   ai_flags = summaryResult.ai_flags;
+
+   // Apply tech pack analysis results
+   if (techPackResult) {
+     ai_extracted_data = techPackResult.extracted_specs;
+     ai_confidence_score = techPackResult.confidence / 100; // Convert to 0-1
+     ai_missing_fields = techPackResult.missing_fields;
+     action_items = {
+       items: techPackResult.action_items.map((item, idx) => ({
+         id: `auto-${idx}`,
+         priority: item.priority,
+         title: item.task,
+         description: item.reason,
+         completed: false,
+       })),
+       auto_generated: true,
+       generated_at: new Date().toISOString(),
+     };
+
+     // Enhance ai_summary with extracted details
+     if (Object.keys(techPackResult.extracted_specs).length > 0) {
+       ai_summary = `${ai_summary}\n\n━━━ TECH PACK ANALYSIS ━━━\n${JSON.stringify(techPackResult.extracted_specs, null, 2)}`;
+     }
+
+     // Add missing fields to ai_flags
+     if (techPackResult.missing_fields.length > 0) {
+       const missingInfo = `Missing: ${techPackResult.missing_fields.join('; ')}`;
+       ai_flags = ai_flags ? `${ai_flags}\n${missingInfo}` : missingInfo;
+     }
+   }
+
+ } catch (err) {
+   console.error('[Quote] AI analysis failed:', err);
+ }
 
     try {
       const aiResult = await generateAISummary({
@@ -181,6 +246,11 @@ export const POST: APIRoute = async ({ request }) => {
         estimated_price_range,
         suggested_moq,
         ai_flags,
+        ai_extracted_data,           // NEW
+        ai_confidence_score,          // NEW
+        ai_missing_fields,            // NEW
+        action_items,                 // NEW
+        tech_pack_status: tech_pack_url ? 'analyzed' : null,  // NEW
         admin_notes: null,
         assigned_to: null,
       })
