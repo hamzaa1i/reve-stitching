@@ -27,6 +27,8 @@ export type CustomizationKey =
   | 'dtg'
   | 'custom_labels';
 
+export type CurrencyCode = 'USD' | 'GBP';
+
 export interface PriceRange {
   min: number;
   max: number;
@@ -37,8 +39,8 @@ export interface PriceEstimate {
   total: PriceRange;
   leadTime: string;
   moq: number;
-  savings: number | null;       // Percentage saved vs. smallest tier
-  tierLabel: string;            // "Volume Discount", "Optimal", etc.
+  savings: number | null;
+  tierLabel: string;
   quantity: number;
   product: ProductKey;
 }
@@ -51,10 +53,44 @@ export interface CalculatorInput {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Data Tables
+// Currency Configuration
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** Base prices per unit at 1000 pcs, FOB Karachi */
+/** 
+ * Exchange rate: 1 USD = X GBP
+ * Update this periodically (monthly is fine for estimates)
+ * Current rate as of March 2024: ~0.79
+ */
+export const USD_TO_GBP_RATE = 0.79;
+
+export const CURRENCY_CONFIG: Record<CurrencyCode, {
+  symbol: string;
+  code: string;
+  locale: string;
+  name: string;
+  flag: string;
+}> = {
+  USD: {
+    symbol: '$',
+    code: 'USD',
+    locale: 'en-US',
+    name: 'US Dollar',
+    flag: '🇺🇸',
+  },
+  GBP: {
+    symbol: '£',
+    code: 'GBP',
+    locale: 'en-GB',
+    name: 'British Pound',
+    flag: '🇬🇧',
+  },
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Data Tables (Prices in USD)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Base prices per unit at 1000 pcs, FOB Karachi (in USD) */
 export const BASE_PRICES: Record<ProductKey, PriceRange> = {
   tshirts:      { min: 3.50, max: 8.00 },
   polos:        { min: 5.00, max: 12.00 },
@@ -113,7 +149,7 @@ export const QUANTITY_TIERS: QuantityTier[] = [
   { min: 5000, max: Infinity, multiplier: 0.87, label: 'High Volume' },
 ];
 
-/** Per-unit customization cost adders */
+/** Per-unit customization cost adders (in USD) */
 export const CUSTOMIZATION_COSTS: Record<CustomizationKey, PriceRange> = {
   screen_print:  { min: 0.50, max: 1.50 },
   embroidery:    { min: 1.50, max: 3.50 },
@@ -130,6 +166,44 @@ export const CUSTOMIZATION_LABELS: Record<CustomizationKey, string> = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Currency Conversion
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Convert USD to GBP
+ */
+export function convertToGBP(usdValue: number): number {
+  return Math.round(usdValue * USD_TO_GBP_RATE * 100) / 100;
+}
+
+/**
+ * Convert GBP to USD
+ */
+export function convertToUSD(gbpValue: number): number {
+  return Math.round((gbpValue / USD_TO_GBP_RATE) * 100) / 100;
+}
+
+/**
+ * Convert price to specified currency
+ */
+export function convertPrice(usdValue: number, currency: CurrencyCode): number {
+  if (currency === 'GBP') {
+    return convertToGBP(usdValue);
+  }
+  return usdValue;
+}
+
+/**
+ * Convert price range to specified currency
+ */
+export function convertPriceRange(range: PriceRange, currency: CurrencyCode): PriceRange {
+  return {
+    min: convertPrice(range.min, currency),
+    max: convertPrice(range.max, currency),
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Internal Helpers
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -137,7 +211,6 @@ function getTier(quantity: number): QuantityTier {
   const tier = QUANTITY_TIERS.find(
     (t) => quantity >= t.min && quantity <= t.max
   );
-  // Fallback: if somehow below MOQ, use the smallest tier
   return tier ?? QUANTITY_TIERS[0];
 }
 
@@ -195,12 +268,11 @@ export function calculatePrice(params: CalculatorInput): PriceEstimate {
     }
   }
 
-  // 5. Calculate per-unit price
-  //    Formula: (base × fabric × tier) + customizations
+  // 5. Calculate per-unit price (in USD)
   const perUnitMin = roundCurrency(base.min * fabricMult * tierMult + customMin);
   const perUnitMax = roundCurrency(base.max * fabricMult * tierMult + customMax);
 
-  // 6. Total order cost
+  // 6. Total order cost (in USD)
   const totalMin = roundCurrency(perUnitMin * quantity);
   const totalMax = roundCurrency(perUnitMax * quantity);
 
@@ -249,13 +321,11 @@ export function buildQuoteUrl(params: CalculatorInput): string {
     url.searchParams.set('customizations', params.customizations.join(','));
   }
 
-  // Return just the path + search (relative URL)
   return url.pathname + url.search;
 }
 
 /**
  * Parse URL search params back into CalculatorInput.
- * Used by QuoteWizard to pre-fill from calculator handoff.
  */
 export function parseQuoteParams(searchParams: URLSearchParams): Partial<CalculatorInput> {
   const result: Partial<CalculatorInput> = {};
@@ -295,19 +365,66 @@ export function parseQuoteParams(searchParams: URLSearchParams): Partial<Calcula
 // Formatting Helpers
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('en-US', {
+/**
+ * Format currency value with proper locale
+ */
+export function formatCurrency(value: number, currency: CurrencyCode = 'USD'): string {
+  const config = CURRENCY_CONFIG[currency];
+  return new Intl.NumberFormat(config.locale, {
     style: 'currency',
-    currency: 'USD',
+    currency: config.code,
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(value);
 }
 
-export function formatRange(range: PriceRange): string {
-  return `${formatCurrency(range.min)} – ${formatCurrency(range.max)}`;
+/**
+ * Format currency for display (shorter for large numbers)
+ */
+export function formatCurrencyShort(value: number, currency: CurrencyCode = 'USD'): string {
+  const config = CURRENCY_CONFIG[currency];
+  if (value >= 1000) {
+    return new Intl.NumberFormat(config.locale, {
+      style: 'currency',
+      currency: config.code,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  }
+  return formatCurrency(value, currency);
 }
 
+/**
+ * Format a price range
+ */
+export function formatRange(range: PriceRange, currency: CurrencyCode = 'USD'): string {
+  return `${formatCurrency(range.min, currency)} – ${formatCurrency(range.max, currency)}`;
+}
+
+/**
+ * Format a price range (short version for totals)
+ */
+export function formatRangeShort(range: PriceRange, currency: CurrencyCode = 'USD'): string {
+  return `${formatCurrencyShort(range.min, currency)} – ${formatCurrencyShort(range.max, currency)}`;
+}
+
+/**
+ * Format number with commas
+ */
 export function formatNumber(value: number): string {
   return new Intl.NumberFormat('en-US').format(value);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Location Detection Helper
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Detect if user is likely from UK based on various signals
+ * Returns 'GBP' for UK users, 'USD' for others
+ */
+export function detectPreferredCurrency(): CurrencyCode {
+  // This is a placeholder - actual detection happens client-side
+  // See PriceCalculator.astro for implementation
+  return 'USD';
 }
