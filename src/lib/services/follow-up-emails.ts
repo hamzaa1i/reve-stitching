@@ -45,7 +45,7 @@ interface FollowUpResult {
 // Configuration
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ADMIN_EMAIL = 'admin@revestitching.com';
+const ADMIN_EMAIL = process.env.TEAM_EMAIL || 'hamzali.revesystems@gmail.com';
 const FROM_ADDRESS = 'Reve Stitching <notifications@revestitching.com>';
 const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL || '';
 
