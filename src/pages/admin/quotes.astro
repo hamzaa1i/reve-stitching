@@ -1,11 +1,14 @@
 ---
-// src/pages/admin/quotes.astro
-
 import AdminLayout from '../../layouts/AdminLayout.astro';
-import { getSupabase } from '../../lib/supabase';
+import { createClient } from '@supabase/supabase-js';
 import { PRODUCT_NAMES, STATUS_META, type QuoteStatus, type QuoteRequest, type QuoteStats } from '../../lib/types/quote';
 
-const supabase = getSupabase();
+// Create Supabase client with service role
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  { auth: { autoRefreshToken: false, persistSession: false } }
+);
 
 // ── URL Params ──
 const url = Astro.url;

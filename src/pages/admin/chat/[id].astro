@@ -1,12 +1,17 @@
 ---
 import AdminLayout from '../../../layouts/AdminLayout.astro';
-import { getAuthClient, supabaseConfig } from '../../../lib/supabase';
+import { createClient } from '@supabase/supabase-js';
 
 export const prerender = false;
 
 const { id } = Astro.params;
-const token = Astro.locals.adminToken;
-const supabase = getAuthClient(token);
+
+// Create Supabase client with service role
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  { auth: { autoRefreshToken: false, persistSession: false } }
+);
 
 // Fetch session
 const { data: session } = await supabase
@@ -40,6 +45,10 @@ const ssrMessageIds = (messages || []).map((m: any) => m.id);
 const lastMsgTime = messages && messages.length > 0
   ? messages[messages.length - 1].created_at
   : new Date().toISOString();
+
+// Supabase config for client-side
+const supabaseUrl = process.env.SUPABASE_URL || import.meta.env.PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 ---
 
 <AdminLayout title={`Chat — ${session.visitor_name || 'Visitor'}`}>
@@ -56,11 +65,7 @@ const lastMsgTime = messages && messages.length > 0
         </h1>
         <p class="text-sm text-zinc-500">
           {session.visitor_email || 'No email provided'} •
-          <span id="session-status" class:list={[
-            'font-medium',
-            session.status === 'active' && 'text-green-600',
-            session.status === 'closed' && 'text-zinc-400',
-          ]}>
+          <span id="session-status" class={`font-medium ${session.status === 'active' ? 'text-green-600' : 'text-zinc-400'}`}>
             {session.status}
           </span>
         </p>
@@ -86,12 +91,11 @@ const lastMsgTime = messages && messages.length > 0
       {messages?.map((msg) => (
         <div class={`flex ${msg.sender === 'admin' ? 'justify-end' : 'justify-start'}`}>
           <div class={`max-w-[70%] ${msg.sender === 'admin' ? 'order-2' : ''}`}>
-            <div class:list={[
-              'rounded-2xl px-4 py-3 text-sm leading-relaxed',
+            <div class={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
               msg.sender === 'admin'
                 ? 'bg-primary text-white rounded-tr-md'
-                : 'bg-zinc-100 text-zinc-700 rounded-tl-md',
-            ]}>
+                : 'bg-zinc-100 text-zinc-700 rounded-tl-md'
+            }`}>
               {msg.message}
             </div>
             <span class={`text-[10px] text-zinc-400 mt-1 block ${msg.sender === 'admin' ? 'text-right pr-1' : 'pl-1'}`}>
@@ -107,7 +111,7 @@ const lastMsgTime = messages && messages.length > 0
     {session.status !== 'closed' ? (
       <div class="px-6 py-4 border-t border-zinc-100">
         <form id="admin-chat-form" class="flex items-center gap-3">
-            <textarea
+          <textarea
             id="admin-chat-input"
             placeholder="Type your reply..."
             autocomplete="off"
@@ -134,9 +138,8 @@ const lastMsgTime = messages && messages.length > 0
 
 <script is:inline define:vars={{
   sessionId: id,
-  supabaseUrl: supabaseConfig.url,
-  supabaseKey: supabaseConfig.anonKey,
-  adminToken: token,
+  supabaseUrl,
+  supabaseKey: supabaseAnonKey,
   sessionStatus: session.status,
   ssrMessageIds,
   lastMsgTime,
@@ -144,18 +147,13 @@ const lastMsgTime = messages && messages.length > 0
   (async () => {
     const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/+esm');
 
-    const supabase = createClient(supabaseUrl, supabaseKey, {
-      global: {
-        headers: { Authorization: 'Bearer ' + adminToken },
-      },
-    });
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
     const messagesDiv = document.getElementById('admin-messages');
     const form = document.getElementById('admin-chat-form');
     const input = document.getElementById('admin-chat-input');
     const closeBtn = document.getElementById('close-session-btn');
 
-    // ━━━ Track ALL rendered message IDs (SSR + dynamic) ━━━
     const renderedIds = new Set(ssrMessageIds);
     let lastCheck = lastMsgTime;
 
@@ -166,8 +164,6 @@ const lastMsgTime = messages && messages.length > 0
 
     function appendMessage(text, sender, timestamp) {
       if (!messagesDiv) return;
-
-      // Remove placeholder if exists
       var ph = document.getElementById('no-messages-placeholder');
       if (ph) ph.remove();
 
@@ -177,9 +173,7 @@ const lastMsgTime = messages && messages.length > 0
       div.innerHTML =
         '<div class="max-w-[70%]">' +
           '<div class="rounded-2xl px-4 py-3 text-sm leading-relaxed ' +
-            (sender === 'admin'
-              ? 'bg-primary text-white rounded-tr-md'
-              : 'bg-zinc-100 text-zinc-700 rounded-tl-md') +
+            (sender === 'admin' ? 'bg-primary text-white rounded-tr-md' : 'bg-zinc-100 text-zinc-700 rounded-tl-md') +
           '">' + text.replace(/\n/g, '<br>') + '</div>' +
           '<span class="text-[10px] text-zinc-400 mt-1 block ' +
             (sender === 'admin' ? 'text-right pr-1' : 'pl-1') +
@@ -189,9 +183,7 @@ const lastMsgTime = messages && messages.length > 0
       scrollToBottom();
     }
 
-    // ━━━ Send Message (optimistic) ━━━
-        if (form && input) {
-      // Shift+Enter for new line, Enter to send
+    if (form && input) {
       input.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
           e.preventDefault();
@@ -199,7 +191,6 @@ const lastMsgTime = messages && messages.length > 0
         }
       });
 
-      // Auto-resize textarea
       input.addEventListener('input', function() {
         input.style.height = 'auto';
         input.style.height = Math.min(input.scrollHeight, 120) + 'px';
@@ -213,26 +204,18 @@ const lastMsgTime = messages && messages.length > 0
         input.style.height = 'auto';
         input.focus();
 
-        // Show immediately
         appendMessage(text, 'admin', new Date().toISOString());
 
-        // Save to DB and get ID
         try {
           var result = await supabase
             .from('chat_messages')
-            .insert({
-              session_id: sessionId,
-              sender: 'admin',
-              message: text,
-            })
+            .insert({ session_id: sessionId, sender: 'admin', message: text })
             .select('id, created_at')
             .single();
 
           if (result.data) {
             renderedIds.add(result.data.id);
-            if (result.data.created_at > lastCheck) {
-              lastCheck = result.data.created_at;
-            }
+            if (result.data.created_at > lastCheck) lastCheck = result.data.created_at;
           }
         } catch (err) {
           console.warn('Send failed:', err);
@@ -240,7 +223,6 @@ const lastMsgTime = messages && messages.length > 0
       });
     }
 
-    // ━━━ Poll for New Visitor Messages (every 2s) ━━━
     if (sessionStatus !== 'closed') {
       setInterval(async function() {
         try {
@@ -255,32 +237,19 @@ const lastMsgTime = messages && messages.length > 0
           if (newMsgs && newMsgs.length > 0) {
             for (var i = 0; i < newMsgs.length; i++) {
               var msg = newMsgs[i];
-
-              // Always advance the timestamp
               lastCheck = msg.created_at;
-
-              // Skip already-rendered messages
               if (renderedIds.has(msg.id)) continue;
               renderedIds.add(msg.id);
 
-              // Only render VISITOR messages
-              // (admin messages are already shown via optimistic UI)
-                            if (msg.sender === 'visitor') {
+              if (msg.sender === 'visitor') {
                 appendMessage(msg.message, msg.sender, msg.created_at);
-
-                // Check if visitor left
                 if (msg.message === '(Visitor left the chat)') {
                   var statusEl = document.getElementById('session-status');
                   if (statusEl) {
                     statusEl.textContent = 'closed';
                     statusEl.className = 'font-medium text-zinc-400';
                   }
-                  // Disable input
                   if (input) input.disabled = true;
-                  if (form) {
-                    var submitBtn = form.querySelector('button[type="submit"]');
-                    if (submitBtn) submitBtn.disabled = true;
-                  }
                 }
               }
             }
@@ -291,22 +260,15 @@ const lastMsgTime = messages && messages.length > 0
       }, 2000);
     }
 
-    // ━━━ Close Session ━━━
     if (closeBtn) {
       closeBtn.addEventListener('click', async function() {
         if (!confirm('Close this chat session?')) return;
-
-        await supabase
-          .from('chat_sessions')
-          .update({ status: 'closed' })
-          .eq('id', sessionId);
-
+        await supabase.from('chat_sessions').update({ status: 'closed' }).eq('id', sessionId);
         await supabase.from('chat_messages').insert({
           session_id: sessionId,
           sender: 'admin',
           message: 'This chat session has been closed. Thank you for contacting us!',
         });
-
         window.location.reload();
       });
     }

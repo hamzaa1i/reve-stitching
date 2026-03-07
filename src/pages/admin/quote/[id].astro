@@ -1,8 +1,6 @@
 ---
-// src/pages/admin/quotes/[id].astro
-
 import AdminLayout from '../../../layouts/AdminLayout.astro';
-import { getSupabase } from '../../../lib/supabase';
+import { createClient } from '@supabase/supabase-js';
 import { getSignedUrl } from '../../../lib/services/storage';
 import WhatsAppContactButton from '../../../components/admin/WhatsAppContactButton.astro';
 import FollowUpStatus from '../../../components/admin/FollowUpStatus.astro';
@@ -15,9 +13,15 @@ import {
 const { id } = Astro.params;
 if (!id) return Astro.redirect('/admin/quotes');
 
-const supabase = getSupabase();
+// Create Supabase client with service role
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  { auth: { autoRefreshToken: false, persistSession: false } }
+);
 
 // ── Handle POST actions (status / notes updates) ──
+
 let flash = '';
 
 if (Astro.request.method === 'POST') {
