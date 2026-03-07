@@ -6,6 +6,7 @@
  */
 import Layout from '../layouts/Layout.astro';
 import FAQ from '../components/FAQ.astro';
+import WhatsAppWidget from '../components/WhatsAppWidget.astro';
 
 const faqs = [
   {
@@ -272,6 +273,13 @@ const teamContacts = [
       </div>
     </div>
   </section>
+
+    <!-- WhatsApp Widget - Contact Page Only -->
+    <WhatsAppWidget
+      bottomOffset={90}
+      showLabel={true}
+      labelText="Chat on WhatsApp"
+    />
 
 </Layout>
 
