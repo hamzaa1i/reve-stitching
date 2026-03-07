@@ -11,6 +11,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@ai-sdk/azure": "^3.0.42",
     "@astrojs/tailwind": "^5.1.4",
     "@astrojs/vercel": "^9.0.4",
     "@supabase/supabase-js": "^2.98.0",
