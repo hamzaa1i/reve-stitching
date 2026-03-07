@@ -61,27 +61,25 @@ console.log(`[AdminLayout] ✅ Admin authenticated: ${admin.sub}`);
             </a>
             <div class="hidden sm:flex items-center gap-1">
               <a
-                href="/admin"
-                class:list={[
-                  'px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                  currentPath === '/admin' || currentPath === '/admin/'
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-zinc-600 hover:bg-zinc-100',
-                ]}
-              >
-                Dashboard
-              </a>
-              <a
-                href="/admin/quotes"
-                class:list={[
-                  'px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                  currentPath.includes('/quote')
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-zinc-600 hover:bg-zinc-100',
-                ]}
-              >
-                Quotes
-              </a>
+  href="/admin"
+  class={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+    currentPath === '/admin' || currentPath === '/admin/'
+      ? 'bg-primary/10 text-primary'
+      : 'text-zinc-600 hover:bg-zinc-100'
+  }`}
+>
+  Dashboard
+</a>
+<a
+  href="/admin/quotes"
+  class={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+    currentPath.includes('/quote')
+      ? 'bg-primary/10 text-primary'
+      : 'text-zinc-600 hover:bg-zinc-100'
+  }`}
+>
+  Quotes
+</a>
             </div>
           </div>
 
