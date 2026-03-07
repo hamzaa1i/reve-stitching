@@ -8,6 +8,7 @@ import { ViewTransitions } from 'astro:transitions';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ChatWidget from '../components/ChatWidget.astro';
+import WhatsAppWidget from '../components/WhatsAppWidget.astro';
 import DarkModeScript from '../components/DarkModeScript.astro';
 import '../styles/global.css';
 
@@ -106,6 +107,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <Footer />
 
     <ChatWidget />
+    
+    <!-- WhatsApp Widget (positioned 90px from bottom) -->
+    <WhatsAppWidget
+      bottomOffset={90}
+      showLabel={true}
+      labelText="Chat on WhatsApp"
+    />
 
     <!--
       ━━━ FIXED: Animation Script ━━━

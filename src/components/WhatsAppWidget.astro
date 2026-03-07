@@ -1,0 +1,326 @@
+---
+// src/components/WhatsAppWidget.astro
+
+interface Props {
+  /** Product name for pre-filled message context */
+  productName?: string;
+  /** Current page URL (auto-detected if not provided) */
+  pageUrl?: string;
+  /** Override business phone number */
+  phoneNumber?: string;
+  /** Widget position offset from bottom (px) — avoids overlap with other widgets */
+  bottomOffset?: number;
+  /** Show/hide label tooltip */
+  showLabel?: boolean;
+  /** Custom label text */
+  labelText?: string;
+}
+
+const {
+  productName,
+  pageUrl,
+  phoneNumber = import.meta.env.PUBLIC_WHATSAPP_NUMBER || '923001234567',
+  bottomOffset = 90,
+  showLabel = true,
+  labelText = 'Chat on WhatsApp',
+} = Astro.props;
+---
+
+<!-- WhatsApp Floating Widget -->
+<div
+  id="wa-widget"
+  class="wa-widget"
+  style={`bottom: ${bottomOffset}px;`}
+  data-phone={phoneNumber}
+  data-product={productName || ''}
+  data-page-url={pageUrl || ''}
+>
+  <!-- Tooltip Label -->
+  {showLabel && (
+    <div class="wa-widget__label" id="wa-label">
+      <span>{labelText}</span>
+      <button
+        class="wa-widget__label-close"
+        id="wa-label-close"
+        aria-label="Close tooltip"
+      >
+        ×
+      </button>
+    </div>
+  )}
+
+  <!-- Main Button -->
+  <a
+    id="wa-button"
+    class="wa-widget__button"
+    href="#"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Chat with us on WhatsApp"
+    title="Chat with us on WhatsApp"
+  >
+    <!-- WhatsApp SVG Icon -->
+    <svg
+      class="wa-widget__icon"
+      viewBox="0 0 32 32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M16.004 2.003C8.27 2.003 2.008 8.263 2.005 15.997c-.001 2.467.644 4.875 1.87 6.997L2 30l7.19-1.887a13.94 13.94 0 006.808 1.736h.006C23.734 29.849 30 23.588 30 15.854 30 12.12 28.548 8.613 25.906 5.97 23.264 3.326 19.757 2.003 16.004 2.003zm0 25.466h-.005a11.58 11.58 0 01-5.905-1.617l-.424-.252-4.393 1.152 1.173-4.288-.276-.44a11.57 11.57 0 01-1.774-6.167c.003-6.418 5.226-11.639 11.648-11.639 3.11.001 6.032 1.213 8.228 3.41a11.57 11.57 0 013.406 8.236c-.003 6.42-5.227 11.642-11.648 11.642l-.03-.037z"
+        fill="#fff"
+      />
+      <path
+        d="M12.105 9.74c-.27-.603-.555-.615-.813-.626-.21-.009-.452-.008-.693-.008s-.633.09-.965.452c-.331.362-1.265 1.235-1.265 3.012s1.295 3.495 1.476 3.736c.18.241 2.497 3.993 6.17 5.44.862.34 1.534.543 2.059.695.865.275 1.653.236 2.275.143.694-.103 2.137-.873 2.438-1.716.301-.844.301-1.567.21-1.717-.09-.15-.33-.241-.692-.422-.362-.18-2.137-1.054-2.468-1.175-.331-.12-.572-.18-.813.181-.241.362-.934 1.175-1.145 1.416-.21.241-.422.271-.783.09-.362-.18-1.527-.562-2.909-1.794-1.076-.958-1.802-2.142-2.013-2.504-.21-.362-.022-.558.159-.738.162-.162.362-.422.543-.633.18-.21.241-.362.362-.603.12-.241.06-.452-.03-.633-.09-.18-.798-1.968-1.115-2.683z"
+        fill="#fff"
+      />
+    </svg>
+
+    <!-- Pulse ring animation -->
+    <span class="wa-widget__pulse"></span>
+  </a>
+</div>
+
+<style>
+  /* ── Container ── */
+  .wa-widget {
+    position: fixed;
+    right: 24px;
+    z-index: 9998; /* Below modals, above content */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ── Tooltip Label ── */
+  .wa-widget__label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    color: #1a1a2e;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 8px;
+    box-shadow:
+      0 4px 14px rgba(0, 0, 0, 0.08),
+      0 1px 3px rgba(0, 0, 0, 0.06);
+    white-space: nowrap;
+    animation: wa-label-in 0.4s 1.5s both cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: auto;
+  }
+
+  .wa-widget__label-close {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0 0 0 4px;
+    line-height: 1;
+    transition: color 0.15s;
+  }
+
+  .wa-widget__label-close:hover {
+    color: #333;
+  }
+
+  @keyframes wa-label-in {
+    from {
+      opacity: 0;
+      transform: translateX(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* ── Main Button ── */
+  .wa-widget__button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #25d366;
+    box-shadow:
+      0 4px 14px rgba(37, 211, 102, 0.35),
+      0 2px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition:
+      transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.2s ease;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .wa-widget__button:hover {
+    transform: scale(1.08);
+    box-shadow:
+      0 6px 20px rgba(37, 211, 102, 0.45),
+      0 3px 8px rgba(0, 0, 0, 0.12);
+  }
+
+  .wa-widget__button:active {
+    transform: scale(0.95);
+  }
+
+  /* ── Icon ── */
+  .wa-widget__icon {
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+  }
+
+  /* ── Pulse Animation ── */
+  .wa-widget__pulse {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: rgba(37, 211, 102, 0.3);
+    animation: wa-pulse 2.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
+    pointer-events: none;
+  }
+
+  @keyframes wa-pulse {
+    0% {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    70% {
+      transform: scale(1.5);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 0;
+    }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .wa-widget {
+      right: 16px;
+    }
+
+    .wa-widget__button {
+      width: 50px;
+      height: 50px;
+    }
+
+    .wa-widget__icon {
+      width: 26px;
+      height: 26px;
+    }
+
+    .wa-widget__label {
+      display: none; /* Save space on mobile */
+    }
+  }
+
+  /* ── Reduce motion ── */
+  @media (prefers-reduced-motion: reduce) {
+    .wa-widget__pulse {
+      animation: none;
+    }
+
+    .wa-widget__label {
+      animation: none;
+      opacity: 1;
+    }
+  }
+
+  /* ── Hidden state (after label dismiss) ── */
+  .wa-widget__label--hidden {
+    display: none !important;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const widget = document.getElementById('wa-widget');
+    const button = document.getElementById('wa-button') as HTMLAnchorElement | null;
+    const label = document.getElementById('wa-label');
+    const labelClose = document.getElementById('wa-label-close');
+
+    if (!widget || !button) return;
+
+    const phone = widget.dataset.phone || '';
+    const product = widget.dataset.product || '';
+    const pageUrl = widget.dataset.pageUrl || window.location.href;
+
+    // ── Build pre-filled message ──
+    function buildMessage(): string {
+      const parts: string[] = [];
+
+      if (product) {
+        parts.push(`Hi, I'm interested in ${product}. Can you help with pricing and MOQ?`);
+      } else {
+        parts.push("Hi, I'm interested in your manufacturing services. Can you provide more information?");
+      }
+
+      parts.push('');
+      parts.push(`Page: ${pageUrl}`);
+
+      return parts.join('\n');
+    }
+
+    // ── Set href ──
+    const message = encodeURIComponent(buildMessage());
+    button.href = `https://wa.me/${phone}?text=${message}`;
+
+    // ── Analytics: track clicks ──
+    button.addEventListener('click', () => {
+      // Google Analytics 4
+      if (typeof gtag === 'function') {
+        (window as any).gtag('event', 'whatsapp_click', {
+          event_category: 'engagement',
+          event_label: product || 'general',
+          value: 1,
+        });
+      }
+
+      // Plausible
+      if (typeof (window as any).plausible === 'function') {
+        (window as any).plausible('WhatsApp Click', {
+          props: { product: product || 'general' },
+        });
+      }
+    });
+
+    // ── Dismiss label ──
+    if (labelClose && label) {
+      labelClose.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        label.classList.add('wa-widget__label--hidden');
+        // Remember dismissal for session
+        try {
+          sessionStorage.setItem('wa-label-dismissed', '1');
+        } catch { /* storage unavailable */ }
+      });
+
+      // Auto-hide if previously dismissed
+      try {
+        if (sessionStorage.getItem('wa-label-dismissed') === '1') {
+          label.classList.add('wa-widget__label--hidden');
+        }
+      } catch { /* ignore */ }
+
+      // Auto-dismiss after 8 seconds
+      setTimeout(() => {
+        if (!label.classList.contains('wa-widget__label--hidden')) {
+          label.classList.add('wa-widget__label--hidden');
+        }
+      }, 8000);
+    }
+
+    // ── Show widget with entrance animation ──
+    widget.style.transform = 'translateY(0)';
+  });
+</script>
