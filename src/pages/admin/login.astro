@@ -1,11 +1,12 @@
 ---
 import '../../styles/global.css';
+import { verifyAdminToken, COOKIE_CONFIG } from '../../lib/auth';
 
 export const prerender = false;
 
-// If already logged in, redirect to dashboard
-const token = Astro.cookies.get('admin-token')?.value;
-if (token) {
+// If already logged in with a valid token, skip to dashboard
+const token = Astro.cookies.get(COOKIE_CONFIG.name)?.value;
+if (token && verifyAdminToken(token)) {
   return Astro.redirect('/admin');
 }
 ---

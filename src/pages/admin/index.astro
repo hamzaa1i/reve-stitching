@@ -354,7 +354,7 @@ function formatResponseTime(hours: number): string {
                   </div>
                   <div class="flex items-center gap-2">
                     <span class={`font-semibold ${color.text}`}>{geo.count}</span>
-                    <span class="text-xs text-zinc-400">({geo.percentage}%)</span>
+                    <span class="text-xs text-zinc-400">({parseFloat(geo.percentage).toFixed(1)}%)</span>
                   </div>
                 </div>
                 <div class="h-2 bg-zinc-100 rounded-full overflow-hidden">

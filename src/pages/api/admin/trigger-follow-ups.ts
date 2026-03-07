@@ -3,44 +3,28 @@
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { checkAndSendFollowUps } from '../../../lib/services/follow-up-emails';
+import { getAdminFromCookies } from '../../../lib/auth';
 
 export const prerender = false;
 
-/**
- * Manual trigger for follow-up emails.
- * Uses query param secret (same as cron) for simplicity.
- */
-export const GET: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ cookies }) => {
   const startTime = Date.now();
 
-  // ── 1. Authenticate via query param (same as cron) ──
-  const url = new URL(request.url);
-  const querySecret = url.searchParams.get('secret');
-  const cronSecret = process.env.CRON_SECRET;
+  // ── 1. Verify admin cookie ──
+  const admin = getAdminFromCookies(cookies);
 
-  if (!cronSecret) {
-    return new Response(
-      JSON.stringify({ success: false, error: 'Server misconfiguration' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+  if (!admin) {
+    return json({ success: false, error: 'Unauthorized' }, 401);
   }
 
-  if (querySecret !== cronSecret) {
-    return new Response(
-      JSON.stringify({ success: false, error: 'Unauthorized' }),
-      { status: 401, headers: { 'Content-Type': 'application/json' } }
-    );
-  }
+  console.log(`[Manual Trigger] Initiated by ${admin.sub}`);
 
   // ── 2. Initialize Supabase ──
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseServiceKey) {
-    return new Response(
-      JSON.stringify({ success: false, error: 'Database not configured' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return json({ success: false, error: 'Database not configured' }, 500);
   }
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey, {
@@ -52,24 +36,17 @@ export const GET: APIRoute = async ({ request }) => {
     const result = await checkAndSendFollowUps(supabase);
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        duration: `${elapsed}s`,
-        ...result,
-      }),
-      {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+    return json({ success: true, duration: `${elapsed}s`, ...result });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     console.error('[Manual Trigger] Error:', message);
-
-    return new Response(
-      JSON.stringify({ success: false, error: message }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return json({ success: false, error: message }, 500);
   }
 };
+
+function json(data: object, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}

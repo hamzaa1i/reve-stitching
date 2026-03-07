@@ -55,7 +55,7 @@ const THRESHOLD_48H = 48;
 const THRESHOLD_7D = 168; // 7 × 24
 
 // Rate limiting: max emails per cron run (Resend free tier = 100/day)
-const MAX_EMAILS_PER_RUN = 20;
+const MAX_EMAILS_PER_RUN = 10; // Stay under 10s execution limit
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
@@ -321,7 +321,7 @@ export async function checkAndSendFollowUps(
       'follow_up_24h_sent.eq.false,admin_reminder_sent.eq.false,reengagement_sent.eq.false'
     )
     .order('created_at', { ascending: true })
-    .limit(50); // Safety limit
+    .limit(10); // Vercel free tier = 10s max, process oldest 10 per run
 
   if (queryError) {
     console.error('[FollowUp] ❌ Database query error:', queryError);
