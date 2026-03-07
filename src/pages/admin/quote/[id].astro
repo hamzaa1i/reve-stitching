@@ -5,6 +5,7 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
 import { getSupabase } from '../../../lib/supabase';
 import { getSignedUrl } from '../../../lib/services/storage';
 import WhatsAppContactButton from '../../../components/admin/WhatsAppContactButton.astro';
+import FollowUpStatus from '../../components/admin/FollowUpStatus.astro';
 import {
   PRODUCT_NAMES, FABRIC_NAMES, CUSTOMIZATION_NAMES,
   DESTINATION_NAMES, STATUS_META,
@@ -197,6 +198,16 @@ const allStatuses: QuoteStatus[] = ['new', 'reviewed', 'quoted', 'converted', 'r
           )}
         </div>
       )}
+      
+<!-- Somewhere in your quote detail page -->
+<FollowUpStatus
+  followUp24hSent={quote.follow_up_24h_sent}
+  adminReminderSent={quote.admin_reminder_sent}
+  reengagementSent={quote.reengagement_sent}
+  lastEmailSentAt={quote.last_email_sent_at}
+  quoteCreatedAt={quote.created_at}
+  quoteStatus={quote.status}
+/>
 
       <!-- Tech Pack Analysis -->
       {q.ai_extracted_data && Object.keys(q.ai_extracted_data).length > 0 && (
