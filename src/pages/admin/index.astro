@@ -38,20 +38,56 @@ const activeChats = sessions?.filter(s => s.status === 'active').length || 0;
   <!-- Stats -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
     <div class="bg-white rounded-xl border border-zinc-200 p-5">
-      <p class="text-sm text-zinc-500">Total Contacts</p>
-      <p class="text-3xl font-bold text-zinc-900 mt-1">{contacts?.length || 0}</p>
+      <div class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm text-zinc-500">Total Contacts</p>
+          <p class="text-2xl font-bold text-zinc-900">{contacts?.length || 0}</p>
+        </div>
+      </div>
     </div>
     <div class="bg-white rounded-xl border border-zinc-200 p-5">
-      <p class="text-sm text-zinc-500">New (Unread)</p>
-      <p class="text-3xl font-bold text-blue-600 mt-1">{newContacts}</p>
+      <div class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm text-zinc-500">New (Unread)</p>
+          <p class="text-2xl font-bold text-blue-600">{newContacts}</p>
+        </div>
+      </div>
     </div>
     <div class="bg-white rounded-xl border border-zinc-200 p-5">
-      <p class="text-sm text-zinc-500">Waiting Chats</p>
-      <p class="text-3xl font-bold text-amber-600 mt-1">{waitingChats}</p>
+      <div class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-50 text-yellow-600">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm text-zinc-500">Waiting Chats</p>
+          <p class="text-2xl font-bold text-amber-600">{waitingChats}</p>
+        </div>
+      </div>
     </div>
     <div class="bg-white rounded-xl border border-zinc-200 p-5">
-      <p class="text-sm text-zinc-500">Active Chats</p>
-      <p class="text-3xl font-bold text-green-600 mt-1">{activeChats}</p>
+      <div class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-green-50 text-green-600">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm text-zinc-500">Active Chats</p>
+          <p class="text-2xl font-bold text-green-600">{activeChats}</p>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -59,7 +95,12 @@ const activeChats = sessions?.filter(s => s.status === 'active').length || 0;
 
     <!-- Chat Sessions -->
     <div>
-      <h2 class="text-lg font-semibold text-zinc-900 mb-4">💬 Live Chat Sessions</h2>
+      <h2 class="flex items-center gap-2 text-lg font-semibold text-zinc-900 mb-4">
+        <svg class="h-5 w-5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+        Live Chat Sessions
+      </h2>
       <div class="space-y-3">
         {(!sessions || sessions.length === 0) && (
           <div class="bg-white rounded-xl border border-zinc-200 p-6 text-center text-zinc-400 text-sm">
@@ -99,7 +140,12 @@ const activeChats = sessions?.filter(s => s.status === 'active').length || 0;
 
     <!-- Contact Submissions -->
     <div>
-      <h2 class="text-lg font-semibold text-zinc-900 mb-4">📧 Contact Submissions</h2>
+      <h2 class="flex items-center gap-2 text-lg font-semibold text-zinc-900 mb-4">
+        <svg class="h-5 w-5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+        Contact Submissions
+      </h2>
       <div class="space-y-3">
         {(!contacts || contacts.length === 0) && (
           <div class="bg-white rounded-xl border border-zinc-200 p-6 text-center text-zinc-400 text-sm">
@@ -131,8 +177,11 @@ const activeChats = sessions?.filter(s => s.status === 'active').length || 0;
             {contact.status === 'new' && (
               <button
                 data-contact-id={contact.id}
-                class="mark-read-btn mt-3 px-3 py-1.5 text-xs font-medium text-primary border border-primary/30 rounded-lg hover:bg-primary hover:text-white transition-colors"
+                class="mark-read-btn mt-3 flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-primary border border-primary/30 rounded-lg hover:bg-primary hover:text-white transition-colors"
               >
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
                 Mark as Read
               </button>
             )}
@@ -153,7 +202,7 @@ const activeChats = sessions?.filter(s => s.status === 'active').length || 0;
           body: JSON.stringify({ id, status: 'read' }),
         });
         if (res.ok) {
-          btn.textContent = '✓ Read';
+          btn.innerHTML = '<svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg> Read';
           btn.disabled = true;
           btn.classList.remove('text-primary', 'border-primary/30', 'hover:bg-primary', 'hover:text-white');
           btn.classList.add('text-zinc-400', 'border-zinc-200');
