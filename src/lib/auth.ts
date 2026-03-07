@@ -74,8 +74,10 @@ export function verifyAdminToken(token: string): AdminPayload | null {
 
 // ── Verify Login Credentials ───────────────────────────────
 export function verifyCredentials(email: string, password: string): boolean {
-  const adminEmail = process.env.ADMIN_EMAIL;
-  const adminPassword = process.env.ADMIN_PASSWORD;
+    const adminEmail = process.env.ADMIN_EMAIL 
+    || (typeof import.meta !== 'undefined' ? (import.meta as any).env?.ADMIN_EMAIL : undefined);
+  const adminPassword = process.env.ADMIN_PASSWORD 
+    || (typeof import.meta !== 'undefined' ? (import.meta as any).env?.ADMIN_PASSWORD : undefined);
 
   if (!adminEmail || !adminPassword) {
     console.error('[Auth] ❌ ADMIN_EMAIL or ADMIN_PASSWORD not set');
@@ -119,7 +121,9 @@ export function getAdminFromCookies(cookies: any): AdminPayload | null {
 
 // ── Private ────────────────────────────────────────────────
 function getSecret(): string {
-  const secret = process.env.ADMIN_JWT_SECRET;
-  if (!secret) throw new Error('ADMIN_JWT_SECRET not configured');
-  return secret;
-}
+    // Try both — process.env works in API routes, import.meta.env works in pages
+    const secret = process.env.ADMIN_JWT_SECRET 
+      || (typeof import.meta !== 'undefined' ? (import.meta as any).env?.ADMIN_JWT_SECRET : undefined);
+    if (!secret) throw new Error('ADMIN_JWT_SECRET not configured');
+    return secret;
+  }
