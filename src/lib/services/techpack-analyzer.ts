@@ -67,39 +67,50 @@ export async function analyzeTechPack(
     ];
 
     // Add tech pack if available
-    if (techPackBase64) {
-      messages[0].content.push({
-        type: 'image',
-        image: techPackBase64,
-      });
-    }
-
-    // Add reference images (limit to first 3 to avoid token overload)
-    if (referenceImagesBase64 && referenceImagesBase64.length > 0) {
-      const imagesToAnalyze = referenceImagesBase64.slice(0, 3);
-      imagesToAnalyze.forEach((img) => {
+     if (techPackBase64) {
+        // Detect MIME type from Base64 header or default to JPEG
+        const mimeType = detectMimeType(techPackBase64);
+        const cleanBase64 = techPackBase64.replace(/^data:[^;]+;base64,/, '');
+        
         messages[0].content.push({
           type: 'image',
-          image: img,
+          image: `data:${mimeType};base64,${cleanBase64}`,
         });
+      }
+  
+      // Add reference images (limit to first 3)
+      if (referenceImagesBase64 && referenceImagesBase64.length > 0) {
+        const imagesToAnalyze = referenceImagesBase64.slice(0, 3);
+        imagesToAnalyze.forEach((img) => {
+          const mimeType = detectMimeType(img);
+          const cleanBase64 = img.replace(/^data:[^;]+;base64,/, '');
+          
+          messages[0].content.push({
+            type: 'image',
+            image: `data:${mimeType};base64,${cleanBase64}`,
+          });
+        });
+      }
+  
+      console.log('[TechPackAnalyzer] Sending', messages[0].content.length - 1, 'images to AI...');
+  
+      const result = await generateText({
+        model: azure('gpt-4o'),
+        messages,
+        temperature: 0.3,
+        maxTokens: 2000,
       });
-    }
-
-    const result = await generateText({
-      model: azure('gpt-4o'),
-      messages,
-      temperature: 0.3,
-      maxTokens: 2000,
-    });
 
     const analysis = parseAnalysisResponse(result.text);
     console.log('[TechPackAnalyzer] Confidence:', analysis.confidence, '% | Extracted:', Object.keys(analysis.extracted_specs).length, 'fields');
     
     return analysis;
 
-  } catch (error) {
-    console.error('[TechPackAnalyzer] Failed:', error);
+} catch (error: any) {
+    console.error('[TechPackAnalyzer] Failed:', error?.message || error);
+    console.error('[TechPackAnalyzer] Stack:', error?.stack || 'no stack');
     return {
+
       extracted_specs: {},
       missing_fields: ['AI analysis unavailable'],
       action_items: [],
@@ -199,3 +210,23 @@ function parseAnalysisResponse(text: string): TechPackAnalysis {
     };
   }
 }
+
+function detectMimeType(base64: string): string {
+    // Check if it already has a data URI prefix
+    if (base64.startsWith('data:')) {
+      const match = base64.match(/^data:([^;]+);/);
+      if (match) return match[1];
+    }
+  
+    // Detect from Base64 magic bytes
+    const header = base64.substring(0, 20).toUpperCase();
+    
+    if (header.startsWith('/9J/') || header.startsWith('/9J')) return 'image/jpeg';
+    if (header.startsWith('IVBOR')) return 'image/png';
+    if (header.startsWith('AAAAF') || header.startsWith('AAABA')) return 'video/mp4';
+    if (header.startsWith('JVBER')) return 'application/pdf';
+    if (header.startsWith('UKLT')) return 'image/webp';
+    
+    // Default to JPEG (most common for garment photos)
+    return 'image/jpeg';
+  }
