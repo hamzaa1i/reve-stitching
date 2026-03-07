@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import StatsBar from '../components/StatsBar.astro';
 import BentoGrid from '../components/BentoGrid.astro';
 import ProcessSteps from '../components/ProcessSteps.astro';
+import PriceCalculator from '../components/PriceCalculator.astro';
 ---
 
 <Layout
@@ -100,6 +101,82 @@ import ProcessSteps from '../components/ProcessSteps.astro';
   <StatsBar />
   <BentoGrid />
   <ProcessSteps />
+
+  <!-- ━━━━━━ PRICE CALCULATOR SECTION ━━━━━━ -->
+  <section
+    class="py-24 lg:py-32 bg-surface"
+    aria-labelledby="calculator-heading"
+    id="pricing"
+  >
+    <div class="container-main section-padding">
+      <!-- Section Header -->
+      <div class="text-center mb-12">
+        <span class="section-label justify-center" data-animate="fade-up">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+          Instant Estimate
+        </span>
+        <h2
+          id="calculator-heading"
+          class="heading-headline mb-5"
+          data-animate="fade-up"
+          data-delay="0.1"
+        >
+          Get <span class="text-gradient">Quick Pricing</span>
+        </h2>
+        <p
+          class="text-body max-w-xl mx-auto"
+          data-animate="fade-up"
+          data-delay="0.2"
+        >
+          See rough estimates instantly. Adjust product, quantity, and
+          customizations — then request a detailed quote when you're ready.
+        </p>
+      </div>
+
+      <!-- Calculator Widget -->
+      <div
+        class="max-w-2xl mx-auto"
+        data-animate="fade-up"
+        data-delay="0.3"
+      >
+        <PriceCalculator />
+      </div>
+
+      <!-- Trust Signals -->
+      <div
+        class="flex flex-wrap justify-center gap-x-8 gap-y-3 mt-10 text-xs text-zinc-400"
+        data-animate="fade-up"
+        data-delay="0.4"
+      >
+        <span class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.403 12.652a3 3 0 0 0 0-5.304 3 3 0 0 0-3.75-3.751 3 3 0 0 0-5.305 0 3 3 0 0 0-3.751 3.75 3 3 0 0 0 0 5.305 3 3 0 0 0 3.75 3.751 3 3 0 0 0 5.305 0 3 3 0 0 0 3.751-3.75Zm-2.546-4.46a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
+          </svg>
+          FOB Pricing
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.403 12.652a3 3 0 0 0 0-5.304 3 3 0 0 0-3.75-3.751 3 3 0 0 0-5.305 0 3 3 0 0 0-3.751 3.75 3 3 0 0 0 0 5.305 3 3 0 0 0 3.75 3.751 3 3 0 0 0 5.305 0 3 3 0 0 0 3.751-3.75Zm-2.546-4.46a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
+          </svg>
+          MOQ from 100 pcs
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.403 12.652a3 3 0 0 0 0-5.304 3 3 0 0 0-3.75-3.751 3 3 0 0 0-5.305 0 3 3 0 0 0-3.751 3.75 3 3 0 0 0 0 5.305 3 3 0 0 0 3.75 3.751 3 3 0 0 0 5.305 0 3 3 0 0 0 3.751-3.75Zm-2.546-4.46a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
+          </svg>
+          No hidden costs
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.403 12.652a3 3 0 0 0 0-5.304 3 3 0 0 0-3.75-3.751 3 3 0 0 0-5.305 0 3 3 0 0 0-3.751 3.75 3 3 0 0 0 0 5.305 3 3 0 0 0 3.75 3.751 3 3 0 0 0 5.305 0 3 3 0 0 0 3.751-3.75Zm-2.546-4.46a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
+          </svg>
+          25–50 day lead time
+        </span>
+      </div>
+    </div>
+  </section>
 
   <!-- ━━━━━━ CTA SECTION ━━━━━━ -->
   <section class="py-24 lg:py-32 relative overflow-hidden" aria-labelledby="cta-heading">

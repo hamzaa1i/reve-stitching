@@ -6,6 +6,7 @@
  */
 import Layout from '../layouts/Layout.astro';
 import ProductCard from '../components/ProductCard.astro';
+import PriceCalculator from '../components/PriceCalculator.astro';
 
 const products = [
   {
@@ -102,6 +103,40 @@ const fabrics = [
       <p class="text-lg text-green-100/70 max-w-2xl mx-auto leading-relaxed" data-animate="fade-up" data-delay="0.2">
         From classic cotton tees to specialized performance wear, we manufacture a diverse range of knitted garments with precision and care.
       </p>
+    </div>
+  </section>
+
+  <!-- ━━━━━━ PRICE CALCULATOR ━━━━━━ -->
+  <section
+    class="py-20 bg-white border-b border-zinc-100"
+    aria-label="Price calculator"
+    id="calculate"
+  >
+    <div class="container-main section-padding">
+      <div class="max-w-3xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-10">
+          <h2
+            class="text-2xl font-bold text-zinc-900 mb-3"
+            data-animate="fade-up"
+          >
+            Calculate Your Order Cost
+          </h2>
+          <p
+            class="text-sm text-zinc-600 max-w-md mx-auto"
+            data-animate="fade-up"
+            data-delay="0.1"
+          >
+            Select a product below, adjust quantity and options to see instant
+            pricing estimates for your bulk order.
+          </p>
+        </div>
+
+        <!-- Calculator -->
+        <div data-animate="fade-up" data-delay="0.2">
+          <PriceCalculator />
+        </div>
+      </div>
     </div>
   </section>
 
