@@ -2,6 +2,7 @@
 import AdminLayout from '../../layouts/AdminLayout.astro';
 import { getAuthClient } from '../../lib/supabase';
 import { getQuoteAnalytics } from '../../lib/analytics';
+import ManualTriggerButton from '../../components/admin/ManualTriggerButton.astro';
 
 export const prerender = false;
 
@@ -177,6 +178,22 @@ function formatResponseTime(hours: number): string {
     </div>
   </div>
 </div>
+
+<!-- Manual Follow-Up Trigger -->
+<section class="dashboard-section">
+  <h2 class="section-title">Email Follow-Ups</h2>
+  <div class="card">
+    <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-2">
+      Manually trigger the automated follow-up email system. This will check all quotes and send:
+    </p>
+    <ul class="text-sm text-zinc-600 dark:text-zinc-400 list-disc list-inside mb-4 space-y-1">
+      <li>24-hour buyer follow-ups (status = 'new', >24h old)</li>
+      <li>48-hour admin reminders (status = 'new', >48h old)</li>
+      <li>7-day re-engagement emails (status = 'new', >7d old)</li>
+    </ul>
+    <ManualTriggerButton />
+  </div>
+</section>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
      CHARTS SECTION
