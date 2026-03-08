@@ -1,31 +1,45 @@
 // src/lib/auth.ts
-// Centralized authentication — no external dependencies
+// Centralized admin authentication — zero external dependencies
 
-import { createHmac, timingSafeEqual } from 'node:crypto';
+import { createHmac } from 'crypto';
 
-// ── Configuration ──────────────────────────────────────────
+// ── Configuration ──
 const COOKIE_NAME = 'admin-token';
 const TOKEN_EXPIRY_SECONDS = 7 * 24 * 60 * 60; // 7 days
 
 export interface AdminPayload {
-  sub: string;  // admin email
-  iat: number;  // issued at (unix seconds)
-  exp: number;  // expires at (unix seconds)
+  sub: string;
+  iat: number;
+  exp: number;
 }
 
-// ── Cookie Config (reuse everywhere) ───────────────────────
 export const COOKIE_CONFIG = {
   name: COOKIE_NAME,
   options: {
-    httpOnly: true,       // JS cannot read it (XSS protection)
-    secure: true,         // HTTPS only
-    sameSite: 'lax' as const,  // CSRF protection
-    path: '/',            // Available on all routes
+    httpOnly: true,
+    secure: true,
+    sameSite: 'lax' as const,
+    path: '/',
     maxAge: TOKEN_EXPIRY_SECONDS,
   },
 };
 
-// ── Create Token ───────────────────────────────────────────
+// ── Timing-safe comparison ──
+function safeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let result = 0;
+  for (let i = 0; i < a.length; i++) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return result === 0;
+}
+
+// ── HMAC helper ──
+function hmac(secret: string, data: string): string {
+  return createHmac('sha256', secret).update(data).digest('base64url');
+}
+
+// ── Create Token ──
 export function createAdminToken(email: string): string {
   const secret = getSecret();
 
@@ -36,94 +50,87 @@ export function createAdminToken(email: string): string {
   };
 
   const data = Buffer.from(JSON.stringify(payload)).toString('base64url');
-  const signature = createHmac('sha256', secret).update(data).digest('base64url');
+  const signature = hmac(secret, data);
 
   return `${data}.${signature}`;
 }
 
-// ── Verify Token ───────────────────────────────────────────
+// ── Verify Token ──
 export function verifyAdminToken(token: string): AdminPayload | null {
   try {
     const secret = getSecret();
-    const parts = token.split('.');
-    if (parts.length !== 2) return null;
-
-    const [data, signature] = parts;
-    if (!data || !signature) return null;
-
-    // Verify signature (timing-safe comparison)
-    const expectedSig = createHmac('sha256', secret).update(data).digest('base64url');
-
-    if (signature.length !== expectedSig.length) return null;
-    if (!timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSig))) {
+    const dotIndex = token.indexOf('.');
+    if (dotIndex === -1) {
+      console.warn('[Auth] Token has no dot separator');
       return null;
     }
 
-    // Decode and check expiry
+    const data = token.substring(0, dotIndex);
+    const signature = token.substring(dotIndex + 1);
+
+    if (!data || !signature) {
+      console.warn('[Auth] Token missing data or signature');
+      return null;
+    }
+
+    const expectedSig = hmac(secret, data);
+
+    if (!safeEqual(signature, expectedSig)) {
+      console.warn('[Auth] Token signature mismatch');
+      return null;
+    }
+
     const payload: AdminPayload = JSON.parse(
       Buffer.from(data, 'base64url').toString()
     );
 
-    if (payload.exp < Math.floor(Date.now() / 1000)) return null;
+    if (payload.exp < Math.floor(Date.now() / 1000)) {
+      console.warn('[Auth] Token expired');
+      return null;
+    }
 
     return payload;
-  } catch {
+  } catch (err) {
+    console.error('[Auth] Token verification error:', err);
     return null;
   }
 }
 
-// ── Verify Login Credentials ───────────────────────────────
+// ── Verify Login Credentials ──
 export function verifyCredentials(email: string, password: string): boolean {
-    const adminEmail = process.env.ADMIN_EMAIL 
-    || (typeof import.meta !== 'undefined' ? (import.meta as any).env?.ADMIN_EMAIL : undefined);
-  const adminPassword = process.env.ADMIN_PASSWORD 
-    || (typeof import.meta !== 'undefined' ? (import.meta as any).env?.ADMIN_PASSWORD : undefined);
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
 
   if (!adminEmail || !adminPassword) {
-    console.error('[Auth] ❌ ADMIN_EMAIL or ADMIN_PASSWORD not set');
+    console.error('[Auth] ADMIN_EMAIL or ADMIN_PASSWORD not set in env vars');
     return false;
   }
 
-  // Constant-time comparison (prevents timing attacks)
-  const emailHash = createHmac('sha256', 'reve-email')
-    .update(email.toLowerCase().trim())
-    .digest('hex');
-  const storedEmailHash = createHmac('sha256', 'reve-email')
-    .update(adminEmail.toLowerCase().trim())
-    .digest('hex');
-
-  const pwHash = createHmac('sha256', 'reve-pw')
-    .update(password)
-    .digest('hex');
-  const storedPwHash = createHmac('sha256', 'reve-pw')
-    .update(adminPassword)
-    .digest('hex');
-
-  const emailMatch = timingSafeEqual(
-    Buffer.from(emailHash),
-    Buffer.from(storedEmailHash)
+  const emailMatch = safeEqual(
+    hmac('reve-email', email.toLowerCase().trim()),
+    hmac('reve-email', adminEmail.toLowerCase().trim())
   );
-  const pwMatch = timingSafeEqual(
-    Buffer.from(pwHash),
-    Buffer.from(storedPwHash)
+
+  const pwMatch = safeEqual(
+    hmac('reve-pw', password),
+    hmac('reve-pw', adminPassword)
   );
 
   return emailMatch && pwMatch;
 }
 
-// ── Helper for API routes ──────────────────────────────────
-// Use this in any /api/admin/* endpoint to check auth
+// ── Helper for API routes ──
 export function getAdminFromCookies(cookies: any): AdminPayload | null {
   const token = cookies.get(COOKIE_CONFIG.name)?.value;
   if (!token) return null;
   return verifyAdminToken(token);
 }
 
-// ── Private ────────────────────────────────────────────────
+// ── Private ──
 function getSecret(): string {
-    // Try both — process.env works in API routes, import.meta.env works in pages
-    const secret = process.env.ADMIN_JWT_SECRET 
-      || (typeof import.meta !== 'undefined' ? (import.meta as any).env?.ADMIN_JWT_SECRET : undefined);
-    if (!secret) throw new Error('ADMIN_JWT_SECRET not configured');
-    return secret;
+  const secret = process.env.ADMIN_JWT_SECRET;
+  if (!secret) {
+    throw new Error('ADMIN_JWT_SECRET not configured in environment variables');
   }
+  return secret;
+}

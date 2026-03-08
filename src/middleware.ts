@@ -1,27 +1,38 @@
 import { defineMiddleware } from 'astro:middleware';
-import { verifyAdminToken, COOKIE_CONFIG } from './lib/auth';
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const path = context.url.pathname;
 
-  // Only protect /admin routes (except login and logout)
-  if (path.startsWith('/admin') && !path.startsWith('/admin/login')) {
-    const token = context.cookies.get(COOKIE_CONFIG.name)?.value;
+  // Only protect /admin routes (except /admin/login)
+  const isAdminRoute = path.startsWith('/admin') || path.startsWith('/admin/');
+  const isLoginPage = path === '/admin/login' || path === '/admin/login/';
 
-    if (!token) {
+  if (isAdminRoute && !isLoginPage) {
+    try {
+      // Dynamic import to avoid top-level import issues
+      const { verifyAdminToken, COOKIE_CONFIG } = await import('./lib/auth');
+
+      const token = context.cookies.get(COOKIE_CONFIG.name)?.value;
+
+      if (!token) {
+        console.log('[Middleware] No admin token cookie found, redirecting to login');
+        return context.redirect('/admin/login');
+      }
+
+      const admin = verifyAdminToken(token);
+
+      if (!admin) {
+        console.log('[Middleware] Token invalid or expired, clearing and redirecting');
+        context.cookies.delete(COOKIE_CONFIG.name, { path: '/' });
+        return context.redirect('/admin/login');
+      }
+
+      // Attach admin info for pages to use
+      context.locals.admin = admin;
+    } catch (err) {
+      console.error('[Middleware] Auth error:', err);
       return context.redirect('/admin/login');
     }
-
-    // Verify token using new auth system
-    const admin = verifyAdminToken(token);
-
-    if (!admin) {
-      context.cookies.delete(COOKIE_CONFIG.name, { path: '/' });
-      return context.redirect('/admin/login');
-    }
-
-    // Attach admin to locals for use in pages
-    context.locals.admin = admin;
   }
 
   return next();

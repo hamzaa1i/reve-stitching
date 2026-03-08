@@ -8,21 +8,14 @@ export const prerender = false;
 const VALID_STATUSES: QuoteStatus[] = ['new', 'reviewed', 'quoted', 'converted', 'rejected'];
 
 export const PATCH: APIRoute = async ({ params, request, cookies }) => {
-  // Auth check
   const admin = getAdminFromCookies(cookies);
   if (!admin) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), { 
-      status: 401,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return json({ error: 'Unauthorized' }, 401);
   }
 
   const { id } = params;
   if (!id) {
-    return new Response(JSON.stringify({ error: 'Missing quote ID' }), { 
-      status: 400,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return json({ error: 'Missing quote ID' }, 400);
   }
 
   try {
@@ -31,27 +24,16 @@ export const PATCH: APIRoute = async ({ params, request, cookies }) => {
 
     if (body.status) {
       if (!VALID_STATUSES.includes(body.status)) {
-        return new Response(
-          JSON.stringify({ error: `Invalid status. Must be one of: ${VALID_STATUSES.join(', ')}` }),
-          { status: 422, headers: { 'Content-Type': 'application/json' } }
-        );
+        return json({ error: `Invalid status. Must be one of: ${VALID_STATUSES.join(', ')}` }, 422);
       }
       updates.status = body.status;
     }
 
-    if (typeof body.admin_notes === 'string') {
-      updates.admin_notes = body.admin_notes;
-    }
-
-    if (typeof body.assigned_to === 'string') {
-      updates.assigned_to = body.assigned_to;
-    }
+    if (typeof body.admin_notes === 'string') updates.admin_notes = body.admin_notes;
+    if (typeof body.assigned_to === 'string') updates.assigned_to = body.assigned_to;
 
     if (Object.keys(updates).length === 0) {
-      return new Response(JSON.stringify({ error: 'No fields to update' }), { 
-        status: 422,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return json({ error: 'No fields to update' }, 422);
     }
 
     const supabase = createClient(
@@ -69,22 +51,18 @@ export const PATCH: APIRoute = async ({ params, request, cookies }) => {
 
     if (error) {
       console.error('[API] Status update failed:', error);
-      return new Response(JSON.stringify({ error: 'Update failed' }), { 
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return json({ error: 'Update failed' }, 500);
     }
 
-    return new Response(JSON.stringify({ success: true, data }), { 
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
-
+    return json({ success: true, data });
   } catch (err) {
     console.error('[API] Status update exception:', err);
-    return new Response(JSON.stringify({ error: 'Server error' }), { 
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return json({ error: 'Server error' }, 500);
   }
 };
+
+function json(data: object, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status, headers: { 'Content-Type': 'application/json' },
+  });
+}
