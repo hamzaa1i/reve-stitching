@@ -1,3 +1,4 @@
+---
 import AdminLayout from '../../layouts/AdminLayout.astro';
 import { createClient } from '@supabase/supabase-js';
 import ManualTriggerButton from '../../components/admin/ManualTriggerButton.astro';
@@ -29,17 +30,6 @@ const [statsResult, chatsResult, contactsResult] = await Promise.all([
 const stats = statsResult.data || EMPTY_STATS;
 const chats = chatsResult.data || [];
 const contactList = contactsResult.data || [];
-  supabase
-    .from('chat_sessions')
-    .select('id, visitor_name, visitor_email, status, created_at')
-    .order('created_at', { ascending: false })
-    .limit(5),
-  supabase
-    .from('contact_submissions')
-    .select('id, name, email, company, message, status, created_at')
-    .order('created_at', { ascending: false })
-    .limit(10),
-]);
 
 // ── Use SQL-powered stats ──
 const totalQuotes = stats.total_quotes;
@@ -50,13 +40,11 @@ const convertedCount = stats.converted;
 const rejectedCount = stats.rejected;
 const activeQuotes = newCount + reviewedCount + quotedCount;
 const conversionRate = stats.conversion_rate.toFixed(1);
-const thisMonth = stats.last_30_days; // Approximate (you can add exact "this month" to SQL if needed)
+const thisMonth = stats.last_30_days;
 
-// Pipeline value calculation (keep this JS logic for now - can add to SQL later)
-let pipelineValue = 0;
-// We don't have individual quotes anymore, so remove this or fetch separately if needed
-
-const avgResponseHours = '< 1 hr'; // Static for now
+// Pipeline value (static for now - can add to SQL later)
+const pipelineValue = 0;
+const avgResponseHours = '< 1 hr';
 
 const funnelStages = [
   { label: 'New', count: newCount, value: 0, color: 'bg-blue-500' },
@@ -66,11 +54,9 @@ const funnelStages = [
   { label: 'Lost', count: rejectedCount, value: 0, color: 'bg-red-500' },
 ];
 
-// Value calculation removed (we don't fetch individual quotes anymore)
-
 const maxFunnelCount = Math.max(...funnelStages.map(s => s.count), 1);
 
-// Use SQL monthly trend (last 12 months, but we'll display last 6)
+// Use SQL monthly trend (last 6 of 12 months)
 const months = stats.monthly_trend.slice(-6).map(m => ({
   label: new Date(m.month + '-01').toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
   count: m.count
@@ -81,14 +67,13 @@ const maxMonthCount = Math.max(...months.map(m => m.count), 1);
 const topProducts = stats.top_products.slice(0, 5).map(p => ({
   name: p.product.charAt(0).toUpperCase() + p.product.slice(1),
   count: p.count,
-  totalQty: 0, // We don't have this from SQL yet
-  avg: 0 // We don't have this from SQL yet
+  totalQty: 0,
+  avg: 0
 }));
 const maxProductCount = Math.max(...topProducts.map(p => p.count), 1);
 
-// Keep geo distribution (we'll add this to SQL later if needed)
+// Geo distribution (will add to SQL later)
 const geoData: { name: string; count: number; percentage: string }[] = [];
-// For now, leave empty or add a note
 
 const waitingChats = chats.filter(c => c.status === 'waiting').length;
 const activeChats = chats.filter(c => c.status === 'active').length;
@@ -198,7 +183,6 @@ function formatDate(iso: string): string {
               <span class="font-medium text-zinc-700">{product.name}</span>
               <div class="flex items-center gap-2">
                 <span class="font-bold text-zinc-900">{product.count}</span>
-                <span class="text-[10px] text-zinc-400">avg: {product.avg.toLocaleString(undefined, { maximumFractionDigits: 0 })} pcs</span>
               </div>
             </div>
             <div class="h-2 rounded-full bg-zinc-100 overflow-hidden">
@@ -222,7 +206,7 @@ function formatDate(iso: string): string {
             </div>
           </div>
         ))}
-        {geoData.length === 0 && <p class="text-sm text-zinc-400">No data yet.</p>}
+        {geoData.length === 0 && <p class="text-sm text-zinc-400">Coming soon.</p>}
       </div>
     </div>
   </div>
