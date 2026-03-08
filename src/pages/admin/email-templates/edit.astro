@@ -1,7 +1,10 @@
 ---
 import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { getTemplateSettings } from '../../../lib/email-templates/template-storage';
 
 export const prerender = false;
+
+const settings = await getTemplateSettings();
 ---
 
 <AdminLayout title="Edit Email Templates">
@@ -13,64 +16,74 @@ export const prerender = false;
       </a>
       <h1 class="text-2xl font-bold text-zinc-900">Edit Email Templates</h1>
     </div>
-    <p class="text-sm text-zinc-500">Customize the branding and content of your automated emails.</p>
+    <p class="text-sm text-zinc-500">Customize the branding and content of your automated emails. Changes apply to all future emails.</p>
   </div>
 
   <div class="grid gap-6 lg:grid-cols-2">
 
-    <!-- Editor -->
+    <!-- Editor Form -->
     <div class="space-y-6">
+      
+      <!-- Brand Settings -->
       <div class="rounded-xl bg-white p-6 shadow ring-1 ring-zinc-200">
         <h3 class="text-sm font-bold text-zinc-900 mb-4">Brand Settings</h3>
         <div class="space-y-4">
           <div>
-            <label class="block text-xs font-medium text-zinc-600 mb-1">Company Name</label>
-            <input id="company-name" type="text" value="Reve Stitching" class="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
+            <label for="company_name" class="block text-xs font-medium text-zinc-600 mb-1">Company Name</label>
+            <input id="company_name" type="text" value={settings.company_name} class="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
           </div>
           <div>
-            <label class="block text-xs font-medium text-zinc-600 mb-1">Tagline</label>
-            <input id="tagline" type="text" value="Premium Garment Manufacturing" class="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
+            <label for="tagline" class="block text-xs font-medium text-zinc-600 mb-1">Tagline</label>
+            <input id="tagline" type="text" value={settings.tagline} class="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
           </div>
           <div>
-            <label class="block text-xs font-medium text-zinc-600 mb-1">Brand Color</label>
+            <label for="logo_text" class="block text-xs font-medium text-zinc-600 mb-1">Logo Text (shown in email header)</label>
+            <input id="logo_text" type="text" value={settings.logo_text} maxlength="3" class="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
+            <p class="text-[10px] text-zinc-400 mt-1">1-3 characters (e.g., "R" or "RS")</p>
+          </div>
+          <div>
+            <label for="brand_color" class="block text-xs font-medium text-zinc-600 mb-1">Brand Color</label>
             <div class="flex items-center gap-3">
-              <input id="brand-color" type="color" value="#166534" class="h-10 w-16 rounded border border-zinc-300 cursor-pointer" />
-              <input id="brand-color-hex" type="text" value="#166534" class="flex-1 px-3 py-2 border border-zinc-300 rounded-lg text-sm font-mono focus:border-primary focus:outline-none" />
+              <input id="brand_color" type="color" value={settings.brand_color} class="h-10 w-16 rounded border border-zinc-300 cursor-pointer" />
+              <input id="brand_color_hex" type="text" value={settings.brand_color} class="flex-1 px-3 py-2 border border-zinc-300 rounded-lg text-sm font-mono focus:border-primary focus:outline-none" />
             </div>
           </div>
-          <div>
-            <label class="block text-xs font-medium text-zinc-600 mb-1">Logo Text (shown in email header)</label>
-            <input id="logo-text" type="text" value="R" class="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-zinc-600 mb-1">Footer Text</label>
-            <textarea id="footer-text" rows="2" class="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20">Reve Stitching (Pvt.) Ltd.
-100% Export-Oriented Knitted Garment Manufacturer
-Faisalabad, Pakistan</textarea>
-          </div>
         </div>
       </div>
 
+      <!-- Contact Settings -->
       <div class="rounded-xl bg-white p-6 shadow ring-1 ring-zinc-200">
-        <h3 class="text-sm font-bold text-zinc-900 mb-4">WhatsApp & Contact</h3>
+        <h3 class="text-sm font-bold text-zinc-900 mb-4">Contact Information</h3>
         <div class="space-y-4">
           <div>
-            <label class="block text-xs font-medium text-zinc-600 mb-1">WhatsApp Number</label>
-            <input id="whatsapp" type="text" value="+92 332 9555786" class="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
+            <label for="whatsapp_number" class="block text-xs font-medium text-zinc-600 mb-1">WhatsApp Number</label>
+            <input id="whatsapp_number" type="text" value={settings.whatsapp_number} class="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
           </div>
           <div>
-            <label class="block text-xs font-medium text-zinc-600 mb-1">Support Email</label>
-            <input id="support-email" type="text" value="info@revestitching.com" class="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
+            <label for="support_email" class="block text-xs font-medium text-zinc-600 mb-1">Support Email</label>
+            <input id="support_email" type="email" value={settings.support_email} class="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
           </div>
           <div>
-            <label class="block text-xs font-medium text-zinc-600 mb-1">Website URL</label>
-            <input id="website" type="text" value="https://revestitching.com" class="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
+            <label for="website_url" class="block text-xs font-medium text-zinc-600 mb-1">Website URL</label>
+            <input id="website_url" type="url" value={settings.website_url} class="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
           </div>
         </div>
       </div>
 
+      <!-- Footer Settings -->
+      <div class="rounded-xl bg-white p-6 shadow ring-1 ring-zinc-200">
+        <h3 class="text-sm font-bold text-zinc-900 mb-4">Email Footer</h3>
+        <div>
+          <label for="footer_text" class="block text-xs font-medium text-zinc-600 mb-1">Footer Text</label>
+          <textarea id="footer_text" rows="4" class="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20">{settings.footer_text}</textarea>
+          <p class="text-[10px] text-zinc-400 mt-1">Each line will be displayed on a separate line in the email</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
       <div class="flex gap-3">
-        <button id="save-btn" class="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-primary-light transition">
+        <button id="save-btn" class="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-primary-light transition flex items-center justify-center gap-2">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
           Save Changes
         </button>
         <button id="reset-btn" class="rounded-lg border border-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition">
@@ -86,34 +99,63 @@ Faisalabad, Pakistan</textarea>
       <div class="sticky top-24">
         <h3 class="text-sm font-bold text-zinc-900 mb-3">Live Preview</h3>
         <div class="rounded-xl bg-white shadow ring-1 ring-zinc-200 overflow-hidden">
-          <div id="preview-container" class="p-8 bg-zinc-100">
-            <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-              <div id="preview-header" style="background: #166534; padding: 32px; text-align: center;">
-                <div style="width: 56px; height: 56px; background: rgba(255,255,255,0.2); border-radius: 12px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;">
-                  <span id="preview-logo" style="color: white; font-size: 24px; font-weight: bold;">R</span>
+          <div id="preview-container" class="p-6 bg-zinc-100">
+            <div id="preview-email" style="max-width: 500px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+              
+              <!-- Header -->
+              <div id="preview-header" style={`background: ${settings.brand_color}; padding: 24px; text-align: center;`}>
+                <div style="width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center;">
+                  <span id="preview-logo" style="color: white; font-size: 20px; font-weight: bold;">{settings.logo_text}</span>
                 </div>
-                <h1 id="preview-company" style="color: white; font-size: 20px; margin: 0;">Reve Stitching</h1>
-                <p id="preview-tagline" style="color: rgba(255,255,255,0.8); font-size: 13px; margin: 4px 0 0;">Premium Garment Manufacturing</p>
+                <h1 id="preview-company" style="margin: 0; color: white; font-size: 18px; font-weight: bold;">{settings.company_name}</h1>
+                <p id="preview-tagline" style="margin: 4px 0 0; color: rgba(255,255,255,0.8); font-size: 12px;">{settings.tagline}</p>
               </div>
-              <div style="padding: 32px;">
-                <p style="color: #374151; font-size: 14px; line-height: 1.6;">
+              
+              <!-- Body -->
+              <div style="padding: 24px;">
+                <p style="margin: 0 0 16px; color: #374151; font-size: 14px; line-height: 1.6;">
                   Hi John,<br><br>
                   Thank you for your interest. Your quote request is being reviewed by our production team.
                 </p>
-                <div style="background: #f9fafb; border-radius: 8px; padding: 16px; margin: 20px 0;">
+                <div style="background: #f9fafb; border-radius: 8px; padding: 16px; margin: 16px 0;">
                   <table style="width: 100%; font-size: 13px; color: #374151;">
-                    <tr><td style="padding: 4px 0; color: #6b7280;">Reference</td><td style="font-weight: 600;">RQ-20260308-DEMO</td></tr>
+                    <tr><td style="padding: 4px 0; color: #6b7280; width: 100px;">Reference</td><td style="font-weight: 600;">RQ-20260308-DEMO</td></tr>
                     <tr><td style="padding: 4px 0; color: #6b7280;">Product</td><td>hoodies</td></tr>
                     <tr><td style="padding: 4px 0; color: #6b7280;">Quantity</td><td>2,500 pcs</td></tr>
                   </table>
                 </div>
+                <div style="text-align: center; margin-top: 20px;">
+                  <a id="preview-button" href="#" style={`display: inline-block; padding: 12px 24px; background: ${settings.brand_color}; color: white; font-size: 14px; font-weight: bold; text-decoration: none; border-radius: 8px;`}>
+                    View Full Quote
+                  </a>
+                </div>
               </div>
-              <div id="preview-footer" style="background: #f9fafb; padding: 24px; text-align: center; font-size: 11px; color: #9ca3af;">
-                <p id="preview-footer-text" style="margin: 0;">Reve Stitching (Pvt.) Ltd.<br>100% Export-Oriented Knitted Garment Manufacturer<br>Faisalabad, Pakistan</p>
+              
+              <!-- Footer Links -->
+              <div style="padding: 0 24px;">
+                <div style="border-top: 1px solid #e4e4e7; padding: 16px 0; text-align: center; font-size: 11px; color: #71717a;">
+                  <a id="preview-wa-link" href="#" style="color: #71717a; text-decoration: none; margin: 0 6px;">WhatsApp</a>
+                  <span style="color: #d4d4d8;">·</span>
+                  <a id="preview-email-link" href="#" style="color: #71717a; text-decoration: none; margin: 0 6px;">Email</a>
+                  <span style="color: #d4d4d8;">·</span>
+                  <a id="preview-web-link" href="#" style="color: #71717a; text-decoration: none; margin: 0 6px;">Website</a>
+                </div>
               </div>
+              
+              <!-- Footer -->
+              <div style="background: #f9fafb; padding: 20px; text-align: center;">
+                <p id="preview-footer" style="margin: 0; font-size: 10px; color: #a1a1aa; line-height: 1.6;">
+                  {settings.footer_text.split('\n').map(line => <>{line}<br /></>)}
+                </p>
+              </div>
+              
             </div>
           </div>
         </div>
+        
+        <p class="text-[10px] text-zinc-400 mt-3 text-center">
+          This preview shows how emails will appear. Actual rendering may vary slightly across email clients.
+        </p>
       </div>
     </div>
   </div>
@@ -121,45 +163,139 @@ Faisalabad, Pakistan</textarea>
 </AdminLayout>
 
 <script is:inline>
-  var colorInput = document.getElementById('brand-color');
-  var colorHex = document.getElementById('brand-color-hex');
-  var companyInput = document.getElementById('company-name');
-  var taglineInput = document.getElementById('tagline');
-  var logoInput = document.getElementById('logo-text');
-  var footerInput = document.getElementById('footer-text');
+  // Get all inputs
+  const inputs = {
+    company_name: document.getElementById('company_name'),
+    tagline: document.getElementById('tagline'),
+    logo_text: document.getElementById('logo_text'),
+    brand_color: document.getElementById('brand_color'),
+    brand_color_hex: document.getElementById('brand_color_hex'),
+    whatsapp_number: document.getElementById('whatsapp_number'),
+    support_email: document.getElementById('support_email'),
+    website_url: document.getElementById('website_url'),
+    footer_text: document.getElementById('footer_text'),
+  };
+
+  // Preview elements
+  const preview = {
+    header: document.getElementById('preview-header'),
+    logo: document.getElementById('preview-logo'),
+    company: document.getElementById('preview-company'),
+    tagline: document.getElementById('preview-tagline'),
+    button: document.getElementById('preview-button'),
+    footer: document.getElementById('preview-footer'),
+  };
 
   function updatePreview() {
-    var color = colorInput.value;
-    document.getElementById('preview-header').style.background = color;
-    document.getElementById('preview-company').textContent = companyInput.value;
-    document.getElementById('preview-tagline').textContent = taglineInput.value;
-    document.getElementById('preview-logo').textContent = logoInput.value;
-    document.getElementById('preview-footer-text').innerHTML = footerInput.value.replace(/\n/g, '<br>');
+    const color = inputs.brand_color.value;
+    
+    // Update header background
+    preview.header.style.background = color;
+    
+    // Update button
+    preview.button.style.background = color;
+    
+    // Update text
+    preview.logo.textContent = inputs.logo_text.value || 'R';
+    preview.company.textContent = inputs.company_name.value || 'Company Name';
+    preview.tagline.textContent = inputs.tagline.value || 'Tagline';
+    
+    // Update footer
+    preview.footer.innerHTML = (inputs.footer_text.value || '').replace(/\n/g, '<br>');
   }
 
-  colorInput.addEventListener('input', function() { colorHex.value = colorInput.value; updatePreview(); });
-  colorHex.addEventListener('input', function() { colorInput.value = colorHex.value; updatePreview(); });
-  companyInput.addEventListener('input', updatePreview);
-  taglineInput.addEventListener('input', updatePreview);
-  logoInput.addEventListener('input', updatePreview);
-  footerInput.addEventListener('input', updatePreview);
-
-  document.getElementById('save-btn').addEventListener('click', function() {
-    var resultDiv = document.getElementById('save-result');
-    resultDiv.className = 'rounded-lg p-3 text-sm bg-green-50 text-green-800 border border-green-200';
-    resultDiv.textContent = 'Template settings saved! Changes will apply to all future emails.';
-    resultDiv.style.display = 'block';
-    setTimeout(function() { resultDiv.style.display = 'none'; }, 3000);
+  // Sync color picker with hex input
+  inputs.brand_color.addEventListener('input', function() {
+    inputs.brand_color_hex.value = inputs.brand_color.value;
+    updatePreview();
   });
 
-  document.getElementById('reset-btn').addEventListener('click', function() {
-    if (!confirm('Reset all template settings to defaults?')) return;
-    companyInput.value = 'Reve Stitching';
-    taglineInput.value = 'Premium Garment Manufacturing';
-    colorInput.value = '#166534';
-    colorHex.value = '#166534';
-    logoInput.value = 'R';
-    footerInput.value = 'Reve Stitching (Pvt.) Ltd.\n100% Export-Oriented Knitted Garment Manufacturer\nFaisalabad, Pakistan';
-    updatePreview();
+  inputs.brand_color_hex.addEventListener('input', function() {
+    if (/^#[0-9A-Fa-f]{6}$/.test(inputs.brand_color_hex.value)) {
+      inputs.brand_color.value = inputs.brand_color_hex.value;
+      updatePreview();
+    }
+  });
+
+  // Update preview on any input change
+  Object.values(inputs).forEach(input => {
+    if (input) input.addEventListener('input', updatePreview);
+  });
+
+  // Save button
+  document.getElementById('save-btn').addEventListener('click', async function() {
+    const btn = this;
+    const resultDiv = document.getElementById('save-result');
+    
+    btn.disabled = true;
+    btn.innerHTML = '<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0110 10"/></svg> Saving...';
+
+    try {
+      const data = {
+        company_name: inputs.company_name.value,
+        tagline: inputs.tagline.value,
+        logo_text: inputs.logo_text.value,
+        brand_color: inputs.brand_color.value,
+        whatsapp_number: inputs.whatsapp_number.value,
+        support_email: inputs.support_email.value,
+        website_url: inputs.website_url.value,
+        footer_text: inputs.footer_text.value,
+      };
+
+      const response = await fetch('/api/admin/email-templates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        credentials: 'include',
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        resultDiv.className = 'rounded-lg p-3 text-sm bg-green-50 text-green-800 border border-green-200';
+        resultDiv.innerHTML = '<strong>✓ Saved!</strong> Changes will apply to all future emails.';
+      } else {
+        throw new Error(result.error || 'Save failed');
+      }
+    } catch (err) {
+      resultDiv.className = 'rounded-lg p-3 text-sm bg-red-50 text-red-800 border border-red-200';
+      resultDiv.innerHTML = '<strong>✗ Error:</strong> ' + err.message;
+    }
+
+    resultDiv.style.display = 'block';
+    btn.disabled = false;
+    btn.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Save Changes';
+
+    setTimeout(() => { resultDiv.style.display = 'none'; }, 5000);
+  });
+
+  // Reset button
+  document.getElementById('reset-btn').addEventListener('click', async function() {
+    if (!confirm('Reset all template settings to defaults? This cannot be undone.')) return;
+
+    const btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Resetting...';
+
+    try {
+      const response = await fetch('/api/admin/email-templates', {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Reload page to show default values
+        window.location.reload();
+      } else {
+        alert('Reset failed: ' + (result.error || 'Unknown error'));
+      }
+    } catch (err) {
+      alert('Reset failed: ' + err.message);
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Reset to Defaults';
   });
 </script>
