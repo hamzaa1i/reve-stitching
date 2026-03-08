@@ -41,6 +41,9 @@ export interface QuoteRequest {
 
   admin_notes: string | null;
   assigned_to: string | null;
+
+  automation_paused?: boolean;
+  last_admin_action_at?: string | null;
 }
 
 // ─── Insert (omit auto-generated fields) ───

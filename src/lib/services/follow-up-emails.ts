@@ -22,6 +22,8 @@ interface QuoteRow {
   product_type: string;
   quantity: number;
   estimated_price_range: string | null;
+  automation_paused: boolean;
+  last_admin_action_at: string | null;
   status: string;
   follow_up_24h_sent: boolean;
   admin_reminder_sent: boolean;
@@ -56,6 +58,8 @@ const THRESHOLD_7D = 168; // 7 × 24
 
 // Rate limiting: max emails per cron run (Resend free tier = 100/day)
 const MAX_EMAILS_PER_RUN = 10; // Stay under 10s execution limit
+// Safety: if admin touched the quote recently, don't send automated emails
+const ADMIN_ACTION_SUPPRESS_HOURS = 48;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
@@ -65,6 +69,11 @@ function hoursSince(dateString: string): number {
   const created = new Date(dateString);
   const now = new Date();
   return (now.getTime() - created.getTime()) / (1000 * 60 * 60);
+}
+
+function hoursSinceOptional(dateString: string | null): number | null {
+  if (!dateString) return null;
+  return hoursSince(dateString);
 }
 
 function timestamp(): string {
@@ -347,6 +356,28 @@ export async function checkAndSendFollowUps(
 
     const hours = hoursSince(quote.created_at);
     result.quotesProcessed++;
+
+    // ── SAFETY RULES ──
+    // 1) If paused manually, do nothing
+    if (quote.automation_paused) {
+      console.log(`[FollowUp] Skipping ${quote.reference_number} (automation paused)`);
+      continue;
+    }
+
+    // 2) Only allow automation for "new" quotes
+    if (quote.status !== 'new') {
+      console.log(`[FollowUp] Skipping ${quote.reference_number} (status = ${quote.status})`);
+      continue;
+    }
+
+    // 3) If an admin touched this quote recently, suppress automation
+    const lastActionHours = hoursSinceOptional(quote.last_admin_action_at);
+    if (lastActionHours !== null && lastActionHours < ADMIN_ACTION_SUPPRESS_HOURS) {
+      console.log(
+        `[FollowUp] Skipping ${quote.reference_number} (admin action ${lastActionHours.toFixed(1)}h ago)`
+      );
+      continue;
+    }
 
     console.log(
       `\n[FollowUp] Processing ${quote.reference_number} ` +

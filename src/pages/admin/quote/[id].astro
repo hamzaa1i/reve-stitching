@@ -29,20 +29,27 @@ if (Astro.request.method === 'POST') {
   const action = formData.get('_action') as string;
 
   if (action === 'update-status') {
-    const newStatus = formData.get('status') as string;
-    const { error } = await supabase
-      .from('quote_requests')
-      .update({ status: newStatus })
-      .eq('id', id);
-    flash = error ? `Error: ${error.message}` : `Status updated to "${newStatus}".`;
-  }
+  const newStatus = formData.get('status') as string;
+  const { error } = await supabase
+    .from('quote_requests')
+    .update({ 
+      status: newStatus, 
+      last_admin_action_at: new Date().toISOString() 
+    })
+    .eq('id', id);
+  flash = error ? `Error: ${error.message}` : `Status updated to "${newStatus}".`;
+}
 
   if (action === 'update-notes') {
     const notes = formData.get('admin_notes') as string;
     const assignedTo = formData.get('assigned_to') as string;
     const { error } = await supabase
       .from('quote_requests')
-      .update({ admin_notes: notes || null, assigned_to: assignedTo || null })
+      .update({
+      admin_notes: notes || null,
+      assigned_to: assignedTo || null,
+      last_admin_action_at: new Date().toISOString(),
+    })
       .eq('id', id);
     flash = error ? `Error: ${error.message}` : 'Notes saved.';
   }
@@ -388,6 +395,56 @@ const allStatuses: QuoteStatus[] = ['new', 'reviewed', 'quoted', 'converted', 'r
     </div>
 
     <div class="space-y-6">
+
+      <!-- Automation Safety -->
+      <div class="rounded-xl bg-white p-6 shadow ring-1 ring-gray-200">
+        <h2 class="mb-3 text-sm font-bold text-gray-900">Automation</h2>
+
+        <div class="text-sm text-gray-700 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-gray-500">Status</span>
+            <span
+              id="automation-status"
+              class:list={[
+                "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold",
+                q.automation_paused ? "bg-red-50 text-red-700" : "bg-green-50 text-green-700"
+              ]}
+            >
+              {q.automation_paused ? "Paused" : "Active"}
+            </span>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <span class="text-gray-500">Last admin action</span>
+            <span id="automation-last-action" class="text-xs text-gray-700">
+              {q.last_admin_action_at ? new Date(q.last_admin_action_at).toLocaleString('en-GB') : '—'}
+            </span>
+          </div>
+
+          <p class="text-xs text-gray-500 pt-2">
+            When paused, the system will not send automatic follow-up emails for this quote.
+          </p>
+        </div>
+
+        <button
+          id="automation-toggle-btn"
+          data-quote-id={q.id}
+          data-paused={q.automation_paused ? 'true' : 'false'}
+          class:list={[
+            "mt-4 w-full rounded-lg px-4 py-2 text-sm font-semibold shadow transition",
+            q.automation_paused
+              ? "bg-green-700 text-white hover:bg-green-600"
+              : "bg-red-600 text-white hover:bg-red-500"
+          ]}
+          type="button"
+        >
+          {q.automation_paused ? "Resume Automation" : "Pause Automation"}
+        </button>
+
+        <p id="automation-msg" class="mt-3 hidden text-xs"></p>
+      </div>
+
+      <!-- Update Status -->
       <div class="rounded-xl bg-white p-6 shadow ring-1 ring-gray-200">
         <h2 class="mb-4 text-sm font-bold text-gray-900">Update Status</h2>
         <form method="POST" class="space-y-3">
@@ -428,5 +485,75 @@ const allStatuses: QuoteStatus[] = ['new', 'reviewed', 'quoted', 'converted', 'r
       </div>
     </div>
   </div>
+
+  <script is:inline>
+    (function () {
+      var btn = document.getElementById('automation-toggle-btn');
+      if (!btn) return;
+  
+      var statusEl = document.getElementById('automation-status');
+      var lastActionEl = document.getElementById('automation-last-action');
+      var msgEl = document.getElementById('automation-msg');
+  
+      btn.addEventListener('click', async function () {
+        var quoteId = btn.getAttribute('data-quote-id');
+        var pausedNow = btn.getAttribute('data-paused') === 'true';
+        var nextPaused = !pausedNow;
+  
+        btn.disabled = true;
+        btn.textContent = nextPaused ? 'Pausing...' : 'Resuming...';
+        msgEl.classList.add('hidden');
+  
+        try {
+          var res = await fetch('/api/admin/quote-automation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ id: quoteId, paused: nextPaused })
+          });
+  
+          var data = await res.json();
+          if (!res.ok || !data.success) {
+            throw new Error(data.error || 'Failed');
+          }
+  
+          // Update UI
+          var paused = data.data.automation_paused;
+          var lastAction = data.data.last_admin_action_at;
+  
+          btn.setAttribute('data-paused', paused ? 'true' : 'false');
+          btn.textContent = paused ? 'Resume Automation' : 'Pause Automation';
+  
+          // Button color
+          btn.className =
+            'mt-4 w-full rounded-lg px-4 py-2 text-sm font-semibold shadow transition ' +
+            (paused ? 'bg-green-700 text-white hover:bg-green-600' : 'bg-red-600 text-white hover:bg-red-500');
+  
+          // Status badge
+          statusEl.textContent = paused ? 'Paused' : 'Active';
+          statusEl.className =
+            'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ' +
+            (paused ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700');
+  
+          // Last action
+          if (lastActionEl) {
+            lastActionEl.textContent = new Date(lastAction).toLocaleString('en-GB');
+          }
+  
+          msgEl.textContent = paused
+            ? 'Automation paused. No follow-up emails will be sent for this quote.'
+            : 'Automation resumed. Follow-ups will work again if the quote is still eligible.';
+          msgEl.className = 'mt-3 text-xs text-green-700';
+          msgEl.classList.remove('hidden');
+        } catch (err) {
+          msgEl.textContent = 'Error: ' + (err && err.message ? err.message : 'Failed');
+          msgEl.className = 'mt-3 text-xs text-red-700';
+          msgEl.classList.remove('hidden');
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    })();
+  </script>
 
 </AdminLayout>

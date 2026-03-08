@@ -36,6 +36,9 @@ export const PATCH: APIRoute = async ({ params, request, cookies }) => {
       return json({ error: 'No fields to update' }, 422);
     }
 
+    updates.last_admin_action_at = new Date().toISOString();  // ← ADD THIS
+
+
     const supabase = createClient(
       process.env.SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
