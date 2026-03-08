@@ -39,6 +39,12 @@ export interface QuoteRequest {
   suggested_moq: number | null;
   ai_flags: string | null;
 
+  // ADD THESE 4 LINES ↓
+  ai_extracted_data?: any;
+  ai_confidence_score?: number | null;
+  ai_missing_fields?: string[];
+  action_items?: any;
+
   admin_notes: string | null;
   assigned_to: string | null;
 
