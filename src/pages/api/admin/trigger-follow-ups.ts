@@ -1,3 +1,4 @@
+// src/pages/api/admin/trigger-follow-ups.ts
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { checkAndSendFollowUps } from '../../../lib/services/follow-up-emails';
@@ -6,34 +7,40 @@ import { getAdminFromCookies } from '../../../lib/auth';
 export const prerender = false;
 
 export const POST: APIRoute = async ({ cookies }) => {
-  const startTime = Date.now();
-
+  // Admin auth
   const admin = getAdminFromCookies(cookies);
   if (!admin) {
+    console.error('[Trigger Follow-ups] Unauthorized access attempt');
     return json({ success: false, error: 'Unauthorized' }, 401);
   }
 
-  console.log(`[Manual Trigger] Initiated by ${admin.sub}`);
+  console.log(`[Trigger Follow-ups] Manual trigger by admin: ${admin.sub}`);
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!supabaseUrl || !supabaseServiceKey) {
-    return json({ success: false, error: 'Database not configured' }, 500);
-  }
-
-  const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-    auth: { autoRefreshToken: false, persistSession: false },
-  });
+  const supabase = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  );
 
   try {
     const result = await checkAndSendFollowUps(supabase);
-    const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
-    return json({ success: true, duration: `${elapsed}s`, ...result });
+
+    return json({
+      success: true,
+      message: 'Follow-up check complete',
+      stats: {
+        quotesProcessed: result.quotesProcessed,
+        emailsSent: result.emailsSent,
+        errors: result.errors,
+      },
+      details: result.details,
+    });
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    console.error('[Manual Trigger] Error:', message);
-    return json({ success: false, error: message }, 500);
+    console.error('[Trigger Follow-ups] Error:', error);
+    return json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    }, 500);
   }
 };
 
