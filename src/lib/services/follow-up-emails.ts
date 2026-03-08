@@ -152,6 +152,7 @@ async function send24HourFollowUp(
       to: [quote.email],
       subject,
       html,
+      replyTo: 'info@revestitching.com',  // ← ADD THIS
       tags: [
         { name: 'type', value: '24h_followup' },
         { name: 'quote_ref', value: quote.reference_number },
@@ -202,6 +203,7 @@ async function send48HourAdminReminder(
       to: [ADMIN_EMAIL],
       subject,
       html,
+      replyTo: 'info@revestitching.com',  // ← ADD THIS
       tags: [
         { name: 'type', value: '48h_admin_reminder' },
         { name: 'quote_ref', value: quote.reference_number },
@@ -256,6 +258,7 @@ async function send7DayReengagement(
       to: [quote.email],
       subject,
       html,
+      replyTo: 'info@revestitching.com',  // ← ADD THIS
       tags: [
         { name: 'type', value: '7d_reengagement' },
         { name: 'quote_ref', value: quote.reference_number },

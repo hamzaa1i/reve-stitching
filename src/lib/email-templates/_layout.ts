@@ -45,8 +45,15 @@ interface LayoutOptions {
   previewText?: string;
 }
 
-export async function emailLayout(body: string, options: LayoutOptions = {}): Promise<string> {
-  const settings = await getSettings();
+export async function emailLayout(
+  body: string, 
+  options: LayoutOptions = {},
+  brandingOverride?: Record<string, string> | null
+): Promise<string> {
+  const baseSettings = await getSettings();
+const settings = brandingOverride 
+  ? { ...baseSettings, ...brandingOverride }
+  : baseSettings;
   const { previewText = '' } = options;
 
   return `
@@ -134,6 +141,19 @@ export async function emailLayout(body: string, options: LayoutOptions = {}): Pr
             <td style="background-color:#f9fafb;padding:24px 32px;text-align:center;">
               <p style="margin:0;font-size:11px;color:#a1a1aa;line-height:1.6;">
                 ${settings.footer_text.replace(/\n/g, '<br>')}
+              </p>
+            </td>
+          </tr>
+          
+          <!-- Compliance Footer (buyer emails only) -->
+          <tr>
+            <td style="padding:20px 32px;text-align:center;border-top:1px solid #e4e4e7;">
+              <p style="margin:0 0 8px;font-size:11px;color:#a1a1aa;line-height:1.5;">
+                You received this email because you requested a quote from Reve Stitching.
+                If you didn't request this, you can safely ignore it.
+              </p>
+              <p style="margin:0;font-size:10px;color:#d1d5db;">
+                Sent on ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
               </p>
             </td>
           </tr>

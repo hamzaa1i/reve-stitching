@@ -18,6 +18,7 @@ import type { QuoteEmailData } from './quote-under-review';
  */
 export async function generateReengagementEmail(
   quote: QuoteEmailData,
+  brandingOverride?: Record<string, string> | null,
   contentOverride?: TemplateContent | null
 ): Promise<{ subject: string; html: string }> {
   // Get custom content from DB (or use override for preview)
@@ -141,9 +142,13 @@ export async function generateReengagementEmail(
     ${footerNote ? `<p style="margin:28px 0 0;font-size:11px;color:#a1a1aa;text-align:center;line-height:1.6;">${footerNote}</p>` : ''}
   `;
 
-  const html = await emailLayout(body, {
-    previewText: `Hi ${firstName}, are you still looking for a manufacturer for ${quote.quantity.toLocaleString()} ${quote.product_type}? Your quote ${quote.reference_number} is ready for review.`,
-  });
+  const html = await emailLayout(
+    body,
+    {
+      previewText: `Hi ${firstName}, are you still looking for a manufacturer for ${quote.quantity.toLocaleString()} ${quote.product_type}? Your quote ${quote.reference_number} is ready for review.`,
+    },
+    brandingOverride
+  );
 
   return { subject, html };
 }

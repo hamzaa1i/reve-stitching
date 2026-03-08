@@ -162,6 +162,206 @@ const settings = await getTemplateSettings();
 
 </AdminLayout>
 
+<!-- Floating Send Test Email Widget -->
+<div class="fixed bottom-4 right-4 z-50">
+  <!-- Collapsed button -->
+  <button
+    id="test-email-open"
+    type="button"
+    class="flex items-center gap-2 rounded-full bg-[#166534] px-4 py-3 text-sm font-semibold text-white shadow-lg hover:bg-[#14532d] focus:outline-none focus:ring-2 focus:ring-[#166534]/40 transition"
+  >
+    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+    </svg>
+    Send Test Email
+  </button>
+
+  <!-- Expanded card -->
+  <div
+    id="test-email-card"
+    class="mt-3 hidden w-[22rem] overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-2xl"
+  >
+    <div class="flex items-center justify-between border-b border-zinc-200 bg-zinc-50 px-4 py-3">
+      <div>
+        <div class="text-sm font-semibold text-zinc-900">Send Test Email</div>
+        <div class="text-xs text-zinc-600">Uses current unsaved values</div>
+      </div>
+      <button
+        id="test-email-close"
+        type="button"
+        class="rounded-md px-2 py-1 text-sm font-medium text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900 transition"
+      >
+        ✕
+      </button>
+    </div>
+
+    <div class="space-y-3 px-4 py-4">
+      <div>
+        <label for="test-email-to" class="mb-1 block text-xs font-semibold text-zinc-700">Send to</label>
+        <input
+          id="test-email-to"
+          type="email"
+          placeholder="your-email@company.com"
+          class="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-[#166534] focus:outline-none focus:ring-2 focus:ring-[#166534]/20"
+          required
+        />
+        <p id="test-email-to-error" class="mt-1 hidden text-xs text-red-700"></p>
+      </div>
+
+      <div>
+        <label for="test-email-template" class="mb-1 block text-xs font-semibold text-zinc-700">Template</label>
+        <select
+          id="test-email-template"
+          class="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 focus:border-[#166534] focus:outline-none focus:ring-2 focus:ring-[#166534]/20"
+        >
+          <option value="24h">24h Buyer Follow-up</option>
+          <option value="48h">48h Admin Reminder</option>
+          <option value="7d">7-Day Re-engagement</option>
+        </select>
+      </div>
+
+      <button
+        id="test-email-send"
+        type="button"
+        class="w-full flex items-center justify-center gap-2 rounded-lg bg-[#166534] px-4 py-2 text-sm font-semibold text-white hover:bg-[#14532d] disabled:cursor-not-allowed disabled:opacity-60 transition"
+      >
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+        </svg>
+        Send Test
+      </button>
+
+      <div
+        id="test-email-status"
+        class="hidden rounded-lg border px-3 py-2 text-sm"
+      ></div>
+
+      <div class="text-xs text-zinc-500">
+        💡 Tip: You don't need to save first — this uses your current form values.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  const openBtn = document.getElementById('test-email-open');
+  const card = document.getElementById('test-email-card');
+  const closeBtn = document.getElementById('test-email-close');
+  const sendBtn = document.getElementById('test-email-send');
+  const toInput = document.getElementById('test-email-to');
+  const templateSelect = document.getElementById('test-email-template');
+  const statusEl = document.getElementById('test-email-status');
+  const errorEl = document.getElementById('test-email-to-error');
+
+  function setOpen(isOpen) {
+    card.classList.toggle('hidden', !isOpen);
+    openBtn.classList.toggle('hidden', isOpen);
+  }
+
+  function setStatus(kind, message) {
+    statusEl.classList.remove('hidden');
+    if (kind === 'success') {
+      statusEl.className = 'rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800';
+    } else if (kind === 'error') {
+      statusEl.className = 'rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800';
+    } else {
+      statusEl.className = 'rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-800';
+    }
+    statusEl.textContent = message;
+  }
+
+  function clearStatus() {
+    statusEl.classList.add('hidden');
+  }
+
+  function setEmailError(msg) {
+    if (!msg) {
+      errorEl.classList.add('hidden');
+      errorEl.textContent = '';
+      return;
+    }
+    errorEl.classList.remove('hidden');
+    errorEl.textContent = msg;
+  }
+
+  function getBrandingOverride() {
+    // Read current form values (matches your existing inputs object)
+    const inputs = {
+      company_name: document.getElementById('company_name'),
+      tagline: document.getElementById('tagline'),
+      logo_text: document.getElementById('logo_text'),
+      brand_color: document.getElementById('brand_color'),
+      whatsapp_number: document.getElementById('whatsapp_number'),
+      support_email: document.getElementById('support_email'),
+      website_url: document.getElementById('website_url'),
+      footer_text: document.getElementById('footer_text'),
+    };
+
+    const override = {};
+    for (const [key, input] of Object.entries(inputs)) {
+      if (input && input.value) {
+        override[key] = input.value.trim();
+      }
+    }
+    return override;
+  }
+
+  async function sendTestEmail() {
+    clearStatus();
+    setEmailError('');
+
+    const email = (toInput.value || '').trim();
+    if (!email) {
+      setEmailError('Please enter an email address.');
+      return;
+    }
+    if (!toInput.checkValidity()) {
+      setEmailError('Please enter a valid email address.');
+      return;
+    }
+
+    const template_id = templateSelect.value;
+    const branding_override = getBrandingOverride();
+
+    sendBtn.disabled = true;
+    const originalHTML = sendBtn.innerHTML;
+    sendBtn.innerHTML = '<svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" opacity="0.25"/><path d="M12 2a10 10 0 0110 10"/></svg> Sending...';
+
+    try {
+      const res = await fetch('/api/admin/send-test-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, template_id, branding_override }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data?.error || 'Failed to send test email');
+      }
+
+      setStatus('success', `✓ Sent to ${email}! Check your inbox.`);
+      toInput.value = '';
+    } catch (err) {
+      setStatus('error', err?.message || 'Network error');
+    } finally {
+      sendBtn.disabled = false;
+      sendBtn.innerHTML = originalHTML;
+    }
+  }
+
+  openBtn?.addEventListener('click', () => setOpen(true));
+  closeBtn?.addEventListener('click', () => setOpen(false));
+  sendBtn?.addEventListener('click', sendTestEmail);
+  toInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      sendTestEmail();
+    }
+  });
+</script>
+
 <script is:inline>
   // Get all inputs
   const inputs = {

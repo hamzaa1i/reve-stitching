@@ -18,6 +18,7 @@ import type { QuoteEmailData } from './quote-under-review';
  */
 export async function generateAdminReminderEmail(
   quote: QuoteEmailData,
+  brandingOverride?: Record<string, string> | null,
   contentOverride?: TemplateContent | null
 ): Promise<{ subject: string; html: string }> {
   // Get custom content from DB (or use override for preview)
@@ -109,9 +110,13 @@ export async function generateAdminReminderEmail(
     </table>
   `;
 
-  const html = await emailLayout(body, {
-    previewText: `Quote ${quote.reference_number} from ${quote.company_name} has been pending for ${hoursSince}+ hours. ${quote.quantity.toLocaleString()} ${quote.product_type} — needs your attention.`,
-  });
+  const html = await emailLayout(
+    body,
+    {
+      previewText: `Quote ${quote.reference_number} from ${quote.company_name} has been pending for ${hoursSince}+ hours. ${quote.quantity.toLocaleString()} ${quote.product_type} — needs your attention.`,
+    },
+    brandingOverride
+  );
 
   return { subject, html };
 }

@@ -27,6 +27,7 @@ export interface QuoteEmailData {
  */
 export async function generateQuoteUnderReviewEmail(
   quote: QuoteEmailData,
+  brandingOverride?: Record<string, string> | null,
   contentOverride?: TemplateContent | null
 ): Promise<{ subject: string; html: string }> {
   // Get custom content from DB (or use override for preview)
@@ -129,9 +130,13 @@ export async function generateQuoteUnderReviewEmail(
     ${footerNote ? `<p style="margin:24px 0 0;font-size:13px;color:#a1a1aa;text-align:center;">${footerNote}</p>` : ''}
   `;
 
-  const html = await emailLayout(body, {
-    previewText: `We're reviewing your quote ${quote.reference_number} for ${quote.quantity.toLocaleString()} ${quote.product_type}. You'll hear back within 48 hours.`,
-  });
+  const html = await emailLayout(
+    body, 
+    {
+      previewText: `We're reviewing your quote ${quote.reference_number} for ${quote.quantity.toLocaleString()} ${quote.product_type}. You'll hear back within 48 hours.`,
+    },
+    brandingOverride
+  );
 
   return { subject, html };
 }
