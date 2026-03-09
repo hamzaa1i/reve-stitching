@@ -64,6 +64,19 @@ const adminEmail = admin?.sub || '';
               >
                 Quotes
               </a>
+
+              <a
+              href="/admin/samples"
+              class:list={[
+                'px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                currentPath.includes('/samples')
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-zinc-600 hover:bg-zinc-100',
+              ]}
+            >
+              Samples
+            </a>             
+
               <a
                 href="/admin/email-templates"
                 class:list={[
@@ -73,7 +86,7 @@ const adminEmail = admin?.sub || '';
                     : 'text-zinc-600 hover:bg-zinc-100',
                 ]}
               >
-                Email Templates
+                Email Settings
               </a>
             </div>
           </div>
