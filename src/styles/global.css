@@ -166,3 +166,265 @@
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary-light;
   }
 }
+
+/* ======================================================================
+   PREMIUM ANIMATION SYSTEM
+   Appended after existing Tailwind layers. Do NOT place inside @layer.
+   ====================================================================== */
+
+/* --- Design Tokens (Animation System) --- */
+:root {
+  --c-primary: #166534;
+  --c-primary-rgb: 22, 101, 52;
+  --c-primary-light: #22c55e;
+  --c-primary-light-rgb: 34, 197, 94;
+  --c-primary-dark: #14532d;
+
+  --c-bg: #ffffff;
+  --c-bg-rgb: 255, 255, 255;
+  --c-text: #18181b;
+  --c-text-rgb: 24, 24, 27;
+
+  --c-cursor-dot: #18181b;
+  --c-cursor-follower-border: rgba(22, 101, 52, 0.4);
+  --c-cursor-follower-bg: rgba(22, 101, 52, 0.06);
+  --c-spotlight: rgba(22, 101, 52, 0.06);
+  --c-grain-opacity: 0.035;
+  --c-particle: rgba(22, 101, 52, 0.25);
+  --c-ripple: rgba(22, 101, 52, 0.35);
+
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  --scroll-progress: 0;
+}
+
+.dark {
+  --c-bg: #09090b;
+  --c-bg-rgb: 9, 9, 11;
+  --c-text: #fafafa;
+  --c-text-rgb: 250, 250, 250;
+  --c-cursor-dot: #fafafa;
+  --c-cursor-follower-border: rgba(34, 197, 94, 0.4);
+  --c-cursor-follower-bg: rgba(34, 197, 94, 0.06);
+  --c-spotlight: rgba(34, 197, 94, 0.04);
+  --c-grain-opacity: 0.04;
+  --c-particle: rgba(34, 197, 94, 0.18);
+  --c-ripple: rgba(34, 197, 94, 0.3);
+}
+
+/* --- Lenis Smooth Scroll --- */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* --- Custom Cursor --- */
+html.has-custom-cursor, html.has-custom-cursor * { cursor: none !important; }
+
+.cursor-dot {
+  position: fixed; top: 0; left: 0;
+  width: 8px; height: 8px;
+  background: var(--c-cursor-dot);
+  border-radius: 50%;
+  pointer-events: none; z-index: 99999;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
+  will-change: transform;
+  transition: width 0.3s cubic-bezier(0.16,1,0.3,1),
+              height 0.3s cubic-bezier(0.16,1,0.3,1),
+              background 0.3s, border-radius 0.3s;
+}
+.cursor-dot.is-text { width: 2px; height: 24px; border-radius: 1px; }
+.cursor-dot.is-hidden { opacity: 0; transform: translate(-50%,-50%) scale(0); }
+
+.cursor-follower {
+  position: fixed; top: 0; left: 0;
+  width: 40px; height: 40px;
+  border: 1.5px solid var(--c-cursor-follower-border);
+  background: var(--c-cursor-follower-bg);
+  border-radius: 50%;
+  pointer-events: none; z-index: 
+  99998;
+  transform: translate(-50%, -50%);
+  will-change: transform, width, height;
+  transition: width 0.4s cubic-bezier(0.16,1,0.3,1),
+              height 0.4s cubic-bezier(0.16,1,0.3,1),
+              background 0.4s, border-color 0.4s,
+              border-radius 0.4s cubic-bezier(0.16,1,0.3,1);
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(1px);
+}
+
+.cursor-follower__label {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--c-cursor-dot);
+  opacity: 0; transform: scale(0.5);
+  transition: opacity 0.3s, transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  white-space: nowrap; user-select: none;
+}
+.cursor-follower.has-label .cursor-follower__label { opacity: 1; transform: scale(1); }
+
+.cursor-follower.is-link {
+  width: 64px; height: 64px;
+  background: rgba(var(--c-primary-rgb), 0.08);
+  border-color: rgba(var(--c-primary-rgb), 0.6);
+}
+.cursor-follower.is-view {
+  width: 80px; height: 80px;
+  background: rgba(var(--c-primary-rgb), 0.12);
+  border-color: rgba(var(--c-primary-rgb), 0.5);
+}
+.cursor-follower.is-drag {
+  width: 56px; height: 56px;
+  background: rgba(var(--c-primary-rgb), 0.08);
+}
+
+.cursor-dot.is-inverted { background: #ffffff; }
+.cursor-follower.is-inverted {
+  border-color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.06);
+}
+.cursor-follower.is-inverted .cursor-follower__label { color: #ffffff; }
+
+.cursor-trail-dot {
+  position: fixed; top: 0; left: 0;
+  width: 4px; height: 4px;
+  background: var(--c-primary-light);
+  border-radius: 50%;
+  pointer-events: none; z-index: 99997;
+  transform: translate(-50%, -50%);
+  opacity: 0; will-change: transform;
+}
+
+.click-ripple {
+  position: fixed; width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid var(--c-ripple);
+  pointer-events: none; z-index: 99996;
+  transform: translate(-50%, -50%) scale(0);
+}
+
+/* --- Scroll Progress --- */
+.scroll-progress {
+  position: fixed; top: 0; right: 0;
+  width: 3px; height: 100vh;
+  z-index: 9999; pointer-events: none; overflow: hidden;
+}
+.scroll-progress__bar {
+  width: 100%; height: 100%;
+  background: linear-gradient(to bottom, var(--c-primary-light), var(--c-primary));
+  transform-origin: top center; transform: scaleY(0);
+  will-change: transform; border-radius: 0 0 2px 2px;
+}
+.scroll-progress__glow {
+  position: absolute; bottom: 0; left: -3px;
+  width: 9px; height: 30px;
+  background: radial-gradient(ellipse, var(--c-primary-light), transparent);
+  opacity: 0.6; filter: blur(3px);
+  transform: translateY(100%); will-change: transform;
+}
+
+/* --- Page Transition Progress --- */
+.page-transition__progress {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 2px;
+  background: var(--c-primary-light);
+  transform-origin: left; transform: scaleX(0);
+  z-index: 100001; pointer-events: none;
+}
+
+/* --- Mouse Background --- */
+.mouse-bg {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0; overflow: hidden;
+}
+.mouse-bg__gradient {
+  position: absolute; inset: -20%; width: 140%; height: 140%;
+  background:
+    radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(var(--c-primary-rgb),0.07), transparent 50%),
+    radial-gradient(600px circle at 75% 20%, rgba(var(--c-primary-rgb),0.04), transparent 45%),
+    radial-gradient(500px circle at 25% 80%, rgba(var(--c-primary-light-rgb),0.03), transparent 45%);
+  will-change: background; transition: background 0.3s ease;
+}
+.mouse-bg__spotlight {
+  position: absolute; inset: 0;
+  background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), var(--c-spotlight), transparent 45%);
+  opacity: 0; transition: opacity 0.5s;
+}
+.mouse-bg__spotlight.is-active { opacity: 1; }
+
+.mouse-bg__particles { position: absolute; inset: 0; will-change: transform; }
+.particle {
+  position: absolute; border-radius: 50%;
+  background: var(--c-particle); will-change: transform;
+}
+
+.mouse-bg__grain {
+  position: absolute; inset: -100%; width: 300%; height: 300%;
+  opacity: var(--c-grain-opacity); pointer-events: none;
+  background-repeat: repeat; background-size: 256px 256px;
+  animation: grain-shift 0.8s steps(4) infinite;
+}
+@keyframes grain-shift {
+  0%   { transform: translate(0,0); }
+  25%  { transform: translate(-5%,-2%); }
+  50%  { transform: translate(-2%,5%); }
+  75%  { transform: translate(3%,-4%); }
+  100% { transform: translate(0,0); }
+}
+
+/* --- Text Split Helpers --- */
+.split-line-wrapper { overflow: hidden; display: block; }
+.split-line { display: block; will-change: transform; }
+
+/* --- Scroll-to-Top Button --- */
+.scroll-top-btn {
+  position: fixed; bottom: 5.5rem; right: 1.5rem;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--c-primary); color: white; border: none;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9990; opacity: 0;
+  transform: translateY(20px) scale(0.8);
+  transition: opacity 0.4s cubic-bezier(0.16,1,0.3,1),
+              transform 0.4s cubic-bezier(0.16,1,0.3,1),
+              background 0.3s;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(var(--c-primary-rgb), 0.3);
+}
+.scroll-top-btn.is-visible { opacity: 1; transform: translateY(0) scale(1); }
+.scroll-top-btn:hover { background: var(--c-primary-dark); transform: translateY(-3px) scale(1.05); }
+
+/* --- Link Underline Animation --- */
+.link-hover-fx { position: relative; text-decoration: none; }
+.link-hover-fx::after {
+  content: ''; position: absolute; bottom: -2px; left: 50%;
+  width: 0; height: 1.5px; background: currentColor;
+  transition: width 0.4s cubic-bezier(0.16,1,0.3,1), left 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.link-hover-fx:hover::after { width: 100%; left: 0; }
+
+/* --- 3D Tilt --- */
+[data-tilt] { transform-style: preserve-3d; will-change: transform; }
+
+/* --- Floating Elements --- */
+[data-float] { will-change: transform; }
+
+/* --- View Transition Overrides --- */
+::view-transition-old(root) { animation: vt-fade-out 0.25s ease-in forwards; }
+::view-transition-new(root) { animation: vt-fade-in 0.35s ease-out 0.1s both; }
+@keyframes vt-fade-out { to { opacity: 0; transform: translateY(-8px); filter: blur(4px); } }
+@keyframes vt-fade-in { from { opacity: 0; transform: translateY(12px); filter: blur(4px); } }
+
+/* --- Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .mouse-bg, .cursor-dot, .cursor-follower, .cursor-trail-dot,
+  .scroll-progress, .mouse-bg__grain { display: none !important; }
+  html.has-custom-cursor, html.has-custom-cursor * { cursor: auto !important; }
+}

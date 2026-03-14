@@ -1,15 +1,14 @@
 ---
-/**
- * src/layouts/Layout.astro
- * FIXED: Script initialization with proper error handling and visibility fallbacks.
- */
-
 import { ViewTransitions } from 'astro:transitions';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ChatWidget from '../components/ChatWidget.astro';
 import WhatsAppWidget from '../components/WhatsAppWidget.astro';
 import DarkModeScript from '../components/DarkModeScript.astro';
+import CustomCursor from '../components/CustomCursor.astro';
+import MouseBackground from '../components/MouseBackground.astro';
+import ScrollProgress from '../components/ScrollProgress.astro';
+import PageTransition from '../components/PageTransition.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -28,19 +27,17 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="lenis">
   <head>
     <meta charset="UTF-8" />
     <DarkModeScript />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- SEO -->
     <title>{title} | Reve Stitching</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
 
-    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={`${title} | Reve Stitching`} />
@@ -48,13 +45,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:image" content={ogImage} />
     <meta property="og:site_name" content="Reve Stitching" />
 
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={`${title} | Reve Stitching`} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -62,7 +57,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="apple-mobile-web-app-title" content="Reve Stitching" />
     <link rel="manifest" href="/site.webmanifest" />
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -70,7 +64,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       rel="stylesheet"
     />
 
-    <!-- Structured Data -->
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "ManufacturingBusiness",
@@ -98,22 +91,23 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   </head>
 
   <body class="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-300">
+    <!-- Background effects layer (behind everything) -->
+    <MouseBackground />
+
     <Header />
 
-    <main class="flex-1" id="main-content">
+    <main class="flex-1 relative z-[1]" id="main-content">
       <slot />
     </main>
 
     <Footer />
-
     <ChatWidget />
 
-    <!--
-      ━━━ FIXED: Animation Script ━━━
-      - Wrapped in try/catch
-      - Falls back to making everything visible if GSAP fails
-      - Uses astro:page-load for View Transitions compatibility
-    -->
+    <!-- Overlay elements (above everything) -->
+    <CustomCursor />
+    <ScrollProgress />
+    <PageTransition />
+
     <script>
       import { initAnimations } from '../scripts/animations.js';
 
@@ -122,30 +116,20 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           initAnimations();
         } catch (e) {
           console.warn('Animation initialization failed:', e);
-          // Fallback: make sure all content is visible
-          document.querySelectorAll('[data-animate], [data-stagger] > *').forEach((el) => {
+          document.querySelectorAll('[data-animate], [data-stagger] > *, [data-bento-item], [data-cta-title]').forEach((el) => {
             (el as HTMLElement).style.opacity = '1';
             (el as HTMLElement).style.transform = 'none';
           });
         }
       }
 
-      // Fires on initial load AND after each View Transition
       document.addEventListener('astro:page-load', safeInit);
     </script>
 
-    <!--
-      ━━━ CRITICAL FALLBACK ━━━
-      If JavaScript completely fails to load/execute, this noscript-adjacent
-      approach ensures content is always visible. This inline style runs
-      before any external JS, guaranteeing visibility.
-    -->
     <script is:inline>
-      // If after 3 seconds the gsap-ready class hasn't been added,
-      // force all animated elements to be visible
       setTimeout(function() {
         if (!document.documentElement.classList.contains('gsap-ready')) {
-          var els = document.querySelectorAll('[data-animate], [data-stagger] > *');
+          var els = document.querySelectorAll('[data-animate], [data-stagger] > *, [data-bento-item], [data-cta-title]');
           for (var i = 0; i < els.length; i++) {
             els[i].style.opacity = '1';
             els[i].style.transform = 'none';

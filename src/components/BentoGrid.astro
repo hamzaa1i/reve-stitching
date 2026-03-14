@@ -9,7 +9,7 @@ const items = [
 ];
 ---
 
-<section class="py-24 lg:py-32 relative overflow-hidden" aria-labelledby="why-choose-heading">
+<section data-snap class="py-24 lg:py-32 relative overflow-hidden" aria-labelledby="why-choose-heading">
   <div class="absolute inset-0 bg-surface dark:bg-zinc-950"></div>
   <div class="absolute top-20 right-0 w-96 h-96 bg-primary/5 dark:bg-green-500/5 rounded-full blur-3xl"></div>
   <div class="absolute bottom-10 left-0 w-80 h-80 bg-primary-light/5 dark:bg-green-500/5 rounded-full blur-3xl"></div>
@@ -25,12 +25,11 @@ const items = [
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+    <<div data-bento class="grid grid-cols-1 md:grid-cols-3 gap-5">
       {items.map((item, index) => (
         <article
-          class={`glass-card dark:bg-zinc-900 dark:border-zinc-800 p-8 lg:p-10 rounded-2xl group hover:shadow-xl hover:shadow-primary/5 dark:hover:shadow-black/20 dark:hover:border-zinc-700 transition-all duration-500 ${item.span}`}
-          data-animate="fade-up"
-          data-delay={String(index * 0.1)}
+        class={`glass-card dark:bg-zinc-900 dark:border-zinc-800 p-8 lg:p-10 rounded-2xl group hover:shadow-xl hover:shadow-primary/5 dark:hover:shadow-black/20 dark:hover:border-zinc-700 transition-all duration-500 ${item.span}`}
+        data-bento-item
         >
           <div class="w-12 h-12 rounded-xl bg-primary/10 dark:bg-green-500/10 flex items-center justify-center mb-5 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
             {item.icon === 'shield' && (
