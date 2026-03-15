@@ -16,12 +16,12 @@ gsap.registerPlugin(ScrollTrigger);
 /* ═══════════════════════════════════════════
    CONFIGURATION
    ═══════════════════════════════════════════ */
-const CONFIG = {
-  scroll: {
-    duration: 1.4,
-    wheelMultiplier: 0.85,
-    touchMultiplier: 1.5,
-  },
+   const CONFIG = {
+    scroll: {
+      duration: 1.6,
+      wheelMultiplier: 0.55,
+      touchMultiplier: 1.2,
+    },
   snap: {
     enabled: true,
     velocityThreshold: 0.5,
@@ -213,6 +213,7 @@ async function initSmoothScroll() {
       smoothTouch: false,
       wheelMultiplier: CONFIG.scroll.wheelMultiplier,
       touchMultiplier: CONFIG.scroll.touchMultiplier,
+      normalizeWheel: true,
       infinite: false,
       prevent: (node) => {
         if (!node || !node.closest) return false;
