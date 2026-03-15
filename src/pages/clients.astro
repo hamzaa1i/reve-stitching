@@ -1,7 +1,7 @@
 ---
 /**
  * src/pages/clients.astro
- * FIXED: All grids use individual data-animate instead of data-stagger.
+ * REDESIGNED: New design system. Full dark mode. No old tokens.
  */
 import Layout from '../layouts/Layout.astro';
 
@@ -18,60 +18,76 @@ const clients = [
 ];
 
 const certifications = [
-  { name: 'BCI', full: 'Better Cotton Initiative', color: 'bg-emerald-500' },
-  { name: 'GOTS', full: 'Global Organic Textile Standard', color: 'bg-green-600' },
-  { name: 'OCS', full: 'Organic Content Standard', color: 'bg-lime-600' },
-  { name: 'SEDEX', full: 'Supplier Ethical Data Exchange', color: 'bg-teal-600' },
-  { name: 'Higg Index', full: 'Sustainable Apparel Coalition', color: 'bg-cyan-600' },
-  { name: 'RCS', full: 'Recycled Claim Standard', color: 'bg-sky-600' },
-  { name: 'GRS', full: 'Global Recycled Standard', color: 'bg-blue-600' },
-  { name: 'ISO 9001', full: 'Quality Management Systems', color: 'bg-indigo-600' },
+  { name: 'BCI', full: 'Better Cotton Initiative' },
+  { name: 'GOTS', full: 'Global Organic Textile Standard' },
+  { name: 'OCS', full: 'Organic Content Standard' },
+  { name: 'SEDEX', full: 'Supplier Ethical Data Exchange' },
+  { name: 'Higg Index', full: 'Sustainable Apparel Coalition' },
+  { name: 'RCS', full: 'Recycled Claim Standard' },
+  { name: 'GRS', full: 'Global Recycled Standard' },
+  { name: 'ISO 9001', full: 'Quality Management Systems' },
 ];
 
 const industries = [
-  { title: 'International Fashion Brands', desc: 'Fast fashion and premium fashion labels requiring high-volume, trend-driven production with rapid turnarounds.', icon: 'fashion' },
+  { title: 'International Fashion', desc: 'Fast fashion and premium labels requiring high-volume, trend-driven production with rapid turnarounds.', icon: 'fashion' },
   { title: 'Sportswear & Activewear', desc: 'Performance garments with moisture-wicking, stretch, and durability requirements for athletic brands.', icon: 'sport' },
-  { title: "Children's Apparel", desc: 'Safe, skin-friendly kids\' wear manufactured with certified non-toxic dyes and gentle processes.', icon: 'kids' },
+  { title: "Children's Apparel", desc: "Safe, skin-friendly kids' wear manufactured with certified non-toxic dyes and gentle processes.", icon: 'kids' },
   { title: 'Corporate Apparel', desc: 'Professional uniforms, polo shirts, and branded workwear for corporate and institutional clients.', icon: 'corporate' },
 ];
 ---
 
 <Layout
   title="Our Clients"
-  description="Discover the global brands that trust Reve Stitching — serving international fashion, sportswear, children's apparel, and corporate sectors."
+  description="Discover the brands that trust Reve Stitching — serving UK & EU fashion, sportswear, children's apparel, and corporate sectors."
 >
 
-  <!-- ━━━━━━ HERO ━━━━━━ -->
-  <section class="relative py-24 lg:py-32 overflow-hidden bg-surface" aria-label="Clients hero">
-    <div class="absolute top-0 left-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px]"></div>
-    <div class="container-main section-padding relative z-10 text-center">
-      <span class="section-label justify-center" data-animate="fade-up">Our Clients</span>
-      <h1 class="heading-display mb-6 max-w-3xl mx-auto" data-animate="fade-up" data-delay="0.1">
-        Trusted by <span class="text-gradient">Global Brands</span>
+  <!-- ═══════════════════════════════════════
+       HERO
+       ═══════════════════════════════════════ -->
+  <section class="relative overflow-hidden bg-zinc-50 py-24 dark:bg-zinc-950 lg:py-32" aria-label="Clients hero">
+    <div class="pointer-events-none absolute inset-0 dark:hidden" aria-hidden="true"
+      style="background-image:linear-gradient(rgba(0,0,0,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.04) 1px,transparent 1px);background-size:72px 72px"
+    ></div>
+    <div class="pointer-events-none absolute inset-0 hidden dark:block" aria-hidden="true"
+      style="background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:72px 72px"
+    ></div>
+
+    <div class="relative z-10 mx-auto max-w-[90rem] px-6 text-center sm:px-8 lg:px-12 xl:px-16">
+      <div class="mb-4 flex items-center justify-center gap-3" data-animate="fade-up">
+        <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span>
+        <span class="text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400">Our Clients</span>
+        <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span>
+      </div>
+      <h1 class="font-serif text-4xl font-bold leading-tight text-zinc-900 dark:text-white sm:text-5xl lg:text-6xl" data-animate="fade-up" data-delay="0.08">
+        Trusted by <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">UK &amp; EU Brands</span>
       </h1>
-      <p class="text-body max-w-2xl mx-auto" data-animate="fade-up" data-delay="0.2">
-        From high-street fashion to premium activewear, we partner with brands across the world to deliver quality garments at scale.
+      <p class="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-zinc-500 dark:text-zinc-400 sm:text-lg" data-animate="fade-up" data-delay="0.16">
+        From high-street fashion to premium activewear, we partner with leading retailers across the United Kingdom and Europe to deliver quality garments at scale.
       </p>
     </div>
   </section>
 
-  <!-- ━━━━━━ GLOBAL MAP ━━━━━━ -->
-  <section class="py-24 lg:py-32 bg-white" aria-labelledby="global-heading">
-    <div class="container-main section-padding">
-      <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+  <!-- ═══════════════════════════════════════
+       EXPORT MARKETS MAP
+       ═══════════════════════════════════════ -->
+  <section class="bg-white py-24 dark:bg-zinc-950 lg:py-32" aria-labelledby="global-heading">
+    <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16">
+      <div class="grid items-center gap-16 lg:grid-cols-2">
+
         <div class="relative" data-animate="fade-right">
-          <div class="relative rounded-3xl overflow-hidden bg-surface border border-border p-6 sm:p-8">
-            <div class="aspect-[16/10] flex items-center justify-center relative">
-              <svg viewBox="0 0 800 400" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div class="relative overflow-hidden rounded-3xl border border-zinc-200 bg-zinc-50 p-6 dark:border-zinc-800 dark:bg-zinc-900 sm:p-8">
+            <div class="relative flex aspect-[16/10] items-center justify-center">
+              <svg viewBox="0 0 800 400" class="h-full w-full" fill="none" xmlns="http://www.w3.org/2000/svg">
                 {[80, 160, 240, 320].map(y => (
-                  <line x1="20" y1={y} x2="780" y2={y} stroke="#dcfce7" stroke-width="0.5" stroke-dasharray="4 4"/>
+                  <line x1="20" y1={y} x2="780" y2={y} stroke="#dcfce7" stroke-width="0.5" stroke-dasharray="4 4" class="dark:opacity-30"/>
                 ))}
                 {[100, 200, 300, 400, 500, 600, 700].map(x => (
-                  <line x1={x} y1="20" x2={x} y2="380" stroke="#dcfce7" stroke-width="0.5" stroke-dasharray="4 4"/>
+                  <line x1={x} y1="20" x2={x} y2="380" stroke="#dcfce7" stroke-width="0.5" stroke-dasharray="4 4" class="dark:opacity-30"/>
                 ))}
-                <path d="M320 100 Q340 90 360 95 Q380 85 400 90 L410 100 Q400 120 390 130 Q380 140 360 145 Q340 150 330 140 Q320 130 315 120 Z" fill="#dcfce7" stroke="#bbf7d0" stroke-width="1"/>
-                <ellipse cx="340" cy="110" rx="15" ry="22" fill="#dcfce7" stroke="#bbf7d0" stroke-width="1"/>
-                <path d="M460 120 Q490 100 530 110 Q560 115 570 140 Q565 170 540 185 Q510 195 485 180 Q460 165 455 145 Z" fill="#dcfce7" stroke="#bbf7d0" stroke-width="1"/>
+                <path d="M320 100 Q340 90 360 95 Q380 85 400 90 L410 100 Q400 120 390 130 Q380 140 360 145 Q340 150 330 140 Q320 130 315 120 Z" fill="#dcfce7" stroke="#bbf7d0" stroke-width="1" class="dark:opacity-40"/>
+                <ellipse cx="340" cy="110" rx="15" ry="22" fill="#dcfce7" stroke="#bbf7d0" stroke-width="1" class="dark:opacity-40"/>
+                <path d="M460 120 Q490 100 530 110 Q560 115 570 140 Q565 170 540 185 Q510 195 485 180 Q460 165 455 145 Z" fill="#dcfce7" stroke="#bbf7d0" stroke-width="1" class="dark:opacity-40"/>
                 <circle cx="510" cy="155" r="24" fill="#166534" fill-opacity="0.08">
                   <animate attributeName="r" values="20;28;20" dur="2.5s" repeatCount="indefinite"/>
                 </circle>
@@ -85,96 +101,126 @@ const industries = [
                 <path d="M505 155 Q440 100 375 125" stroke="#22c55e" stroke-width="1" stroke-dasharray="4 3" fill="none" opacity="0.4"/>
               </svg>
             </div>
-            <div class="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-border">
+            <div class="mt-4 flex items-center justify-center gap-6 border-t border-zinc-200 pt-4 dark:border-zinc-700">
               <div class="flex items-center gap-2">
-                <div class="w-3 h-3 rounded-full bg-primary"></div>
-                <span class="text-xs text-zinc-500 font-medium">Headquarters</span>
+                <div class="h-3 w-3 rounded-full bg-green-700"></div>
+                <span class="text-xs font-medium text-zinc-500 dark:text-zinc-400">Headquarters</span>
               </div>
               <div class="flex items-center gap-2">
-                <div class="w-3 h-3 rounded-full bg-primary-light"></div>
-                <span class="text-xs text-zinc-500 font-medium">Client Regions</span>
+                <div class="h-3 w-3 rounded-full bg-green-500"></div>
+                <span class="text-xs font-medium text-zinc-500 dark:text-zinc-400">Client Regions</span>
               </div>
             </div>
           </div>
         </div>
 
         <div>
-          <span class="section-label" data-animate="fade-up">Global Reach</span>
-          <h2 id="global-heading" class="heading-headline mb-6" data-animate="fade-up" data-delay="0.1">
-            Serving Brands <span class="text-gradient">Worldwide</span>
+          <div class="mb-4 flex items-center gap-3" data-animate="fade-up">
+            <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span>
+            <span class="text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400">Export Markets</span>
+          </div>
+          <h2 id="global-heading" class="font-serif text-3xl font-bold leading-tight text-zinc-900 dark:text-white sm:text-4xl lg:text-5xl" data-animate="fade-up" data-delay="0.08">
+            Serving Brands Across <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">UK &amp; EU</span>
           </h2>
-          <p class="text-body mb-8" data-animate="fade-up" data-delay="0.2">
-            From our state-of-the-art facility in Faisalabad, we ship export-quality garments to fashion brands across the United Kingdom, Europe, and beyond.
+          <p class="mt-5 text-base leading-relaxed text-zinc-500 dark:text-zinc-400 sm:text-lg" data-animate="fade-up" data-delay="0.16">
+            From our state-of-the-art facility in Faisalabad, we ship export-quality garments to fashion brands across the United Kingdom and Europe.
           </p>
-          <div class="grid grid-cols-2 gap-4" data-animate="fade-up" data-delay="0.3">
-            <div class="bg-surface rounded-xl p-5 border border-border"><div class="text-2xl font-bold text-primary mb-1">UK</div><div class="text-xs text-zinc-500">Primary Market</div></div>
-            <div class="bg-surface rounded-xl p-5 border border-border"><div class="text-2xl font-bold text-primary mb-1">EU</div><div class="text-xs text-zinc-500">Growing Market</div></div>
-            <div class="bg-surface rounded-xl p-5 border border-border"><div class="text-2xl font-bold text-primary mb-1">9+</div><div class="text-xs text-zinc-500">Brand Partners</div></div>
-            <div class="bg-surface rounded-xl p-5 border border-border"><div class="text-2xl font-bold text-primary mb-1">100%</div><div class="text-xs text-zinc-500">Export Oriented</div></div>
+
+          <div class="mt-8 grid grid-cols-2 gap-4" data-animate="fade-up" data-delay="0.24">
+            <div class="rounded-xl border border-zinc-200 bg-zinc-50 p-5 dark:border-zinc-800 dark:bg-zinc-900">
+              <div class="mb-1 text-2xl font-bold text-green-600 dark:text-green-400">UK</div>
+              <div class="text-xs text-zinc-500 dark:text-zinc-400">Primary Market</div>
+            </div>
+            <div class="rounded-xl border border-zinc-200 bg-zinc-50 p-5 dark:border-zinc-800 dark:bg-zinc-900">
+              <div class="mb-1 text-2xl font-bold text-green-600 dark:text-green-400">EU</div>
+              <div class="text-xs text-zinc-500 dark:text-zinc-400">Growing Market</div>
+            </div>
+            <div class="rounded-xl border border-zinc-200 bg-zinc-50 p-5 dark:border-zinc-800 dark:bg-zinc-900">
+              <div class="mb-1 text-2xl font-bold text-green-600 dark:text-green-400">9+</div>
+              <div class="text-xs text-zinc-500 dark:text-zinc-400">Brand Partners</div>
+            </div>
+            <div class="rounded-xl border border-zinc-200 bg-zinc-50 p-5 dark:border-zinc-800 dark:bg-zinc-900">
+              <div class="mb-1 text-2xl font-bold text-green-600 dark:text-green-400">100%</div>
+              <div class="text-xs text-zinc-500 dark:text-zinc-400">Export Oriented</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ━━━━━━ INDUSTRIES — FIXED: individual data-animate ━━━━━━ -->
-  <section class="py-24 lg:py-32 bg-surface" aria-labelledby="industries-heading">
-    <div class="container-main section-padding">
-      <div class="text-center mb-16">
-        <span class="section-label justify-center" data-animate="fade-up">Industries We Serve</span>
-        <h2 id="industries-heading" class="heading-headline mb-5" data-animate="fade-up" data-delay="0.1">
-          Sectors We <span class="text-gradient">Specialize</span> In
+
+  <!-- ═══════════════════════════════════════
+       INDUSTRIES
+       ═══════════════════════════════════════ -->
+  <section class="bg-zinc-50 py-24 dark:bg-zinc-900 lg:py-32" aria-labelledby="industries-heading">
+    <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16">
+      <div class="mx-auto mb-16 max-w-2xl text-center">
+        <div class="mb-4 flex items-center justify-center gap-3" data-animate="fade-up">
+          <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span>
+          <span class="text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400">Industries We Serve</span>
+          <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span>
+        </div>
+        <h2 id="industries-heading" class="font-serif text-3xl font-bold text-zinc-900 dark:text-white sm:text-4xl lg:text-5xl" data-animate="fade-up" data-delay="0.08">
+          Sectors We <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Specialize</span> In
         </h2>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {industries.map((industry, index) => (
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {industries.map((industry, i) => (
           <article
-            class="bg-white rounded-2xl p-8 border border-zinc-100 text-center group hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500"
+            class="group rounded-2xl border border-zinc-200 bg-white p-8 text-center transition-all duration-500 hover:border-green-500/20 hover:shadow-xl hover:shadow-green-600/5 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-green-400/20 dark:hover:shadow-green-400/5"
             data-animate="fade-up"
-            data-delay={String(index * 0.1)}
+            data-delay={String(i * 0.08)}
           >
-            <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-5 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
+            <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-green-500/10 transition-all duration-300 group-hover:scale-110 group-hover:bg-green-600 dark:group-hover:bg-green-500">
               {industry.icon === 'fashion' && (
-                <svg class="w-8 h-8 text-primary group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+                <svg class="h-8 w-8 text-green-600 transition-colors group-hover:text-white dark:text-green-400 dark:group-hover:text-zinc-950" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
               )}
               {industry.icon === 'sport' && (
-                <svg class="w-8 h-8 text-primary group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"/><path d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z"/></svg>
+                <svg class="h-8 w-8 text-green-600 transition-colors group-hover:text-white dark:text-green-400 dark:group-hover:text-zinc-950" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"/><path d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z"/></svg>
               )}
               {industry.icon === 'kids' && (
-                <svg class="w-8 h-8 text-primary group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z"/></svg>
+                <svg class="h-8 w-8 text-green-600 transition-colors group-hover:text-white dark:text-green-400 dark:group-hover:text-zinc-950" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z"/></svg>
               )}
               {industry.icon === 'corporate' && (
-                <svg class="w-8 h-8 text-primary group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z"/></svg>
+                <svg class="h-8 w-8 text-green-600 transition-colors group-hover:text-white dark:text-green-400 dark:group-hover:text-zinc-950" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z"/></svg>
               )}
             </div>
-            <h3 class="text-base font-bold text-zinc-900 mb-2">{industry.title}</h3>
-            <p class="text-sm text-zinc-500 leading-relaxed">{industry.desc}</p>
+            <h3 class="text-base font-bold text-zinc-900 dark:text-white">{industry.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{industry.desc}</p>
           </article>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- ━━━━━━ CLIENT LOGOS — FIXED: individual data-animate ━━━━━━ -->
-  <section class="py-24 lg:py-32 bg-white" aria-labelledby="logos-heading">
-    <div class="container-main section-padding">
-      <div class="text-center mb-16">
-        <span class="section-label justify-center" data-animate="fade-up">Trusted Partners</span>
-        <h2 id="logos-heading" class="heading-headline mb-5" data-animate="fade-up" data-delay="0.1">
-          Brands We <span class="text-gradient">Work With</span>
+
+  <!-- ═══════════════════════════════════════
+       CLIENT LOGOS
+       ═══════════════════════════════════════ -->
+  <section class="bg-white py-24 dark:bg-zinc-950 lg:py-32" aria-labelledby="logos-heading">
+    <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16">
+      <div class="mx-auto mb-16 max-w-2xl text-center">
+        <div class="mb-4 flex items-center justify-center gap-3" data-animate="fade-up">
+          <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span>
+          <span class="text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400">Trusted Partners</span>
+          <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span>
+        </div>
+        <h2 id="logos-heading" class="font-serif text-3xl font-bold text-zinc-900 dark:text-white sm:text-4xl lg:text-5xl" data-animate="fade-up" data-delay="0.08">
+          Brands We <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Work With</span>
         </h2>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-        {clients.map((client, index) => (
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        {clients.map((client, i) => (
           <div
-            class="bg-zinc-50 rounded-2xl border border-zinc-100 p-6 sm:p-8 flex items-center justify-center aspect-[3/2] group hover:border-primary/30 hover:bg-white hover:shadow-lg hover:shadow-primary/5 transition-all duration-500"
+            class="group flex aspect-[3/2] items-center justify-center rounded-2xl border border-zinc-200 bg-zinc-50 p-6 transition-all duration-500 hover:border-green-500/30 hover:bg-white hover:shadow-lg hover:shadow-green-600/5 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-green-400/30 dark:hover:bg-zinc-800 dark:hover:shadow-green-400/5 sm:p-8"
             data-animate="fade-up"
-            data-delay={String(index * 0.06)}
+            data-delay={String(i * 0.05)}
           >
             <span class:list={[
-              'text-zinc-400 group-hover:text-zinc-700 transition-colors duration-300 text-center select-none leading-tight',
+              'select-none text-center leading-tight text-zinc-400 transition-colors duration-300 group-hover:text-zinc-700 dark:text-zinc-600 dark:group-hover:text-zinc-200',
               client.style,
             ]}>
               {client.name}
@@ -185,69 +231,108 @@ const industries = [
     </div>
   </section>
 
-  <!-- ━━━━━━ CERTIFICATIONS — FIXED: individual data-animate ━━━━━━ -->
-  <section class="py-24 lg:py-32 bg-primary-dark relative overflow-hidden" aria-labelledby="certs-heading">
-    <div class="absolute inset-0 opacity-5">
-      <div class="absolute inset-0" style="background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0); background-size: 40px 40px;"></div>
-    </div>
 
-    <div class="container-main section-padding relative z-10">
-      <div class="text-center mb-16">
-        <span class="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] uppercase text-primary-light mb-4" data-animate="fade-up">
-          <span class="w-8 h-px bg-primary-light"></span>
-          Certifications
-          <span class="w-8 h-px bg-primary-light"></span>
-        </span>
-        <h2 id="certs-heading" class="font-serif text-headline text-white mb-5" data-animate="fade-up" data-delay="0.1">
+  <!-- ═══════════════════════════════════════
+       CERTIFICATIONS
+       ═══════════════════════════════════════ -->
+  <section class="relative overflow-hidden bg-zinc-900 py-24 dark:bg-zinc-950 lg:py-32" aria-labelledby="certs-heading">
+    <div class="pointer-events-none absolute inset-0 opacity-[0.04]" aria-hidden="true"
+      style="background-image:radial-gradient(circle at 1px 1px, white 1px, transparent 0);background-size:40px 40px"
+    ></div>
+
+    <div class="relative z-10 mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16">
+      <div class="mx-auto mb-16 max-w-2xl text-center">
+        <div class="mb-4 flex items-center justify-center gap-3" data-animate="fade-up">
+          <span class="block h-px w-8 bg-green-400" aria-hidden="true"></span>
+          <span class="text-[11px] font-semibold uppercase tracking-[0.3em] text-green-400">Certifications</span>
+          <span class="block h-px w-8 bg-green-400" aria-hidden="true"></span>
+        </div>
+        <h2 id="certs-heading" class="font-serif text-3xl font-bold text-white sm:text-4xl lg:text-5xl" data-animate="fade-up" data-delay="0.08">
           Certified for Excellence
         </h2>
-        <p class="text-green-100/60 max-w-xl mx-auto" data-animate="fade-up" data-delay="0.2">
+        <p class="mt-4 text-base text-zinc-400" data-animate="fade-up" data-delay="0.16">
           Our certifications reflect our unwavering commitment to quality, ethics, and sustainability.
         </p>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        {certifications.map((cert, index) => (
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        {certifications.map((cert, i) => (
           <div
-            class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 text-center hover:bg-white/10 hover:border-white/20 transition-all duration-300 group"
+            class="group rounded-2xl border border-white/10 bg-white/5 p-6 text-center backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10"
             data-animate="fade-up"
-            data-delay={String(index * 0.08)}
+            data-delay={String(i * 0.06)}
           >
-            <div class={`w-14 h-14 rounded-full ${cert.color} bg-opacity-20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}>
-              <svg class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-500/20 transition-transform duration-300 group-hover:scale-110">
+              <svg class="h-7 w-7 text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <path d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"/>
               </svg>
             </div>
-            <div class="text-lg font-bold text-white mb-1">{cert.name}</div>
-            <p class="text-xs text-green-100/50">{cert.full}</p>
+            <div class="mb-1 text-lg font-bold text-white">{cert.name}</div>
+            <p class="text-xs text-zinc-500">{cert.full}</p>
           </div>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- ━━━━━━ STATS ━━━━━━ -->
-  <section class="py-20 bg-white" aria-label="Key figures">
-    <div class="container-main section-padding">
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-        {[
-          { value: 300000, suffix: '+', label: 'Monthly Garments' },
-          { value: 150, suffix: '+', label: 'Modern Machines' },
-          { value: 9, suffix: '+', label: 'Brand Partners' },
-          { value: 8, suffix: '', label: 'Certifications' },
-        ].map((stat, index) => (
-          <div data-animate="fade-up" data-delay={String(index * 0.1)}>
-            <div
-              class="text-4xl lg:text-5xl font-bold text-primary mb-2"
-              data-counter={stat.value}
-              data-suffix={stat.suffix}
-            >
-              0{stat.suffix}
-            </div>
-            <div class="text-sm text-zinc-500 font-medium uppercase tracking-wider">{stat.label}</div>
+
+  <!-- ═══════════════════════════════════════
+       STATS
+       ═══════════════════════════════════════ -->
+  <section class="bg-white py-20 dark:bg-zinc-950 lg:py-24" aria-label="Key figures">
+    <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16">
+      <div class="grid grid-cols-2 gap-8 text-center lg:grid-cols-4 lg:gap-12">
+        <div data-animate="fade-up">
+          <div class="font-serif text-4xl font-bold text-zinc-900 dark:text-white sm:text-5xl lg:text-6xl">
+            <span data-counter="300000">0</span><span class="text-green-600 dark:text-green-400">+</span>
           </div>
-        ))}
+          <p class="mt-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">Monthly Garments</p>
+        </div>
+        <div data-animate="fade-up" data-delay="0.08">
+          <div class="font-serif text-4xl font-bold text-zinc-900 dark:text-white sm:text-5xl lg:text-6xl">
+            <span data-counter="150">0</span><span class="text-green-600 dark:text-green-400">+</span>
+          </div>
+          <p class="mt-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">Modern Machines</p>
+        </div>
+        <div data-animate="fade-up" data-delay="0.16">
+          <div class="font-serif text-4xl font-bold text-zinc-900 dark:text-white sm:text-5xl lg:text-6xl">
+            <span data-counter="9">0</span><span class="text-green-600 dark:text-green-400">+</span>
+          </div>
+          <p class="mt-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">Brand Partners</p>
+        </div>
+        <div data-animate="fade-up" data-delay="0.24">
+          <div class="font-serif text-4xl font-bold text-zinc-900 dark:text-white sm:text-5xl lg:text-6xl">
+            <span data-counter="8">0</span>
+          </div>
+          <p class="mt-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">Certifications</p>
+        </div>
       </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════
+       CTA
+       ═══════════════════════════════════════ -->
+  <section class="relative bg-zinc-900 py-20 dark:bg-zinc-950" aria-label="Call to action">
+    <div class="pointer-events-none absolute inset-0 opacity-[0.04]" aria-hidden="true"
+      style="background-image:radial-gradient(circle at 1px 1px, white 1px, transparent 0);background-size:40px 40px"
+    ></div>
+    <div class="relative z-10 mx-auto max-w-[90rem] px-6 text-center sm:px-8 lg:px-12 xl:px-16">
+      <h2 class="font-serif text-2xl font-bold text-white sm:text-3xl lg:text-4xl" data-animate="fade-up">Ready to Join Our Client Portfolio?</h2>
+      <p class="mx-auto mt-4 max-w-lg text-zinc-400" data-animate="fade-up" data-delay="0.1">
+        Partner with a manufacturer trusted by leading UK &amp; EU retailers. Get your free quote today.
+      </p>
+      <a
+        href="/quote/"
+        class="mt-8 inline-flex items-center gap-2 rounded-full bg-green-500 px-8 py-4 text-sm font-bold uppercase tracking-wider text-zinc-950 shadow-lg transition-all hover:bg-green-400"
+        data-magnetic
+        data-animate="fade-up"
+        data-delay="0.15"
+      >
+        Get Your Free Quote
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
     </div>
   </section>
 

@@ -1198,6 +1198,7 @@ function initMouseTracking() {
 
 /* ═══════════════════════════════════════════
    MODULE: PINNED STEPS (scroll-driven process)
+   Sequential exit→enter. No text overlap.
    ═══════════════════════════════════════════ */
    function initPinnedSteps() {
     var sections = document.querySelectorAll('[data-pinned-steps]');
@@ -1215,30 +1216,28 @@ function initMouseTracking() {
           var n = panels.length;
           var activeIdx = 0;
   
-          /* ── Initial state ── */
           panels.forEach(function (panel, i) {
             gsap.set(panel, {
               autoAlpha: i === 0 ? 1 : 0,
-              y: i === 0 ? 0 : 20,
+              y: i === 0 ? 0 : 25,
               force3D: true,
             });
           });
   
-          /* ── Scroll-driven timeline ── */
           var tl = gsap.timeline({
             scrollTrigger: {
               trigger: section,
               start: 'top top',
               end: function () {
-                return '+=' + ((n - 1) * 28) + '%';
+                return '+=' + ((n - 1) * 40) + '%';
               },
               pin: true,
               anticipatePin: 1,
-              scrub: 0.06,
+              scrub: 0.12,
               invalidateOnRefresh: true,
               snap: {
                 snapTo: 1 / (n - 1),
-                duration: { min: 0.1, max: 0.35 },
+                duration: { min: 0.15, max: 0.4 },
                 delay: 0,
                 ease: 'power3.out',
               },
@@ -1255,19 +1254,36 @@ function initMouseTracking() {
             },
           });
   
-          /* ── Simultaneous crossfade — no dead zones ── */
+          /*
+           * SEQUENTIAL transitions — exit FIRST, then enter.
+           * Per step (duration = 1 unit):
+           *   Exit:  i → i+0.4  (current panel fades out)
+           *   Enter: i+0.35 → i+1.0  (next panel fades in)
+           *   Overlap zone: 5% (i+0.35 to i+0.4) — both nearly invisible
+           *   Timeline total = exactly n-1 (snaps align perfectly)
+           */
           for (var i = 0; i < n - 1; i++) {
             tl.to(
               panels[i],
-              { autoAlpha: 0, y: -15, duration: 1, ease: 'none' },
+              {
+                autoAlpha: 0,
+                y: -20,
+                duration: 0.4,
+                ease: 'power2.in',
+              },
               i
             );
   
             tl.fromTo(
               panels[i + 1],
-              { autoAlpha: 0, y: 20 },
-              { autoAlpha: 1, y: 0, duration: 1, ease: 'none' },
-              i
+              { autoAlpha: 0, y: 25 },
+              {
+                autoAlpha: 1,
+                y: 0,
+                duration: 0.65,
+                ease: 'power2.out',
+              },
+              i + 0.35
             );
           }
   
@@ -1276,6 +1292,7 @@ function initMouseTracking() {
       );
     });
   }
+  
 /* ═══════════════════════════════════════════
    FALLBACK
    ═══════════════════════════════════════════ */
