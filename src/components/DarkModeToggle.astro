@@ -5,10 +5,11 @@
 <button
   id="theme-toggle"
   type="button"
-  class="relative inline-flex h-10 w-10 items-center justify-center rounded-lg transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 dark:focus:ring-offset-zinc-900"
+  class="relative inline-flex h-10 w-10 items-center justify-center rounded-lg transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 focus:outline-none focus-visible:outline-none"
+  style="-webkit-tap-highlight-color: transparent; outline: none;"
   aria-label="Toggle dark mode"
 >
-  <!-- Sun icon (shown in dark mode — click to go light) -->
+  <!-- Sun icon (shown in dark mode) -->
   <svg
     class="h-5 w-5 text-zinc-400 hidden dark:block"
     fill="none"
@@ -19,7 +20,7 @@
     <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
   </svg>
 
-  <!-- Moon icon (shown in light mode — click to go dark) -->
+  <!-- Moon icon (shown in light mode) -->
   <svg
     class="h-5 w-5 text-zinc-600 block dark:hidden"
     fill="none"
@@ -31,16 +32,26 @@
   </svg>
 </button>
 
+<style>
+  #theme-toggle:focus,
+  #theme-toggle:active,
+  #theme-toggle:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+    ring: none !important;
+  }
+</style>
+
 <script>
   function initThemeToggle() {
     const toggle = document.getElementById('theme-toggle');
     if (!toggle) return;
 
-    // Remove old listeners by cloning
     const newToggle = toggle.cloneNode(true) as HTMLElement;
     toggle.parentNode?.replaceChild(newToggle, toggle);
 
     newToggle.addEventListener('click', () => {
+      newToggle.blur();
       const isDark = document.documentElement.classList.contains('dark');
       if (isDark) {
         document.documentElement.classList.remove('dark');
@@ -52,9 +63,6 @@
     });
   }
 
-  // Run on initial load
   initThemeToggle();
-
-  // Re-run on Astro page navigation
   document.addEventListener('astro:page-load', initThemeToggle);
 </script>

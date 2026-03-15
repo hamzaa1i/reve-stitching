@@ -1,9 +1,4 @@
 ---
-/**
- * src/pages/about.astro
- * FIXED: Team grid uses individual data-animate instead of data-stagger.
- *        All images use Unsplash URLs.
- */
 import Layout from '../layouts/Layout.astro';
 import TimelineItem from '../components/TimelineItem.astro';
 
@@ -40,8 +35,8 @@ const timeline = [
   },
   {
     year: '2025',
-    title: 'Sustainability & Automation Initiative',
-    description: 'Launched our green manufacturing initiative with energy-efficient processes, sustainable material sourcing, and advanced automation integration.',
+    title: 'Sustainability & Automation',
+    description: 'Launched our green manufacturing initiative with energy-efficient processes, sustainable material sourcing, and advanced ERP-powered automation.',
   },
 ];
 
@@ -50,7 +45,7 @@ const leaders = [
     name: 'Vasim Ahmad',
     role: 'Chief Executive Officer',
     image: '/images/team/ceo.jpg',
-    desc: 'Visionary leader driving Reve Stitching\'s growth with a focus on sustainable, ethical manufacturing and global partnerships.',
+    desc: "Visionary leader driving Reve Stitching's growth with a focus on sustainable, ethical manufacturing and global partnerships.",
   },
   {
     name: 'Haroon Iqbal',
@@ -74,69 +69,90 @@ const leaders = [
 ---
 
 <Layout
-  title="About Us"
+  title="About Us — Reve Stitching"
   description="Learn about Reve Stitching — our story, leadership, and commitment to ethical, world-class knitted garment manufacturing since 2019."
 >
 
-  <!-- ━━━━━━ HERO ━━━━━━ -->
-  <section class="relative py-24 lg:py-32 overflow-hidden bg-surface" aria-label="About hero">
-    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px]"></div>
+  <!-- ═══════════════════════════════════════
+       HERO
+       ═══════════════════════════════════════ -->
+  <section class="relative overflow-hidden bg-zinc-50 py-24 dark:bg-zinc-950 lg:py-32" aria-label="About hero">
+    <div
+      class="pointer-events-none absolute inset-0 dark:hidden"
+      aria-hidden="true"
+      style="background-image:linear-gradient(rgba(0,0,0,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.04) 1px,transparent 1px);background-size:72px 72px"
+    ></div>
+    <div
+      class="pointer-events-none absolute inset-0 hidden dark:block"
+      aria-hidden="true"
+      style="background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:72px 72px"
+    ></div>
 
-    <div class="container-main section-padding relative z-10">
-      <div class="grid lg:grid-cols-2 gap-16 items-center">
+    <div class="relative z-10 mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16">
+      <div class="grid items-center gap-16 lg:grid-cols-2">
         <div>
-          <span class="section-label" data-animate="fade-up">About Reve Stitching</span>
-          <h1 class="heading-display mb-6" data-animate="fade-up" data-delay="0.1">
-            Crafting Excellence <span class="text-gradient">Since 2019</span>
+          <div class="mb-6 flex items-center gap-3" data-animate="fade-up">
+            <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span>
+            <span class="text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400">About Reve Stitching</span>
+          </div>
+          <h1 class="font-serif text-4xl font-bold leading-tight text-zinc-900 dark:text-white sm:text-5xl lg:text-6xl" data-animate="fade-up" data-delay="0.08">
+            Crafting Excellence <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Since 2019</span>
           </h1>
-          <p class="text-body mb-6" data-animate="fade-up" data-delay="0.2">
+          <p class="mt-6 text-base leading-relaxed text-zinc-500 dark:text-zinc-400 sm:text-lg" data-animate="fade-up" data-delay="0.16">
             Reve Stitching is a leading 100% export-oriented knitted garment manufacturer, strategically located in Faisalabad — the heart of Pakistan's textile industry.
           </p>
-          <p class="text-body mb-8" data-animate="fade-up" data-delay="0.25">
-            From a modest beginning in 2019, we've grown into a full composite knitwear facility with 150+ modern machines and a monthly production capacity exceeding 300,000 garments. Our commitment to ethical practices, environmental sustainability, and uncompromising quality has earned us the trust of major international brands.
+          <p class="mt-4 text-base leading-relaxed text-zinc-500 dark:text-zinc-400 sm:text-lg" data-animate="fade-up" data-delay="0.2">
+            From a modest beginning in 2019, we've grown into a full composite knitwear facility with 150+ modern machines and a monthly production capacity exceeding 300,000 garments.
           </p>
-          <div class="flex flex-wrap gap-4" data-animate="fade-up" data-delay="0.3">
-            <div class="bg-white rounded-xl px-6 py-4 border border-border">
-              <div class="text-2xl font-bold text-primary">300K+</div>
-              <div class="text-xs text-zinc-500 font-medium mt-1">Monthly Capacity</div>
+
+          <div class="mt-8 flex flex-wrap gap-4" data-animate="fade-up" data-delay="0.28">
+            <div class="rounded-xl border border-zinc-200 bg-white px-6 py-4 dark:border-zinc-800 dark:bg-zinc-900">
+              <div class="text-2xl font-bold text-green-600 dark:text-green-400">300K+</div>
+              <div class="mt-1 text-xs font-medium text-zinc-500">Monthly Capacity</div>
             </div>
-            <div class="bg-white rounded-xl px-6 py-4 border border-border">
-              <div class="text-2xl font-bold text-primary">150+</div>
-              <div class="text-xs text-zinc-500 font-medium mt-1">Modern Machines</div>
+            <div class="rounded-xl border border-zinc-200 bg-white px-6 py-4 dark:border-zinc-800 dark:bg-zinc-900">
+              <div class="text-2xl font-bold text-green-600 dark:text-green-400">150+</div>
+              <div class="mt-1 text-xs font-medium text-zinc-500">Modern Machines</div>
             </div>
-            <div class="bg-white rounded-xl px-6 py-4 border border-border">
-              <div class="text-2xl font-bold text-primary">6+</div>
-              <div class="text-xs text-zinc-500 font-medium mt-1">Years of Excellence</div>
+            <div class="rounded-xl border border-zinc-200 bg-white px-6 py-4 dark:border-zinc-800 dark:bg-zinc-900">
+              <div class="text-2xl font-bold text-green-600 dark:text-green-400">6+</div>
+              <div class="mt-1 text-xs font-medium text-zinc-500">Years of Excellence</div>
             </div>
           </div>
         </div>
 
         <div class="relative" data-animate="fade-left" data-delay="0.2">
-          <div class="rounded-3xl overflow-hidden shadow-2xl shadow-primary/10 aspect-[4/5] bg-zinc-200">
+          <div class="aspect-[4/5] overflow-hidden rounded-3xl bg-zinc-200 shadow-2xl shadow-green-600/10 dark:bg-zinc-800 dark:shadow-green-400/5">
             <img
               src="https://images.unsplash.com/photo-1565688534245-05d6b5be184a?auto=format&fit=crop&w=1000&h=1250&q=80"
-              alt="Inside the Reve Stitching manufacturing facility — precision sewing equipment"
-              class="w-full h-full object-cover"
+              alt="Inside the Reve Stitching manufacturing facility"
+              class="h-full w-full object-cover"
               loading="eager"
               decoding="async"
             />
           </div>
-          <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-primary/10 rounded-2xl -z-10"></div>
+          <div class="absolute -bottom-6 -right-6 -z-10 h-32 w-32 rounded-2xl bg-green-500/10 dark:bg-green-400/5" aria-hidden="true"></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ━━━━━━ TIMELINE ━━━━━━ -->
-  <section class="py-24 lg:py-32 bg-white" aria-labelledby="timeline-heading">
-    <div class="container-main section-padding">
-      <div class="grid lg:grid-cols-2 gap-16">
+
+  <!-- ═══════════════════════════════════════
+       TIMELINE
+       ═══════════════════════════════════════ -->
+  <section class="bg-white py-24 dark:bg-zinc-950 lg:py-32" aria-labelledby="timeline-heading">
+    <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16">
+      <div class="grid gap-16 lg:grid-cols-2">
         <div class="lg:sticky lg:top-32 lg:self-start">
-          <span class="section-label" data-animate="fade-up">Our Journey</span>
-          <h2 id="timeline-heading" class="heading-headline mb-5" data-animate="fade-up" data-delay="0.1">
-            A Timeline of <span class="text-gradient">Growth</span>
+          <div class="mb-4 flex items-center gap-3" data-animate="fade-up">
+            <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span>
+            <span class="text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400">Our Journey</span>
+          </div>
+          <h2 id="timeline-heading" class="font-serif text-3xl font-bold leading-tight text-zinc-900 dark:text-white sm:text-4xl lg:text-5xl" data-animate="fade-up" data-delay="0.08">
+            A Timeline of <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Growth</span>
           </h2>
-          <p class="text-body max-w-md" data-animate="fade-up" data-delay="0.2">
+          <p class="mt-5 max-w-md text-base leading-relaxed text-zinc-500 dark:text-zinc-400" data-animate="fade-up" data-delay="0.16">
             From our founding in 2019 to becoming a globally recognized manufacturer, every year marks a milestone in our journey toward excellence.
           </p>
         </div>
@@ -155,41 +171,44 @@ const leaders = [
     </div>
   </section>
 
-  <!-- ━━━━━━ LEADERSHIP — FIXED: individual data-animate per card ━━━━━━ -->
-  <section class="py-24 lg:py-32 bg-surface" aria-labelledby="leadership-heading">
-    <div class="container-main section-padding">
-      <div class="text-center max-w-2xl mx-auto mb-16">
-        <span class="section-label justify-center" data-animate="fade-up">Leadership</span>
-        <h2 id="leadership-heading" class="heading-headline mb-5" data-animate="fade-up" data-delay="0.1">
-          Meet Our <span class="text-gradient">Team</span>
+
+  <!-- ═══════════════════════════════════════
+       LEADERSHIP
+       ═══════════════════════════════════════ -->
+  <section class="bg-zinc-50 py-24 dark:bg-zinc-900 lg:py-32" aria-labelledby="leadership-heading">
+    <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16">
+      <div class="mx-auto mb-16 max-w-2xl text-center">
+        <span class="mb-3 inline-block text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400" data-animate="fade-up">Leadership</span>
+        <h2 id="leadership-heading" class="font-serif text-3xl font-bold text-zinc-900 dark:text-white sm:text-4xl lg:text-5xl" data-animate="fade-up" data-delay="0.08">
+          Meet Our <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Team</span>
         </h2>
-        <p class="text-body" data-animate="fade-up" data-delay="0.2">
+        <p class="mt-4 text-base text-zinc-500 dark:text-zinc-400" data-animate="fade-up" data-delay="0.16">
           Experienced professionals dedicated to delivering excellence in every garment we produce.
         </p>
       </div>
 
-      <!-- FIXED: No more data-stagger — each card animates independently -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {leaders.map((leader, index) => (
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {leaders.map((leader, i) => (
           <article
-            class="bg-white rounded-2xl overflow-hidden border border-zinc-100 group hover:shadow-xl hover:shadow-primary/5 transition-all duration-500"
+            class="group overflow-hidden rounded-2xl border border-zinc-200 bg-white transition-all duration-500 hover:shadow-xl hover:shadow-green-600/5 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:shadow-green-400/5"
             data-animate="fade-up"
-            data-delay={String(0.1 + index * 0.1)}
+            data-delay={String(i * 0.08)}
+            data-tilt
           >
-            <div class="aspect-[3/4] overflow-hidden bg-zinc-200 relative">
+            <div class="relative aspect-[3/4] overflow-hidden bg-zinc-200 dark:bg-zinc-800">
               <img
                 src={leader.image}
                 alt={`${leader.name} — ${leader.role} at Reve Stitching`}
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 loading="lazy"
                 decoding="async"
               />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
             </div>
             <div class="p-6">
-              <h3 class="text-lg font-bold text-zinc-900 mb-1">{leader.name}</h3>
-              <p class="text-sm font-semibold text-primary mb-3">{leader.role}</p>
-              <p class="text-sm text-zinc-500 leading-relaxed">{leader.desc}</p>
+              <h3 class="text-lg font-bold text-zinc-900 dark:text-white">{leader.name}</h3>
+              <p class="text-sm font-semibold text-green-600 dark:text-green-400">{leader.role}</p>
+              <p class="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{leader.desc}</p>
             </div>
           </article>
         ))}
@@ -197,16 +216,19 @@ const leaders = [
     </div>
   </section>
 
-  <!-- ━━━━━━ QUALITY COMMITMENT ━━━━━━ -->
-  <section class="py-24 lg:py-32 bg-white" aria-labelledby="quality-heading">
-    <div class="container-main section-padding">
-      <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+  <!-- ═══════════════════════════════════════
+       QUALITY COMMITMENT
+       ═══════════════════════════════════════ -->
+  <section class="bg-white py-24 dark:bg-zinc-950 lg:py-32" aria-labelledby="quality-heading">
+    <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16">
+      <div class="grid items-center gap-16 lg:grid-cols-2">
         <div class="relative" data-animate="fade-right">
-          <div class="rounded-3xl overflow-hidden shadow-xl aspect-[4/3] bg-zinc-200">
+          <div class="aspect-[4/3] overflow-hidden rounded-3xl bg-zinc-200 shadow-xl dark:bg-zinc-800">
             <img
               src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&h=900&q=80"
-              alt="Quality control inspection process at Reve Stitching — technician reviewing garment standards"
-              class="w-full h-full object-cover"
+              alt="Quality control inspection process at Reve Stitching"
+              class="h-full w-full object-cover"
               loading="lazy"
               decoding="async"
             />
@@ -214,15 +236,18 @@ const leaders = [
         </div>
 
         <div>
-          <span class="section-label" data-animate="fade-up">Quality Commitment</span>
-          <h2 id="quality-heading" class="heading-headline mb-6" data-animate="fade-up" data-delay="0.1">
-            Uncompromising <span class="text-gradient">Quality</span> Standards
+          <div class="mb-4 flex items-center gap-3" data-animate="fade-up">
+            <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span>
+            <span class="text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400">Quality Commitment</span>
+          </div>
+          <h2 id="quality-heading" class="font-serif text-3xl font-bold leading-tight text-zinc-900 dark:text-white sm:text-4xl lg:text-5xl" data-animate="fade-up" data-delay="0.08">
+            Uncompromising <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Quality</span> Standards
           </h2>
-          <p class="text-body mb-8" data-animate="fade-up" data-delay="0.2">
+          <p class="mt-5 text-base leading-relaxed text-zinc-500 dark:text-zinc-400 sm:text-lg" data-animate="fade-up" data-delay="0.16">
             Quality is the cornerstone of everything we do. Our SGS-trained workforce maintains AQL 1.5-4.0 standards across every production run, with multi-stage quality checks from raw material inspection to final garment audit.
           </p>
 
-          <div class="space-y-4" data-animate="fade-up" data-delay="0.3">
+          <div class="mt-8 space-y-4" data-animate="fade-up" data-delay="0.24">
             {[
               'AQL 1.5-4.0 quality standards on every order',
               'SGS-trained quality control team',
@@ -232,12 +257,12 @@ const leaders = [
               'Full traceability from raw material to finished product',
             ].map((item) => (
               <div class="flex items-start gap-3">
-                <div class="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                  <svg class="w-3.5 h-3.5 text-primary" viewBox="0 0 20 20" fill="currentColor">
+                <div class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-500/10">
+                  <svg class="h-3.5 w-3.5 text-green-600 dark:text-green-400" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd"/>
                   </svg>
                 </div>
-                <span class="text-sm text-zinc-600 font-medium">{item}</span>
+                <span class="text-sm font-medium text-zinc-600 dark:text-zinc-400">{item}</span>
               </div>
             ))}
           </div>
@@ -246,19 +271,29 @@ const leaders = [
     </div>
   </section>
 
-  <!-- ━━━━━━ CTA ━━━━━━ -->
-  <section class="py-20 bg-primary-dark relative overflow-hidden">
-    <div class="absolute inset-0 opacity-5">
-      <div class="absolute inset-0" style="background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0); background-size: 40px 40px;"></div>
-    </div>
-    <div class="container-main section-padding relative z-10 text-center">
-      <h2 class="font-serif text-headline text-white mb-4" data-animate="fade-up">Ready to Partner With Us?</h2>
-      <p class="text-green-100/70 mb-8 max-w-lg mx-auto" data-animate="fade-up" data-delay="0.1">
+
+  <!-- ═══════════════════════════════════════
+       CTA
+       ═══════════════════════════════════════ -->
+  <section class="relative bg-zinc-900 py-20 dark:bg-zinc-950" aria-label="Call to action">
+    <div class="pointer-events-none absolute inset-0 opacity-[0.04]" aria-hidden="true"
+      style="background-image:radial-gradient(circle at 1px 1px, white 1px, transparent 0);background-size:40px 40px"
+    ></div>
+
+    <div class="relative z-10 mx-auto max-w-[90rem] px-6 text-center sm:px-8 lg:px-12 xl:px-16">
+      <h2 class="font-serif text-2xl font-bold text-white sm:text-3xl lg:text-4xl" data-animate="fade-up">Ready to Partner With Us?</h2>
+      <p class="mx-auto mt-4 max-w-lg text-zinc-400" data-animate="fade-up" data-delay="0.1">
         Join the growing list of international brands that trust Reve Stitching for their manufacturing needs.
       </p>
-      <a href="/contact/" class="btn-white" data-magnetic data-animate="fade-up" data-delay="0.2">
+      <a
+        href="/quote/"
+        class="mt-8 inline-flex items-center gap-2 rounded-full bg-green-500 px-8 py-4 text-sm font-bold uppercase tracking-wider text-zinc-950 shadow-lg transition-all hover:bg-green-400"
+        data-magnetic
+        data-animate="fade-up"
+        data-delay="0.15"
+      >
         Contact Our Team
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
     </div>
   </section>
