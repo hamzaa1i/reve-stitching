@@ -1,6 +1,4 @@
 ---
-// src/components/PriceCalculator.astro
-
 import {
   PRODUCT_LABELS,
   FABRIC_LABELS,
@@ -14,47 +12,34 @@ import {
 } from '../lib/pricing';
 
 interface Props {
-  /** Pre-select a product */
   defaultProduct?: string;
-  /** Compact mode for sidebars / embeds */
   compact?: boolean;
 }
 
 const { defaultProduct, compact = false } = Astro.props;
 
-// Build data attributes for client-side hydration
 const productsJson = JSON.stringify(
   Object.entries(PRODUCT_LABELS).map(([key, label]) => ({
-    key,
-    label,
-    base: BASE_PRICES[key as keyof typeof BASE_PRICES],
+    key, label, base: BASE_PRICES[key as keyof typeof BASE_PRICES],
   }))
 );
-
 const fabricsJson = JSON.stringify(
   Object.entries(FABRIC_LABELS).map(([key, label]) => ({
-    key,
-    label,
-    multiplier: FABRIC_MULTIPLIERS[key as keyof typeof FABRIC_MULTIPLIERS],
+    key, label, multiplier: FABRIC_MULTIPLIERS[key as keyof typeof FABRIC_MULTIPLIERS],
   }))
 );
-
 const customizationsJson = JSON.stringify(
   Object.entries(CUSTOMIZATION_LABELS).map(([key, label]) => ({
-    key,
-    label,
-    cost: CUSTOMIZATION_COSTS[key as keyof typeof CUSTOMIZATION_COSTS],
+    key, label, cost: CUSTOMIZATION_COSTS[key as keyof typeof CUSTOMIZATION_COSTS],
   }))
 );
-
 const tiersJson = JSON.stringify(QUANTITY_TIERS);
 const currencyConfigJson = JSON.stringify(CURRENCY_CONFIG);
 ---
 
 <div
   class:list={[
-    'price-calculator bg-white rounded-2xl border border-zinc-100 overflow-hidden',
-    'shadow-sm hover:shadow-md transition-shadow duration-300',
+    'price-calculator overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900',
     compact && 'price-calculator--compact',
   ]}
   id="price-calculator"
@@ -66,115 +51,64 @@ const currencyConfigJson = JSON.stringify(CURRENCY_CONFIG);
   data-exchange-rate={USD_TO_GBP_RATE}
   data-default-product={defaultProduct || 'tshirts'}
 >
-  <!-- ━━━━━━ HEADER ━━━━━━ -->
-  <div class="px-6 pt-6 pb-4 sm:px-8 sm:pt-8 border-b border-zinc-50">
+  <!-- ━━━ HEADER ━━━ -->
+  <div class="border-b border-zinc-100 px-6 pb-4 pt-6 dark:border-zinc-800 sm:px-8 sm:pt-8">
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10">
-          <svg class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-green-600/10 dark:bg-green-500/10">
+          <svg class="h-5 w-5 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
         </div>
         <div>
-          <h3 class="text-lg font-bold text-zinc-900">Instant Price Estimate</h3>
-          <p class="text-sm text-zinc-500">Get a rough quote in seconds</p>
+          <h3 class="text-lg font-bold text-zinc-900 dark:text-white">Instant Price Estimate</h3>
+          <p class="text-sm text-zinc-500 dark:text-zinc-400">Get a rough quote in seconds</p>
         </div>
       </div>
-
-      <!-- Currency Toggle -->
-      <div class="flex items-center gap-1 p-1 bg-zinc-100 rounded-lg" id="currency-toggle">
-        <button
-          type="button"
-          class="currency-btn currency-btn--active"
-          data-currency="USD"
-          title="Show prices in US Dollars"
-        >
-          <span class="currency-flag">🇺🇸</span>
-          <span class="currency-code">USD</span>
+      <div class="flex items-center gap-1 rounded-lg bg-zinc-100 p-1 dark:bg-zinc-800" id="currency-toggle">
+        <button type="button" class="currency-btn currency-btn--active" data-currency="USD" title="US Dollars">
+          <span class="currency-flag">🇺🇸</span><span class="currency-code">USD</span>
         </button>
-        <button
-          type="button"
-          class="currency-btn"
-          data-currency="GBP"
-          title="Show prices in British Pounds"
-        >
-          <span class="currency-flag">🇬🇧</span>
-          <span class="currency-code">GBP</span>
+        <button type="button" class="currency-btn" data-currency="GBP" title="British Pounds">
+          <span class="currency-flag">🇬🇧</span><span class="currency-code">GBP</span>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- ━━━━━━ FORM ━━━━━━ -->
-  <div class="px-6 py-6 sm:px-8 space-y-5">
-
-    <!-- Product Type -->
+  <!-- ━━━ FORM ━━━ -->
+  <div class="space-y-5 px-6 py-6 sm:px-8">
     <div class="calc-field">
-      <label for="calc-product" class="calc-label">
-        Product Type
-      </label>
+      <label for="calc-product" class="calc-label">Product Type</label>
       <div class="relative">
-        <select
-          id="calc-product"
-          class="calc-select"
-        >
+        <select id="calc-product" class="calc-select">
           {Object.entries(PRODUCT_LABELS).map(([key, label]) => (
-            <option value={key} selected={key === (defaultProduct || 'tshirts')}>
-              {label}
-            </option>
+            <option value={key} selected={key === (defaultProduct || 'tshirts')}>{label}</option>
           ))}
         </select>
         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-          <svg class="h-4 w-4 text-zinc-400" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-          </svg>
+          <svg class="h-4 w-4 text-zinc-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
         </div>
       </div>
     </div>
 
-    <!-- Quantity -->
     <div class="calc-field">
-      <label for="calc-quantity" class="calc-label">
-        Quantity
-      </label>
+      <label for="calc-quantity" class="calc-label">Quantity</label>
       <div class="relative">
-        <input
-          type="number"
-          id="calc-quantity"
-          min="100"
-          max="100000"
-          step="50"
-          value="1000"
-          class="calc-input pr-12"
-          inputmode="numeric"
-        />
-        <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-sm text-zinc-400 pointer-events-none">
-          pcs
-        </span>
+        <input type="number" id="calc-quantity" min="100" max="100000" step="50" value="1000" class="calc-input pr-12" inputmode="numeric" />
+        <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-sm text-zinc-400 dark:text-zinc-500">pcs</span>
       </div>
-      <!-- Quick Select Buttons -->
-      <div class="flex flex-wrap gap-2 mt-2.5">
+      <div class="mt-2.5 flex flex-wrap gap-2">
         {[250, 500, 1000, 2500, 5000].map((qty) => (
-          <button
-            type="button"
-            class:list={[
-              'calc-quick-qty',
-              qty === 1000 && 'calc-quick-qty--active',
-            ]}
-            data-qty={qty}
-          >
+          <button type="button" class:list={['calc-quick-qty', qty === 1000 && 'calc-quick-qty--active']} data-qty={qty}>
             {qty >= 1000 ? `${qty / 1000}k` : qty}
           </button>
         ))}
       </div>
     </div>
 
-    <!-- Fabric -->
     <div class="calc-field">
-      <label for="calc-fabric" class="calc-label">
-        Fabric
-        <span class="text-zinc-400 font-normal ml-1">(optional)</span>
-      </label>
+      <label for="calc-fabric" class="calc-label">Fabric <span class="ml-1 font-normal text-zinc-400 dark:text-zinc-500">(optional)</span></label>
       <div class="relative">
         <select id="calc-fabric" class="calc-select">
           <option value="">— Select fabric —</option>
@@ -183,26 +117,17 @@ const currencyConfigJson = JSON.stringify(CURRENCY_CONFIG);
           ))}
         </select>
         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-          <svg class="h-4 w-4 text-zinc-400" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-          </svg>
+          <svg class="h-4 w-4 text-zinc-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
         </div>
       </div>
     </div>
 
-    <!-- Customizations -->
     <div class="calc-field">
       <span class="calc-label">Customizations</span>
-      <div class="grid grid-cols-2 gap-x-4 gap-y-2.5 mt-1">
+      <div class="mt-1 grid grid-cols-2 gap-x-4 gap-y-2.5">
         {Object.entries(CUSTOMIZATION_LABELS).map(([key, label]) => (
           <label class="calc-checkbox-label" for={`calc-custom-${key}`}>
-            <input
-              type="checkbox"
-              id={`calc-custom-${key}`}
-              value={key}
-              class="calc-checkbox"
-              data-customization={key}
-            />
+            <input type="checkbox" id={`calc-custom-${key}`} value={key} class="calc-checkbox" data-customization={key} />
             <span>{label}</span>
           </label>
         ))}
@@ -210,302 +135,166 @@ const currencyConfigJson = JSON.stringify(CURRENCY_CONFIG);
     </div>
   </div>
 
-  <!-- ━━━━━━ RESULTS ━━━━━━ -->
+  <!-- ━━━ RESULTS ━━━ -->
   <div class="px-6 pb-6 sm:px-8 sm:pb-8" id="calc-results">
-    <div class="bg-zinc-50 rounded-xl p-5 sm:p-6 border border-zinc-100">
-
-      <!-- Total Estimate -->
-      <div class="flex items-start justify-between gap-4 mb-4">
+    <div class="rounded-xl border border-zinc-100 bg-zinc-50 p-5 dark:border-zinc-700 dark:bg-zinc-800 sm:p-6">
+      <div class="mb-4 flex items-start justify-between gap-4">
         <div>
-          <div class="flex items-center gap-2 mb-1">
-            <svg class="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
-            </svg>
-            <span class="text-sm font-semibold text-zinc-600 uppercase tracking-wide">Estimated Total</span>
+          <div class="mb-1 flex items-center gap-2">
+            <svg class="h-4 w-4 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" /></svg>
+            <span class="text-sm font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Estimated Total</span>
           </div>
           <div class="flex items-baseline gap-1.5">
-            <span class="text-2xl sm:text-3xl font-bold text-zinc-900" id="calc-total-min">$3,500</span>
-            <span class="text-lg text-zinc-400">–</span>
-            <span class="text-2xl sm:text-3xl font-bold text-zinc-900" id="calc-total-max">$8,000</span>
+            <span class="text-2xl font-bold text-zinc-900 dark:text-white sm:text-3xl" id="calc-total-min">$3,500</span>
+            <span class="text-lg text-zinc-400 dark:text-zinc-500">–</span>
+            <span class="text-2xl font-bold text-zinc-900 dark:text-white sm:text-3xl" id="calc-total-max">$8,000</span>
           </div>
         </div>
-
-        <!-- Savings Badge -->
-        <div
-          id="calc-savings-badge"
-          class="hidden flex-shrink-0 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200"
-        >
-          <span class="text-xs font-semibold text-emerald-700" id="calc-savings-text">Save 13%</span>
+        <div id="calc-savings-badge" class="hidden flex-shrink-0 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 dark:border-emerald-500/30 dark:bg-emerald-500/10">
+          <span class="text-xs font-semibold text-emerald-700 dark:text-emerald-400" id="calc-savings-text">Save 13%</span>
         </div>
       </div>
 
-      <!-- Detail Row -->
-      <div class="grid grid-cols-3 gap-3 mb-5">
-        <div class="text-center p-2.5 bg-white rounded-lg border border-zinc-100">
-          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wider mb-0.5">Per Unit</div>
-          <div class="text-sm font-bold text-zinc-800" id="calc-per-unit">$3.50 – $8.00</div>
+      <div class="mb-5 grid grid-cols-3 gap-3">
+        <div class="rounded-lg border border-zinc-100 bg-white p-2.5 text-center dark:border-zinc-700 dark:bg-zinc-900">
+          <div class="mb-0.5 text-[11px] font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Per Unit</div>
+          <div class="text-sm font-bold text-zinc-800 dark:text-zinc-200" id="calc-per-unit">$3.50 – $8.00</div>
         </div>
-        <div class="text-center p-2.5 bg-white rounded-lg border border-zinc-100">
-          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wider mb-0.5">Lead Time</div>
-          <div class="text-sm font-bold text-zinc-800" id="calc-lead-time">30–35 days</div>
+        <div class="rounded-lg border border-zinc-100 bg-white p-2.5 text-center dark:border-zinc-700 dark:bg-zinc-900">
+          <div class="mb-0.5 text-[11px] font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Lead Time</div>
+          <div class="text-sm font-bold text-zinc-800 dark:text-zinc-200" id="calc-lead-time">30–35 days</div>
         </div>
-        <div class="text-center p-2.5 bg-white rounded-lg border border-zinc-100">
-          <div class="text-[11px] font-medium text-zinc-400 uppercase tracking-wider mb-0.5">Tier</div>
-          <div class="text-sm font-bold text-zinc-800" id="calc-tier-label">Optimal</div>
+        <div class="rounded-lg border border-zinc-100 bg-white p-2.5 text-center dark:border-zinc-700 dark:bg-zinc-900">
+          <div class="mb-0.5 text-[11px] font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Tier</div>
+          <div class="text-sm font-bold text-zinc-800 dark:text-zinc-200" id="calc-tier-label">Optimal</div>
         </div>
       </div>
 
-      <!-- Disclaimer -->
-      <p class="text-xs text-zinc-400 leading-relaxed mb-5 flex items-start gap-1.5">
-        <svg class="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-zinc-300" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253a.25.25 0 0 1 .244.304l-.459 2.066A1.75 1.75 0 0 0 10.747 15H11a.75.75 0 0 0 0-1.5h-.253a.25.25 0 0 1-.244-.304l.459-2.066A1.75 1.75 0 0 0 9.253 9H9Z" clip-rule="evenodd" />
-        </svg>
-        <span>
-          Final pricing depends on exact specifications, artwork complexity, and shipping destination.
-          Request a detailed quote for an accurate figure.
-        </span>
+      <p class="mb-5 flex items-start gap-1.5 text-xs leading-relaxed text-zinc-400 dark:text-zinc-500">
+        <svg class="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-zinc-300 dark:text-zinc-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253a.25.25 0 0 1 .244.304l-.459 2.066A1.75 1.75 0 0 0 10.747 15H11a.75.75 0 0 0 0-1.5h-.253a.25.25 0 0 1-.244-.304l.459-2.066A1.75 1.75 0 0 0 9.253 9H9Z" clip-rule="evenodd" /></svg>
+        <span>Final pricing depends on exact specifications, artwork complexity, and shipping destination. Request a detailed quote for an accurate figure.</span>
       </p>
 
-      <!-- CTA -->
-      <a
-        id="calc-cta"
-        href="/quote?product=tshirts&quantity=1000"
-        class="group flex items-center justify-center gap-2 w-full px-6 py-3 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary/90 transition-all duration-200 shadow-sm hover:shadow-md"
-      >
+      <a id="calc-cta" href="/quote?product=tshirts&quantity=1000"
+        class="group flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-green-700 hover:shadow-md dark:bg-green-500 dark:text-zinc-950 dark:hover:bg-green-400">
         <span>Get Detailed Quote</span>
-        <svg class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-        </svg>
+        <svg class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
       </a>
     </div>
   </div>
 </div>
 
-<!-- ━━━━━━ STYLES ━━━━━━ -->
 <style>
   /* ── Currency Toggle ── */
   .currency-btn {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 6px 10px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #71717a;
-    background: transparent;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    user-select: none;
+    display: flex; align-items: center; gap: 4px;
+    padding: 6px 10px; font-size: 0.75rem; font-weight: 600;
+    color: #71717a; background: transparent; border: none;
+    border-radius: 6px; cursor: pointer;
+    transition: all 0.15s ease; user-select: none;
     -webkit-tap-highlight-color: transparent;
   }
+  .currency-btn:hover { color: #3f3f46; background: rgba(255,255,255,0.5); }
+  .currency-btn--active { color: #166534; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+  .currency-btn--active:hover { color: #166534; background: #fff; }
+  .currency-flag { font-size: 0.875rem; line-height: 1; }
+  .currency-code { letter-spacing: 0.02em; }
 
-  .currency-btn:hover {
-    color: #3f3f46;
-    background: rgba(255, 255, 255, 0.5);
-  }
+  :global(.dark) .currency-btn { color: #a1a1aa; }
+  :global(.dark) .currency-btn:hover { color: #d4d4d8; background: rgba(255,255,255,0.05); }
+  :global(.dark) .currency-btn--active { color: #4ade80; background: #27272a; box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+  :global(.dark) .currency-btn--active:hover { color: #4ade80; background: #27272a; }
 
-  .currency-btn--active {
-    color: #166534;
-    background: #fff;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  }
-
-  .currency-btn--active:hover {
-    color: #166534;
-    background: #fff;
-  }
-
-  .currency-flag {
-    font-size: 0.875rem;
-    line-height: 1;
-  }
-
-  .currency-code {
-    letter-spacing: 0.02em;
-  }
-
-  /* ── Field Layout ── */
-  .calc-field {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .calc-label {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: #3f3f46;
-    letter-spacing: 0.01em;
-  }
+  /* ── Fields ── */
+  .calc-field { display: flex; flex-direction: column; gap: 4px; }
+  .calc-label { font-size: 0.8125rem; font-weight: 600; color: #3f3f46; letter-spacing: 0.01em; }
+  :global(.dark) .calc-label { color: #d4d4d8; }
 
   /* ── Inputs ── */
-  .calc-input,
-  .calc-select {
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    color: #18181b;
-    background: #fff;
-    border: 1px solid #d4d4d8;
-    border-radius: 0.5rem;
-    outline: none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    appearance: none;
-    -webkit-appearance: none;
+  .calc-input, .calc-select {
+    width: 100%; padding: 0.5rem 0.75rem;
+    font-size: 0.875rem; line-height: 1.5;
+    color: #18181b; background: #fff;
+    border: 1px solid #d4d4d8; border-radius: 0.5rem;
+    outline: none; transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    appearance: none; -webkit-appearance: none;
   }
-
-  .calc-select {
-    padding-right: 2.25rem;
-    cursor: pointer;
-    background-image: none;
-  }
-
-  .calc-input:focus,
-  .calc-select:focus {
-    border-color: #166534;
-    box-shadow: 0 0 0 3px rgba(22, 101, 52, 0.12);
-  }
-
-  .calc-input::placeholder {
-    color: #a1a1aa;
-  }
-
+  .calc-select { padding-right: 2.25rem; cursor: pointer; background-image: none; }
+  .calc-input:focus, .calc-select:focus { border-color: #166534; box-shadow: 0 0 0 3px rgba(22,101,52,0.12); }
+  .calc-input::placeholder { color: #a1a1aa; }
   .calc-input[type='number']::-webkit-inner-spin-button,
-  .calc-input[type='number']::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  .calc-input[type='number'] {
-    -moz-appearance: textfield;
-  }
+  .calc-input[type='number']::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .calc-input[type='number'] { -moz-appearance: textfield; }
 
-  /* ── Quick Quantity Buttons ── */
+  :global(.dark) .calc-input, :global(.dark) .calc-select {
+    color: #fafafa; background: #18181b; border-color: #3f3f46;
+  }
+  :global(.dark) .calc-input:focus, :global(.dark) .calc-select:focus {
+    border-color: #4ade80; box-shadow: 0 0 0 3px rgba(74,222,128,0.15);
+  }
+  :global(.dark) .calc-input::placeholder { color: #71717a; }
+
+  /* ── Quick Quantity ── */
   .calc-quick-qty {
-    padding: 0.25rem 0.75rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #71717a;
-    background: #fff;
-    border: 1px solid #e4e4e7;
-    border-radius: 9999px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    user-select: none;
+    padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 600;
+    color: #71717a; background: #fff; border: 1px solid #e4e4e7;
+    border-radius: 9999px; cursor: pointer;
+    transition: all 0.15s ease; user-select: none;
     -webkit-tap-highlight-color: transparent;
   }
+  .calc-quick-qty:hover { color: #166534; border-color: #166534; background: rgba(22,101,52,0.04); }
+  .calc-quick-qty--active { color: #fff; background: #166534; border-color: #166534; }
+  .calc-quick-qty--active:hover { color: #fff; background: #14532d; border-color: #14532d; }
 
-  .calc-quick-qty:hover {
-    color: #166534;
-    border-color: #166534;
-    background: rgba(22, 101, 52, 0.04);
-  }
-
-  .calc-quick-qty--active {
-    color: #fff;
-    background: #166534;
-    border-color: #166534;
-  }
-
-  .calc-quick-qty--active:hover {
-    color: #fff;
-    background: #14532d;
-    border-color: #14532d;
-  }
+  :global(.dark) .calc-quick-qty { color: #a1a1aa; background: #27272a; border-color: #3f3f46; }
+  :global(.dark) .calc-quick-qty:hover { color: #4ade80; border-color: #4ade80; background: rgba(74,222,128,0.06); }
+  :global(.dark) .calc-quick-qty--active { color: #09090b; background: #22c55e; border-color: #22c55e; }
+  :global(.dark) .calc-quick-qty--active:hover { color: #09090b; background: #4ade80; border-color: #4ade80; }
 
   /* ── Checkboxes ── */
   .calc-checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.8125rem;
-    color: #3f3f46;
-    cursor: pointer;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.8125rem; color: #3f3f46; cursor: pointer;
+    user-select: none; -webkit-tap-highlight-color: transparent;
   }
-
   .calc-checkbox {
-    width: 1rem;
-    height: 1rem;
-    border-radius: 0.25rem;
-    border: 1.5px solid #d4d4d8;
-    accent-color: #166534;
-    cursor: pointer;
-    flex-shrink: 0;
+    width: 1rem; height: 1rem; border-radius: 0.25rem;
+    border: 1.5px solid #d4d4d8; accent-color: #166534;
+    cursor: pointer; flex-shrink: 0;
   }
+  .calc-checkbox:checked { border-color: #166534; }
+  .calc-checkbox:focus-visible { outline: 2px solid #166534; outline-offset: 2px; }
 
-  .calc-checkbox:checked {
-    border-color: #166534;
-  }
+  :global(.dark) .calc-checkbox-label { color: #d4d4d8; }
+  :global(.dark) .calc-checkbox { border-color: #52525b; background: #18181b; accent-color: #22c55e; }
+  :global(.dark) .calc-checkbox:checked { border-color: #22c55e; }
+  :global(.dark) .calc-checkbox:focus-visible { outline-color: #4ade80; }
 
-  .calc-checkbox:focus-visible {
-    outline: 2px solid #166534;
-    outline-offset: 2px;
-  }
-
-  /* ── Result Number Animations ── */
+  /* ── Animations ── */
   .calc-number-animate {
     display: inline-block;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                opacity 0.2s ease;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease;
   }
-
-  .calc-number-animate--updating {
-    transform: translateY(-4px);
-    opacity: 0;
-  }
+  .calc-number-animate--updating { transform: translateY(-4px); opacity: 0; }
 
   /* ── Responsive ── */
   @media (max-width: 480px) {
-    .price-calculator {
-      border-radius: 1rem;
-    }
-
-    .calc-quick-qty {
-      padding: 0.2rem 0.6rem;
-      font-size: 0.6875rem;
-    }
-
-    .currency-btn {
-      padding: 5px 8px;
-    }
-
-    .currency-code {
-      display: none;
-    }
-
-    .currency-flag {
-      font-size: 1rem;
-    }
+    .price-calculator { border-radius: 1rem; }
+    .calc-quick-qty { padding: 0.2rem 0.6rem; font-size: 0.6875rem; }
+    .currency-btn { padding: 5px 8px; }
+    .currency-code { display: none; }
+    .currency-flag { font-size: 1rem; }
   }
-
-  /* ── Compact Mode ── */
-  .price-calculator--compact .calc-field {
-    gap: 2px;
-  }
-
-  .price-calculator--compact .calc-label {
-    font-size: 0.75rem;
-  }
-
-  /* ── Print Hidden ── */
-  @media print {
-    .price-calculator {
-      display: none;
-    }
-  }
+  .price-calculator--compact .calc-field { gap: 2px; }
+  .price-calculator--compact .calc-label { font-size: 0.75rem; }
+  @media print { .price-calculator { display: none; } }
 </style>
 
-<!-- ━━━━━━ CLIENT-SIDE LOGIC ━━━━━━ -->
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('astro:page-load', () => {
     const calculator = document.getElementById('price-calculator');
     if (!calculator) return;
 
-    // ── Parse embedded data ──
     const products = JSON.parse(calculator.dataset.products || '[]');
     const fabrics = JSON.parse(calculator.dataset.fabrics || '[]');
     const customizations = JSON.parse(calculator.dataset.customizations || '[]');
@@ -513,27 +302,21 @@ const currencyConfigJson = JSON.stringify(CURRENCY_CONFIG);
     const currencyConfig = JSON.parse(calculator.dataset.currencyConfig || '{}');
     const exchangeRate = parseFloat(calculator.dataset.exchangeRate || '0.79');
 
-    // Build lookup maps
     const productMap = new Map<string, { base: { min: number; max: number } }>();
     for (const p of products) productMap.set(p.key, p);
-
     const fabricMap = new Map<string, number>();
     for (const f of fabrics) fabricMap.set(f.key, f.multiplier);
-
     const customCostMap = new Map<string, { min: number; max: number }>();
     for (const c of customizations) customCostMap.set(c.key, c.cost);
 
-    // ── Current currency state ──
     let currentCurrency: 'USD' | 'GBP' = 'USD';
 
-    // ── DOM References ──
     const productSelect = document.getElementById('calc-product') as HTMLSelectElement;
     const quantityInput = document.getElementById('calc-quantity') as HTMLInputElement;
     const fabricSelect = document.getElementById('calc-fabric') as HTMLSelectElement;
     const quickQtyButtons = calculator.querySelectorAll<HTMLButtonElement>('.calc-quick-qty');
     const checkboxes = calculator.querySelectorAll<HTMLInputElement>('.calc-checkbox');
     const currencyButtons = calculator.querySelectorAll<HTMLButtonElement>('.currency-btn');
-
     const totalMinEl = document.getElementById('calc-total-min')!;
     const totalMaxEl = document.getElementById('calc-total-max')!;
     const perUnitEl = document.getElementById('calc-per-unit')!;
@@ -543,311 +326,117 @@ const currencyConfigJson = JSON.stringify(CURRENCY_CONFIG);
     const savingsText = document.getElementById('calc-savings-text')!;
     const ctaLink = document.getElementById('calc-cta') as HTMLAnchorElement;
 
-    // ── Currency Conversion ──
-    function toGBP(usd: number): number {
-      return Math.round(usd * exchangeRate * 100) / 100;
-    }
+    function toGBP(usd: number): number { return Math.round(usd * exchangeRate * 100) / 100; }
+    function convertToCurrentCurrency(usdValue: number): number { return currentCurrency === 'GBP' ? toGBP(usdValue) : usdValue; }
 
-    function convertToCurrentCurrency(usdValue: number): number {
-      return currentCurrency === 'GBP' ? toGBP(usdValue) : usdValue;
-    }
-
-    // ── Formatting ──
     function fmtCurrency(value: number, currency: 'USD' | 'GBP' = currentCurrency): string {
       const config = currencyConfig[currency];
-      return new Intl.NumberFormat(config?.locale || 'en-US', {
-        style: 'currency',
-        currency: config?.code || 'USD',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }).format(value);
+      return new Intl.NumberFormat(config?.locale || 'en-US', { style: 'currency', currency: config?.code || 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
     }
-
     function fmtCurrencyShort(value: number, currency: 'USD' | 'GBP' = currentCurrency): string {
       const config = currencyConfig[currency];
-      if (value >= 1000) {
-        return new Intl.NumberFormat(config?.locale || 'en-US', {
-          style: 'currency',
-          currency: config?.code || 'USD',
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 0,
-        }).format(value);
-      }
+      if (value >= 1000) return new Intl.NumberFormat(config?.locale || 'en-US', { style: 'currency', currency: config?.code || 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
       return fmtCurrency(value, currency);
     }
 
-    // ── Tier lookup ──
     function getTier(qty: number): { multiplier: number; label: string } {
-      for (const t of tiers) {
-        if (qty >= t.min && qty <= (t.max === null ? Infinity : t.max)) {
-          return t;
-        }
-      }
+      for (const t of tiers) { if (qty >= t.min && qty <= (t.max === null ? Infinity : t.max)) return t; }
       return tiers[0];
     }
-
-    // ── Lead time ──
     function getLeadTime(qty: number): string {
-      if (qty < 500) return '25–30 days';
-      if (qty < 1000) return '30–35 days';
-      if (qty < 2500) return '35–40 days';
-      if (qty < 5000) return '40–45 days';
-      return '45–50 days';
+      if (qty < 500) return '25–30 days'; if (qty < 1000) return '30–35 days';
+      if (qty < 2500) return '35–40 days'; if (qty < 5000) return '40–45 days'; return '45–50 days';
     }
 
-    // ── Animate number change ──
     function animateValue(el: HTMLElement, newText: string): void {
       if (el.textContent === newText) return;
-
       el.classList.add('calc-number-animate', 'calc-number-animate--updating');
-
-      setTimeout(() => {
-        el.textContent = newText;
-        el.classList.remove('calc-number-animate--updating');
-      }, 150);
+      setTimeout(() => { el.textContent = newText; el.classList.remove('calc-number-animate--updating'); }, 150);
     }
 
-    // ── Core calculation ──
     function calculate(): void {
       const productKey = productSelect.value;
       const quantity = Math.max(100, parseInt(quantityInput.value, 10) || 100);
       const fabricKey = fabricSelect.value;
-
       const selectedCustoms: string[] = [];
-      checkboxes.forEach((cb) => {
-        if (cb.checked && cb.dataset.customization) {
-          selectedCustoms.push(cb.dataset.customization);
-        }
-      });
+      checkboxes.forEach((cb) => { if (cb.checked && cb.dataset.customization) selectedCustoms.push(cb.dataset.customization); });
 
-      // Product base (in USD)
       const product = productMap.get(productKey);
       if (!product) return;
       const base = product.base;
-
-      // Fabric multiplier
       const fabricMult = fabricKey ? (fabricMap.get(fabricKey) ?? 1.0) : 1.0;
-
-      // Quantity tier
       const tier = getTier(quantity);
       const tierMult = tier.multiplier;
 
-      // Customization costs (in USD)
-      let customMin = 0;
-      let customMax = 0;
-      for (const key of selectedCustoms) {
-        const cost = customCostMap.get(key);
-        if (cost) {
-          customMin += cost.min;
-          customMax += cost.max;
-        }
-      }
+      let customMin = 0, customMax = 0;
+      for (const key of selectedCustoms) { const cost = customCostMap.get(key); if (cost) { customMin += cost.min; customMax += cost.max; } }
 
-      // Per unit (in USD)
       const perUnitMinUSD = Math.round((base.min * fabricMult * tierMult + customMin) * 100) / 100;
       const perUnitMaxUSD = Math.round((base.max * fabricMult * tierMult + customMax) * 100) / 100;
-
-      // Totals (in USD)
       const totalMinUSD = Math.round(perUnitMinUSD * quantity * 100) / 100;
       const totalMaxUSD = Math.round(perUnitMaxUSD * quantity * 100) / 100;
 
-      // Convert to current currency
       const totalMin = convertToCurrentCurrency(totalMinUSD);
       const totalMax = convertToCurrentCurrency(totalMaxUSD);
       const perUnitMin = convertToCurrentCurrency(perUnitMinUSD);
       const perUnitMax = convertToCurrentCurrency(perUnitMaxUSD);
-
-      // Savings
       const savings = tierMult < 1.5 ? Math.round((1 - tierMult / 1.5) * 100) : 0;
-
-      // Lead time
       const leadTime = getLeadTime(quantity);
 
-      // ── Update DOM with animations ──
       animateValue(totalMinEl, fmtCurrencyShort(totalMin));
       animateValue(totalMaxEl, fmtCurrencyShort(totalMax));
       animateValue(perUnitEl, `${fmtCurrency(perUnitMin)} – ${fmtCurrency(perUnitMax)}`);
       animateValue(leadTimeEl, leadTime);
       animateValue(tierLabelEl, tier.label);
 
-      // Savings badge
-      if (savings > 0) {
-        savingsBadge.classList.remove('hidden');
-        savingsText.textContent = `Save ${savings}%`;
-      } else {
-        savingsBadge.classList.add('hidden');
-      }
+      if (savings > 0) { savingsBadge.classList.remove('hidden'); savingsText.textContent = `Save ${savings}%`; }
+      else { savingsBadge.classList.add('hidden'); }
 
-      // ── Update CTA link ──
       const params = new URLSearchParams();
-      params.set('product', productKey);
-      params.set('quantity', String(quantity));
+      params.set('product', productKey); params.set('quantity', String(quantity));
       if (fabricKey) params.set('fabric', fabricKey);
-      if (selectedCustoms.length > 0) {
-        params.set('customizations', selectedCustoms.join(','));
-      }
+      if (selectedCustoms.length > 0) params.set('customizations', selectedCustoms.join(','));
       ctaLink.href = `/quote?${params.toString()}`;
-
-      // ── Analytics ──
-      if (typeof (window as any).gtag === 'function') {
-        (window as any).gtag('event', 'calculator_interaction', {
-          event_category: 'engagement',
-          product: productKey,
-          quantity,
-          currency: currentCurrency,
-          estimated_min: totalMinUSD,
-          estimated_max: totalMaxUSD,
-        });
-      }
     }
 
-    // ── Currency Toggle Handler ──
     function switchCurrency(currency: 'USD' | 'GBP'): void {
       if (currency === currentCurrency) return;
-
       currentCurrency = currency;
-
-      // Update button states
-      currencyButtons.forEach((btn) => {
-        if (btn.dataset.currency === currency) {
-          btn.classList.add('currency-btn--active');
-        } else {
-          btn.classList.remove('currency-btn--active');
-        }
-      });
-
-      // Save preference
-      try {
-        localStorage.setItem('reve-currency', currency);
-      } catch {
-        // localStorage unavailable
-      }
-
-      // Recalculate with new currency
+      currencyButtons.forEach((btn) => { btn.classList.toggle('currency-btn--active', btn.dataset.currency === currency); });
+      try { localStorage.setItem('reve-currency', currency); } catch {}
       calculate();
-
-      // Track currency switch
-      if (typeof (window as any).gtag === 'function') {
-        (window as any).gtag('event', 'currency_switch', {
-          event_category: 'preferences',
-          currency_from: currency === 'GBP' ? 'USD' : 'GBP',
-          currency_to: currency,
-        });
-      }
     }
 
-    // ── Auto-detect currency based on location ──
     function detectCurrency(): 'USD' | 'GBP' {
-      // 1. Check localStorage first (user's previous choice)
-      try {
-        const saved = localStorage.getItem('reve-currency');
-        if (saved === 'USD' || saved === 'GBP') {
-          return saved;
-        }
-      } catch {
-        // localStorage unavailable
-      }
-
-      // 2. Check browser timezone (UK is Europe/London)
-      try {
-        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        if (timezone === 'Europe/London' || timezone.startsWith('GB')) {
-          return 'GBP';
-        }
-      } catch {
-        // Intl not available
-      }
-
-      // 3. Check browser language
-      const lang = navigator.language || (navigator as any).userLanguage || '';
-      if (lang.toLowerCase().includes('gb') || lang.toLowerCase() === 'en-gb') {
-        return 'GBP';
-      }
-
-      // 4. Default to USD
+      try { const saved = localStorage.getItem('reve-currency'); if (saved === 'USD' || saved === 'GBP') return saved; } catch {}
+      try { const tz = Intl.DateTimeFormat().resolvedOptions().timeZone; if (tz === 'Europe/London' || tz.startsWith('GB')) return 'GBP'; } catch {}
+      const lang = navigator.language || ''; if (lang.toLowerCase().includes('gb') || lang.toLowerCase() === 'en-gb') return 'GBP';
       return 'USD';
     }
 
-    // ── Debounce utility ──
     let debounceTimer: ReturnType<typeof setTimeout>;
-    function debouncedCalculate(): void {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(calculate, 300);
-    }
+    function debouncedCalculate(): void { clearTimeout(debounceTimer); debounceTimer = setTimeout(calculate, 300); }
 
-    // ── Event Listeners ──
     productSelect.addEventListener('change', calculate);
     fabricSelect.addEventListener('change', calculate);
     checkboxes.forEach((cb) => cb.addEventListener('change', calculate));
     quantityInput.addEventListener('input', debouncedCalculate);
-
-    // Currency buttons
-    currencyButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const currency = btn.dataset.currency as 'USD' | 'GBP';
-        if (currency) {
-          switchCurrency(currency);
-        }
-      });
-    });
-
-    // Quick quantity buttons
+    currencyButtons.forEach((btn) => { btn.addEventListener('click', () => { const c = btn.dataset.currency as 'USD' | 'GBP'; if (c) switchCurrency(c); }); });
     quickQtyButtons.forEach((btn) => {
       btn.addEventListener('click', () => {
-        const qty = btn.dataset.qty;
-        if (!qty) return;
-
+        const qty = btn.dataset.qty; if (!qty) return;
         quantityInput.value = qty;
-
         quickQtyButtons.forEach((b) => b.classList.remove('calc-quick-qty--active'));
         btn.classList.add('calc-quick-qty--active');
-
         calculate();
       });
     });
-
-    // Sync quick-qty active state
     quantityInput.addEventListener('change', () => {
       const val = quantityInput.value;
-      quickQtyButtons.forEach((btn) => {
-        if (btn.dataset.qty === val) {
-          btn.classList.add('calc-quick-qty--active');
-        } else {
-          btn.classList.remove('calc-quick-qty--active');
-        }
-      });
+      quickQtyButtons.forEach((btn) => { btn.classList.toggle('calc-quick-qty--active', btn.dataset.qty === val); });
     });
 
-    // ── Track CTA clicks ──
-    ctaLink.addEventListener('click', () => {
-      if (typeof (window as any).gtag === 'function') {
-        (window as any).gtag('event', 'calculator_to_quote', {
-          event_category: 'conversion',
-          product: productSelect.value,
-          quantity: parseInt(quantityInput.value, 10),
-          currency: currentCurrency,
-          pre_qualified: true,
-        });
-      }
-
-      if (typeof (window as any).plausible === 'function') {
-        (window as any).plausible('Calculator → Quote', {
-          props: {
-            product: productSelect.value,
-            quantity: quantityInput.value,
-            currency: currentCurrency,
-          },
-        });
-      }
-    });
-
-    // ── Initialize ──
-    // Detect and set initial currency
     const detectedCurrency = detectCurrency();
-    if (detectedCurrency !== 'USD') {
-      switchCurrency(detectedCurrency);
-    } else {
-      calculate(); // Initial calculation
-    }
+    if (detectedCurrency !== 'USD') switchCurrency(detectedCurrency); else calculate();
   });
 </script>

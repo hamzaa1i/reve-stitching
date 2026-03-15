@@ -484,3 +484,10 @@ html.has-custom-cursor, html.has-custom-cursor * { cursor: none !important; }
   .group:hover > span[class*="absolute"] {
     transition-delay: 0.15s;
   }
+
+  /* ══════════════════════════════════════
+   GOOGLE MAPS — Dark mode filter
+   ══════════════════════════════════════ */
+.dark iframe[src*="google.com/maps"] {
+  filter: invert(90%) hue-rotate(180deg) brightness(0.95) contrast(0.9);
+}

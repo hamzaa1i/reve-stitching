@@ -710,6 +710,7 @@ function initRevealAnimations() {
         start: 'top 90%',
         end: 'top 60%',
         toggleActions: 'play none none none',
+        fastScrollEnd: true,
       },
     });
   });
@@ -742,6 +743,7 @@ function initStaggerAnimations() {
           start: 'top 88%',
           end: 'top 50%',
           toggleActions: 'play none none none',
+          fastScrollEnd: true,
         },
       }
     );
@@ -1292,7 +1294,7 @@ function initMouseTracking() {
       );
     });
   }
-  
+
 /* ═══════════════════════════════════════════
    FALLBACK
    ═══════════════════════════════════════════ */
@@ -1329,6 +1331,8 @@ function cleanup() {
 export async function initAnimations() {
   try {
     cleanup();
+
+    ScrollTrigger.config({ limitCallbacks: true });
 
     STATE.isDesktop = checkDesktop();
     STATE.isReducedMotion = checkReducedMotion();
@@ -1373,6 +1377,14 @@ export async function initAnimations() {
         // UI
         initScrollToTop();
         initPageTransitions();
+
+        // Pause marquee when tab is hidden (saves CPU/battery)
+        document.addEventListener('visibilitychange', function () {
+          var tracks = document.querySelectorAll('.marquee-track');
+          for (var i = 0; i < tracks.length; i++) {
+            tracks[i].style.animationPlayState = document.hidden ? 'paused' : 'running';
+          }
+        });
 
         ScrollTrigger.refresh();
       } catch (e) {
