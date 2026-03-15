@@ -1,39 +1,45 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import TimelineItem from '../components/TimelineItem.astro';
 
 const timeline = [
   {
+    num: '01',
     year: '2019',
     title: 'Company Established',
     description: 'Reve Stitching was founded in Faisalabad with a clear mission: deliver world-class knitted garments for global fashion brands with uncompromising quality and ethical practices.',
   },
   {
+    num: '02',
     year: '2020',
     title: 'SEDEX Certification',
     description: 'Achieved SEDEX compliance within the first year, demonstrating our commitment to ethical manufacturing, worker welfare, and responsible supply chain practices.',
   },
   {
+    num: '03',
     year: '2021',
     title: 'SGS Training Program',
     description: 'Partnered with SGS to implement comprehensive workforce training, ensuring every team member maintains AQL 1.5-4.0 quality standards on every production run.',
   },
   {
+    num: '04',
     year: '2022',
     title: 'Production Expansion',
     description: 'Expanded our facility with 150+ modern machines, increasing monthly production capacity to 300,000+ garments while maintaining precision quality standards.',
   },
   {
+    num: '05',
     year: '2023',
     title: 'Full Composite Knitwear',
     description: 'Became a full composite knitwear manufacturer offering end-to-end production from fabric knitting and dyeing through cutting, stitching, and finishing.',
   },
   {
+    num: '06',
     year: '2024',
     title: 'Global Recognition',
     description: 'Expanded our client portfolio to include major international fashion brands across Europe, serving Boohoo, Pull&Bear, Yours Clothing, and more.',
   },
   {
+    num: '07',
     year: '2025',
     title: 'Sustainability & Automation',
     description: 'Launched our green manufacturing initiative with energy-efficient processes, sustainable material sourcing, and advanced ERP-powered automation.',
@@ -105,16 +111,17 @@ const leaders = [
             From a modest beginning in 2019, we've grown into a full composite knitwear facility with 150+ modern machines and a monthly production capacity exceeding 300,000 garments.
           </p>
 
+          <!-- Stat cards with tilt interaction -->
           <div class="mt-8 flex flex-wrap gap-4" data-animate="fade-up" data-delay="0.28">
-            <div class="rounded-xl border border-zinc-200 bg-white px-6 py-4 dark:border-zinc-800 dark:bg-zinc-900">
+            <div class="rounded-xl border border-zinc-200 bg-white px-6 py-4 dark:border-zinc-800 dark:bg-zinc-900" data-tilt data-tilt-max="8">
               <div class="text-2xl font-bold text-green-600 dark:text-green-400">300K+</div>
               <div class="mt-1 text-xs font-medium text-zinc-500">Monthly Capacity</div>
             </div>
-            <div class="rounded-xl border border-zinc-200 bg-white px-6 py-4 dark:border-zinc-800 dark:bg-zinc-900">
+            <div class="rounded-xl border border-zinc-200 bg-white px-6 py-4 dark:border-zinc-800 dark:bg-zinc-900" data-tilt data-tilt-max="8">
               <div class="text-2xl font-bold text-green-600 dark:text-green-400">150+</div>
               <div class="mt-1 text-xs font-medium text-zinc-500">Modern Machines</div>
             </div>
-            <div class="rounded-xl border border-zinc-200 bg-white px-6 py-4 dark:border-zinc-800 dark:bg-zinc-900">
+            <div class="rounded-xl border border-zinc-200 bg-white px-6 py-4 dark:border-zinc-800 dark:bg-zinc-900" data-tilt data-tilt-max="8">
               <div class="text-2xl font-bold text-green-600 dark:text-green-400">6+</div>
               <div class="mt-1 text-xs font-medium text-zinc-500">Years of Excellence</div>
             </div>
@@ -139,35 +146,81 @@ const leaders = [
 
 
   <!-- ═══════════════════════════════════════
-       TIMELINE
+       TIMELINE — Pinned scroll (like homepage process)
+       Desktop: pins, crossfades years. Mobile: stacks.
        ═══════════════════════════════════════ -->
-  <section class="bg-white py-24 dark:bg-zinc-950 lg:py-32" aria-labelledby="timeline-heading">
-    <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16">
-      <div class="grid gap-16 lg:grid-cols-2">
-        <div class="lg:sticky lg:top-32 lg:self-start">
+  <section
+    id="timeline"
+    class="relative bg-white dark:bg-zinc-950 lg:overflow-hidden"
+    data-pinned-steps
+    aria-labelledby="timeline-heading"
+  >
+    <div class="lg:flex lg:h-screen">
+
+      <!-- LEFT: Info + year indicators -->
+      <div class="px-6 py-16 sm:px-8 lg:flex lg:w-[42%] lg:flex-col lg:justify-center lg:px-16 lg:py-0 xl:px-20">
+        <div>
           <div class="mb-4 flex items-center gap-3" data-animate="fade-up">
             <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span>
             <span class="text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400">Our Journey</span>
           </div>
-          <h2 id="timeline-heading" class="font-serif text-3xl font-bold leading-tight text-zinc-900 dark:text-white sm:text-4xl lg:text-5xl" data-animate="fade-up" data-delay="0.08">
-            A Timeline of <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Growth</span>
+          <h2 id="timeline-heading" class="font-serif text-3xl font-bold leading-tight text-zinc-900 dark:text-white sm:text-4xl lg:text-5xl" data-animate="fade-up">
+            A Timeline of<br /><span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Growth</span>
           </h2>
-          <p class="mt-5 max-w-md text-base leading-relaxed text-zinc-500 dark:text-zinc-400" data-animate="fade-up" data-delay="0.16">
-            From our founding in 2019 to becoming a globally recognized manufacturer, every year marks a milestone in our journey toward excellence.
+          <p class="mt-5 max-w-md text-base leading-relaxed text-zinc-500 dark:text-zinc-400" data-animate="fade-up">
+            From our founding in 2019 to becoming a globally recognized manufacturer, every year marks a milestone in our journey.
           </p>
-        </div>
 
-        <div>
-          {timeline.map((item, i) => (
-            <TimelineItem
-              year={item.year}
-              title={item.title}
-              description={item.description}
-              isLast={i === timeline.length - 1}
-            />
-          ))}
+          <!-- Year indicators (desktop only) -->
+          <div class="mt-10 hidden lg:flex lg:flex-col lg:gap-1">
+            {timeline.map((item, i) => (
+              <div data-step-indicator={i} class="flex items-center gap-3 rounded-lg px-3 py-2">
+                <span class="step-dot flex h-8 w-8 items-center justify-center rounded-full border text-xs font-bold">
+                  {item.year}
+                </span>
+                <span class="step-label text-sm font-medium text-zinc-600 dark:text-zinc-400">
+                  {item.title}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
+
+      <!-- RIGHT: Year panels -->
+      <div class="relative lg:flex-1" data-steps-container>
+        {timeline.map((item, i) => (
+          <div
+            data-step-panel
+            class={`px-6 py-14 sm:px-8 lg:flex lg:items-center lg:px-16 lg:py-0 xl:px-20 ${i < timeline.length - 1 ? 'border-b border-zinc-100 dark:border-zinc-800 lg:border-0' : ''}`}
+          >
+            <div class="w-full max-w-xl">
+              <div class="mb-5 flex items-center gap-4">
+                <span class="flex h-14 w-14 items-center justify-center rounded-xl bg-green-100 font-serif text-lg font-bold text-green-700 dark:bg-green-500/10 dark:text-green-400">
+                  {item.year}
+                </span>
+                <div class="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" aria-hidden="true"></div>
+              </div>
+
+              <h3 class="font-serif text-2xl font-bold text-zinc-900 dark:text-white sm:text-3xl lg:text-4xl">
+                {item.title}
+              </h3>
+
+              <p class="mt-4 text-base leading-relaxed text-zinc-600 dark:text-zinc-400 sm:text-lg">
+                {item.description}
+              </p>
+
+              <div class="mt-6">
+                <span class="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-4 py-2 text-xs font-semibold text-green-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-green-400">
+                  <span class="h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                  Milestone {item.num} of 07
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
     </div>
   </section>
 
@@ -244,10 +297,10 @@ const leaders = [
             Uncompromising <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Quality</span> Standards
           </h2>
           <p class="mt-5 text-base leading-relaxed text-zinc-500 dark:text-zinc-400 sm:text-lg" data-animate="fade-up" data-delay="0.16">
-            Quality is the cornerstone of everything we do. Our SGS-trained workforce maintains AQL 1.5-4.0 standards across every production run, with multi-stage quality checks from raw material inspection to final garment audit.
+            Quality is the cornerstone of everything we do. Our SGS-trained workforce maintains AQL 1.5-4.0 standards across every production run.
           </p>
 
-          <div class="mt-8 space-y-4" data-animate="fade-up" data-delay="0.24">
+          <div class="mt-8 space-y-4" data-animate="fade-up" data-delay="0.2">
             {[
               'AQL 1.5-4.0 quality standards on every order',
               'SGS-trained quality control team',
