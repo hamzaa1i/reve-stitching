@@ -1198,7 +1198,6 @@ function initMouseTracking() {
 
 /* ═══════════════════════════════════════════
    MODULE: PINNED STEPS (scroll-driven process)
-   Premium scroll-driven panels with high responsiveness
    ═══════════════════════════════════════════ */
    function initPinnedSteps() {
     var sections = document.querySelectorAll('[data-pinned-steps]');
@@ -1208,210 +1207,75 @@ function initMouseTracking() {
     sections.forEach(function (section) {
       var panels = Array.from(section.querySelectorAll('[data-step-panel]'));
       var indicators = Array.from(section.querySelectorAll('[data-step-indicator]'));
-  
       if (panels.length < 2) return;
   
       registerContext(
         'pinnedSteps-' + Math.random().toString(36).slice(2, 8),
         function () {
           var n = panels.length;
+          var activeIdx = 0;
   
-          /* ── Track state to avoid redundant DOM thrashing ── */
-          var currentIdx = 0;
-          var previousIdx = -1;
-  
-          /* ── Initial panel setup with GPU-accelerated properties ── */
+          /* ── Initial state ── */
           panels.forEach(function (panel, i) {
             gsap.set(panel, {
               autoAlpha: i === 0 ? 1 : 0,
-              y: i === 0 ? 0 : 40,
-              willChange: 'transform, opacity',
+              y: i === 0 ? 0 : 20,
               force3D: true,
             });
           });
   
-          /* ── Shorter scroll distance = less scrolling needed per step ── */
-          var scrollPerStep = 30; // vh per step — tighter = more responsive
-          var totalScrollDistance = n * scrollPerStep;
-  
+          /* ── Scroll-driven timeline ── */
           var tl = gsap.timeline({
             scrollTrigger: {
               trigger: section,
               start: 'top top',
               end: function () {
-                return '+=' + totalScrollDistance + '%';
+                return '+=' + ((n - 1) * 28) + '%';
               },
               pin: true,
-              pinSpacing: true,
-  
-              /* ── Near-zero scrub for instant response ── */
-              scrub: 0.08, // ultra-low scrub = near-instant tracking
-  
-              /* ── Refined snap for crisp step-locking ── */
+              anticipatePin: 1,
+              scrub: 0.06,
+              invalidateOnRefresh: true,
               snap: {
                 snapTo: 1 / (n - 1),
-                duration: { min: 0.15, max: 0.4 },
+                duration: { min: 0.1, max: 0.35 },
                 delay: 0,
                 ease: 'power3.out',
-                inertia: false,
               },
-  
-              /* ── Optimized update callback ── */
               onUpdate: function (self) {
-                var progress = self.progress;
-  
-                /* Clamp and calculate current index */
-                var rawIdx = progress * (n - 1);
-                var idx = Math.round(rawIdx);
+                var idx = Math.round(self.progress * (n - 1));
                 idx = Math.max(0, Math.min(n - 1, idx));
-  
-                /* Only update DOM when index actually changes */
-                if (idx !== previousIdx) {
-                  previousIdx = idx;
-                  currentIdx = idx;
-  
-                  /* Batch indicator updates */
+                if (idx !== activeIdx) {
+                  activeIdx = idx;
                   for (var j = 0; j < indicators.length; j++) {
-                    if (j === idx) {
-                      if (!indicators[j].classList.contains('is-active')) {
-                        indicators[j].classList.add('is-active');
-                      }
-                    } else {
-                      indicators[j].classList.remove('is-active');
-                    }
+                    indicators[j].classList.toggle('is-active', j === idx);
                   }
                 }
-              },
-  
-              /* ── Ensure clean state on refresh ── */
-              onRefresh: function () {
-                previousIdx = -1;
               },
             },
           });
   
-          /* ── Build transitions with tighter overlaps for snappy feel ── */
+          /* ── Simultaneous crossfade — no dead zones ── */
           for (var i = 0; i < n - 1; i++) {
-            var stepStart = i;
-  
-            /* Outgoing panel — swift exit */
             tl.to(
               panels[i],
-              {
-                autoAlpha: 0,
-                y: -25,
-                scale: 0.98,
-                duration: 0.45,
-                ease: 'power3.in',
-                force3D: true,
-              },
-              stepStart
+              { autoAlpha: 0, y: -15, duration: 1, ease: 'none' },
+              i
             );
   
-            /* Incoming panel — overlapping entrance for seamless flow */
             tl.fromTo(
               panels[i + 1],
-              {
-                autoAlpha: 0,
-                y: 40,
-                scale: 1.01,
-              },
-              {
-                autoAlpha: 1,
-                y: 0,
-                scale: 1,
-                duration: 0.45,
-                ease: 'power3.out',
-                force3D: true,
-              },
-              stepStart + 0.2 // tighter overlap = less dead zone
+              { autoAlpha: 0, y: 20 },
+              { autoAlpha: 1, y: 0, duration: 1, ease: 'none' },
+              i
             );
           }
   
-          /* ── Set initial active indicator ── */
-          if (indicators[0]) {
-            indicators[0].classList.add('is-active');
-          }
-  
-          /* ── Normalize scroll delta for consistent feel across devices ── */
-          var scrollNormalizer = null;
-  
-          try {
-            scrollNormalizer = ScrollTrigger.normalizeScroll({
-              allowNestedScroll: true,
-              lockAxis: false,
-              momentum: function (self) {
-                /* Minimal momentum for crisp stopping */
-                return Math.min(self, 0.08);
-              },
-              type: 'pointer,touch,wheel',
-            });
-          } catch (e) {
-            /* normalizeScroll not available — graceful fallback */
-          }
-  
-          /* ── Wheel event interceptor for amplified scroll sensitivity ── */
-          var wheelMultiplier = 1.8; // amplify small scrolls
-          var isIntercepting = false;
-          var accumulatedDelta = 0;
-          var wheelRAF = null;
-  
-          function onWheel(e) {
-            /* Only intercept when section is pinned/active */
-            var st = tl.scrollTrigger;
-            if (!st || !st.isActive) return;
-  
-            var delta = e.deltaY;
-  
-            /* Detect trackpad vs mouse wheel */
-            var isTrackpad =
-              Math.abs(delta) < 50 ||
-              (e.deltaMode === 0 && Math.abs(delta) < 120);
-  
-            /* Apply multiplier — stronger for light/trackpad scrolls */
-            var multiplier = isTrackpad ? wheelMultiplier * 1.4 : wheelMultiplier;
-  
-            /* Amplify the scroll */
-            var amplifiedDelta = delta * (multiplier - 1);
-  
-            /* Accumulate for smooth application */
-            accumulatedDelta += amplifiedDelta;
-  
-            if (!wheelRAF) {
-              wheelRAF = requestAnimationFrame(function () {
-                if (Math.abs(accumulatedDelta) > 0.5) {
-                  window.scrollBy({
-                    top: accumulatedDelta,
-                    behavior: 'auto', // instant, no smooth — we want raw speed
-                  });
-                }
-                accumulatedDelta = 0;
-                wheelRAF = null;
-              });
-            }
-          }
-  
-          section.addEventListener('wheel', onWheel, { passive: true });
-  
-          /* ── Cleanup on context revert ── */
-          return function () {
-            section.removeEventListener('wheel', onWheel);
-            if (wheelRAF) {
-              cancelAnimationFrame(wheelRAF);
-              wheelRAF = null;
-            }
-            if (scrollNormalizer && scrollNormalizer.kill) {
-              scrollNormalizer.kill();
-            }
-            panels.forEach(function (panel) {
-              gsap.set(panel, { clearProps: 'all' });
-            });
-          };
+          if (indicators[0]) indicators[0].classList.add('is-active');
         }
       );
     });
   }
-
 /* ═══════════════════════════════════════════
    FALLBACK
    ═══════════════════════════════════════════ */

@@ -470,3 +470,17 @@ html.has-custom-cursor, html.has-custom-cursor * { cursor: none !important; }
 .dark [data-step-indicator].is-active .step-label {
   color: rgb(34, 197, 94);
 }
+
+/* ══════════════════════════════════════
+   FAQ ACCORDION
+   ══════════════════════════════════════ */
+   [data-faq-content] {
+    transition: grid-template-rows 0.3s ease-out;
+  }
+  
+  /* ══════════════════════════════════════
+     CERTIFICATION BADGE TOOLTIPS
+     ══════════════════════════════════════ */
+  .group:hover > span[class*="absolute"] {
+    transition-delay: 0.15s;
+  }
