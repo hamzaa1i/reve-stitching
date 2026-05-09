@@ -403,7 +403,7 @@ git push
 
 © 2026 Reve Stitching (Pvt.) Ltd. All rights reserved.
 
-Website designed & developed with ❤️ using AI-assisted development.
+Website designed & developed with ❤️ by [Hamza Ali](https://hamzaalidev.vercel.app/).
 
 ---
 
