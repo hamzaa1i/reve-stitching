@@ -1,42 +1,47 @@
 # 🧵 Reve Stitching — Official Website
 
-**Reve Stitching** made with **Astro** ⚡ **TailwindCSS** 🎨 **Supabase** 🗄️ **Vercel** ▲
+[![Made with Astro](https://img.shields.io/badge/Made%20with-Astro-FF5D01?style=flat-square&logo=astro)](https://astro.build)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com/)
+[![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com/)
 
-🌐 **Live Website** — [revestitching.com](https://revestitching.com)
+**Reve Stitching** is a modern, feature-rich website for a 100% export-oriented knitted garment manufacturer. Built for performance, scalability, and a seamless user experience for both buyers and the internal admin team.
+
+🌐 **Live Website:** [revestitching.com](https://revestitching.com)
 
 ---
 
 ## 🏭 About Reve Stitching
 
-Reve Stitching (Pvt.) Ltd. is a leading **100% export-oriented** knitted garment manufacturer strategically located in **Faisalabad, Pakistan** — the heart of the textile industry.
+Reve Stitching (Pvt.) Ltd. is a leading 100% export-oriented knitted garment manufacturer strategically located in Faisalabad, Pakistan — the heart of the textile industry.
 
 ### ✨ Key Highlights
 
-| Metric               | Value                     |
-|----------------------|---------------------------|
-| 🏭 Monthly Capacity  | 300,000+ garments         |
-| ⚙️ Modern Machines   | 150+ units                |
-| 📅 Established       | 2019                      |
-| ✅ Compliance        | SEDEX Certified           |
-| 🎯 Quality Standards | AQL 1.5 – 4.0             |
-| 🌍 Market Focus      | 100% Export (UK, EU)      |
-| 🎖️ Major Clients     | Boohoo, Pull&Bear, Yours Clothing |
+| Metric | Value |
+| :--- | :--- |
+| 🏭 Monthly Capacity | 300,000+ garments |
+| ⚙️ Modern Machines | 150+ units |
+| 📅 Established | 2019 |
+| ✅ Compliance | SEDEX Certified |
+| 🎯 Quality Standards | AQL 1.5 – 4.0 |
+| 🌍 Market Focus | 100% Export (UK, EU) |
+| 🎖️ Major Clients | Boohoo, Pull&Bear, Yours Clothing |
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Technology      | Purpose                          |
-|-----------------|----------------------------------|
-| Astro 5         | Static site generator with SSR   |
-| Tailwind CSS    | Utility-first CSS framework      |
-| GSAP            | Professional-grade animations    |
-| Lenis           | Smooth scroll library            |
-| Supabase        | PostgreSQL database + file storage |
-| Resend          | Transactional email service      |
-| GitHub Models   | AI-powered features (GPT-4o)      |
-| Vercel          | Hosting & deployment             |
-| Discord         | Real-time notifications          |
+| Technology | Purpose |
+| :--- | :--- |
+| **Astro 5** | Static site generator with SSR support |
+| **Tailwind CSS** | Utility-first CSS framework |
+| **GSAP** | Professional-grade animations |
+| **Lenis** | Smooth scroll library |
+| **Supabase** | PostgreSQL database + file storage |
+| **Resend** | Transactional email service |
+| **GitHub Models** | AI-powered features (GPT-4o) |
+| **Vercel** | Hosting & deployment |
+| **Discord** | Real-time notifications |
 
 ---
 
@@ -87,10 +92,10 @@ reve-stitching/
 │   ├── components/
 │   │   ├── Header.astro
 │   │   ├── Footer.astro
-│   │   ├── ChatWidget.astro
-│   │   ├── QuoteWizard.astro
-│   │   ├── PriceCalculator.astro
-│   │   ├── WhatsAppWidget.astro
+│   │   ├── ChatWidget.astro          # Live chat widget
+│   │   ├── QuoteWizard.astro         # 5-step quote form
+│   │   ├── PriceCalculator.astro     # Instant price calculator
+│   │   ├── WhatsAppWidget.astro      # WhatsApp click-to-chat
 │   │   ├── StatsBar.astro
 │   │   ├── BentoGrid.astro
 │   │   ├── ProcessSteps.astro
@@ -100,58 +105,58 @@ reve-stitching/
 │   │   └── admin/
 │   │       └── WhatsAppContactButton.astro
 │   ├── layouts/
-│   │   ├── Layout.astro
-│   │   └── AdminLayout.astro
+│   │   ├── Layout.astro              # Main layout
+│   │   └── AdminLayout.astro         # Admin panel layout
 │   ├── lib/
-│   │   ├── supabase.ts
-│   │   ├── pricing.ts
-│   │   ├── notifications.ts
+│   │   ├── supabase.ts               # Supabase client
+│   │   ├── pricing.ts                # Price calculation engine
+│   │   ├── notifications.ts          # Email + Discord helpers
 │   │   ├── types/
-│   │   │   └── quote.ts
+│   │   │   └── quote.ts              # TypeScript types
 │   │   └── services/
-│   │       ├── storage.ts
-│   │       ├── ai-summary.ts
-│   │       ├── techpack-analyzer.ts
-│   │       └── whatsapp-links.ts
+│   │       ├── storage.ts            # File upload helpers
+│   │       ├── ai-summary.ts         # AI price estimation
+│   │       ├── techpack-analyzer.ts  # AI tech pack analysis
+│   │       └── whatsapp-links.ts     # WhatsApp URL builders
 │   ├── pages/
-│   │   ├── index.astro
-│   │   ├── about.astro
-│   │   ├── products.astro
-│   │   ├── clients.astro
-│   │   ├── contact.astro
-│   │   ├── quote.astro
+│   │   ├── index.astro               # Homepage
+│   │   ├── about.astro               # Company info
+│   │   ├── products.astro            # Product catalog
+│   │   ├── clients.astro             # Client portfolio
+│   │   ├── contact.astro             # Contact page
+│   │   ├── quote.astro               # Quote request page
 │   │   ├── admin/
-│   │   │   ├── index.astro
-│   │   │   ├── login.astro
-│   │   │   ├── logout.ts
+│   │   │   ├── index.astro           # Dashboard
+│   │   │   ├── login.astro           # Admin login
+│   │   │   ├── logout.ts             # Logout handler
 │   │   │   ├── quotes/
-│   │   │   │   ├── index.astro
-│   │   │   │   └── [id].astro
+│   │   │   │   ├── index.astro       # Quote list
+│   │   │   │   └── [id].astro        # Quote detail
 │   │   │   └── chat/
-│   │   │       └── [id].astro
+│   │   │       └── [id].astro        # Live chat admin view
 │   │   └── api/
 │   │       ├── contact.ts
 │   │       ├── quote/
-│   │       │   └── submit.ts
+│   │       │   └── submit.ts         # Quote submission endpoint
 │   │       ├── chat/
-│   │       │   ├── bot.ts
-│   │       │   ├── session.ts
-│   │       │   ├── send.ts
-│   │       │   ├── poll.ts
-│   │       │   ├── heartbeat.ts
-│   │       │   └── close.ts
+│   │       │   ├── bot.ts            # AI chatbot
+│   │       │   ├── session.ts        # Chat session management
+│   │       │   ├── send.ts           # Send message
+│   │       │   ├── poll.ts           # Poll for new messages
+│   │       │   ├── heartbeat.ts      # Keep session alive
+│   │       │   └── close.ts          # End session
 │   │       ├── auth/
-│   │       │   ├── login.ts
-│   │       │   └── logout.ts
+│   │       │   ├── login.ts          # Admin login
+│   │       │   └── logout.ts         # Admin logout
 │   │       └── admin/
-│   │           ├── contact-status.ts
-│   │           └── dashboard-stats.ts
+│   │           ├── contact-status.ts # Update contact status
+│   │           └── dashboard-stats.ts # Dashboard metrics
 │   ├── scripts/
-│   │   └── animations.js
+│   │   └── animations.js             # GSAP animations
 │   └── styles/
-│       └── global.css
-├── astro.config.mjs
-├── tailwind.config.mjs
+│       └── global.css                # Global styles
+├── astro.config.mjs                  # Astro configuration
+├── tailwind.config.mjs               # Tailwind configuration
 ├── package.json
 └── README.md
 ```
@@ -180,7 +185,7 @@ cd reve-stitching
 # Install dependencies
 npm install
 
-# Set up environment variables
+# Set up environment variables (see below)
 cp .env.example .env
 
 # Start development server
@@ -190,7 +195,7 @@ npm run dev
 ### Available Commands
 
 | Command | Action |
-|---|---|
+| :--- | :--- |
 | `npm run dev` | Start local dev server at `localhost:4321` |
 | `npm run build` | Build production site to `./dist/` |
 | `npm run preview` | Preview build locally before deploying |
@@ -241,9 +246,9 @@ WHATSAPP_DISPLAY_NAME=Reve Stitching Sales
 
 ## 📊 Database Setup
 
-Run these SQL statements in your Supabase SQL editor to create the required tables.
+### Supabase Tables
 
-### 1. `quote_requests` — Quote submissions
+#### 1. `quote_requests` — Quote submissions
 
 ```sql
 CREATE TABLE quote_requests (
@@ -283,7 +288,7 @@ CREATE TABLE quote_requests (
 );
 ```
 
-### 2. `chat_sessions` — Live chat data
+#### 2. `chat_sessions` — Live chat data
 
 ```sql
 CREATE TABLE chat_sessions (
@@ -299,7 +304,7 @@ CREATE TABLE chat_sessions (
 );
 ```
 
-### 3. `contact_submissions` — Contact form entries
+#### 3. `contact_submissions` — Contact form entries
 
 ```sql
 CREATE TABLE contact_submissions (
@@ -343,28 +348,34 @@ CREATE TABLE contact_submissions (
 - **Customization Costs** — Screen print, embroidery, DTG, custom labels
 
 **Example Calculation:**
-
 - Product: Premium Hoodies
 - Quantity: 1,000 pieces
 - Fabric: Terry Fleece (320 GSM)
 - Customization: Embroidery + Custom Labels
-- **Result:** $13,500 - $21,500 (£10,665 - £16,985)
-- Lead Time: 35-40 days
+- **Result: $13,500 - $21,500 (£10,665 - £16,985)**
+- **Lead Time: 35-40 days**
 
 ---
 
 ## 🏆 Certifications & Compliance
 
-SEDEX | SGS | BCI | GOTS | ISO | GRS
+<p align="center">
+  <img src="https://img.shields.io/badge/SEDEX-Compliant-166534?style=flat-square" alt="SEDEX" />
+  <img src="https://img.shields.io/badge/SGS-Trained-166534?style=flat-square" alt="SGS" />
+  <img src="https://img.shields.io/badge/BCI-Member-166534?style=flat-square" alt="BCI" />
+  <img src="https://img.shields.io/badge/GOTS-Certified-166534?style=flat-square" alt="GOTS" />
+  <img src="https://img.shields.io/badge/ISO%209001-2015-166534?style=flat-square" alt="ISO" />
+  <img src="https://img.shields.io/badge/GRS-Certified-166534?style=flat-square" alt="GRS" />
+</p>
 
 ---
 
 ## 🚢 Deployment
 
-This project is deployed on **Vercel**. Automatic deployment triggers on every push to the main branch.
+### Vercel (Current)
 
 ```bash
-# Push your changes
+# Automatic deployment on git push
 git add .
 git commit -m "Your commit message"
 git push
@@ -372,7 +383,7 @@ git push
 # Vercel auto-builds and deploys
 ```
 
-- **Live URL:** [revestitching.com](https://revestitching.com)
+- **Live URL:** `revestitching.com`
 - **Environment Variables:** Configured in Vercel Dashboard
 
 ---
@@ -390,12 +401,11 @@ git push
 ## 📞 Contact & Support
 
 **Reve Stitching (Pvt.) Ltd.**
-
-- 📍 Address: Chak No. 196/R.B, Ghona Road, Faisalabad (38000), Pakistan
-- 📧 Email: [info@revestitching.com](mailto:info@revestitching.com)
-- 📞 Phone: +92 41 8548041
-- 💬 WhatsApp: +92 332 9555786
-- 🌐 Website: [revestitching.com](https://revestitching.com)
+📍 **Address:** Chak No. 196/R.B, Ghona Road, Faisalabad (38000), Pakistan
+📧 **Email:** info@revestitching.com
+📞 **Phone:** +92 41 8548041
+💬 **WhatsApp:** +92 332 9555786
+🌐 **Website:** revestitching.com
 
 ---
 
@@ -403,14 +413,13 @@ git push
 
 © 2026 Reve Stitching (Pvt.) Ltd. All rights reserved.
 
-Website designed & developed with ❤️ by [Hamza Ali](https://hamzaalidev.vercel.app/).
+Website designed & developed with ❤️ by [Hamza Ali](https://hamzaalidev.vercel.app).
 
 ---
 
 ## 🛣️ Development Roadmap
 
 ### ✅ Completed (Phase 1)
-
 - ✅ Modern responsive website with animations
 - ✅ Product catalog with detailed specifications
 - ✅ Contact form with email notifications
@@ -424,14 +433,12 @@ Website designed & developed with ❤️ by [Hamza Ali](https://hamzaalidev.verc
 - ✅ Auto-currency detection for UK visitors
 
 ### 🔄 In Progress (Phase 2)
-
 - 🔄 Quote Wizard pre-fill from Price Calculator
 - 🔄 Enhanced admin analytics dashboard
 - 🔄 Email template customization
 - 🔄 Multi-language support (Urdu)
 
 ### 🔮 Planned (Phase 3)
-
 - 🔮 Client portal (order tracking)
 - 🔮 Automated follow-up emails
 - 🔮 Sample request system
@@ -441,8 +448,11 @@ Website designed & developed with ❤️ by [Hamza Ali](https://hamzaalidev.verc
 
 ---
 
-🌿 Committed to Sustainable & Ethical Manufacturing 🌿
+<p align="center">
+  <strong>🌿 Committed to Sustainable & Ethical Manufacturing 🌿</strong>
+</p>
 
----
-
-Built with Astro • Powered by AI • Deployed on Vercel
+<p align="center">
+  <sub>Built with Astro • Powered by AI • Deployed on Vercel</sub>
+</p>
+```

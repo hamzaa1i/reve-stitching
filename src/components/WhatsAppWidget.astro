@@ -20,7 +20,7 @@ const {
   productName,
   pageUrl,
   phoneNumber = import.meta.env.PUBLIC_WHATSAPP_NUMBER || '923247326626',
-  bottomOffset = 90,
+  bottomOffset = 92,
   showLabel = true,
   labelText = 'Chat on WhatsApp',
 } = Astro.props;
@@ -90,7 +90,8 @@ const {
     display: flex;
     align-items: center;
     gap: 12px;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                bottom 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   /* ── Tooltip Label ── */
@@ -242,13 +243,17 @@ const {
 </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  function setupWaWidget() {
     const widget = document.getElementById('wa-widget');
     const button = document.getElementById('wa-button') as HTMLAnchorElement | null;
     const label = document.getElementById('wa-label');
     const labelClose = document.getElementById('wa-label-close');
 
     if (!widget || !button) return;
+
+    // Guard: skip if already initialized on this DOM element
+    if (widget.dataset.waReady === '1') return;
+    widget.dataset.waReady = '1';
 
     const phone = widget.dataset.phone || '';
     const product = widget.dataset.product || '';
@@ -276,7 +281,6 @@ const {
 
     // ── Analytics: track clicks ──
     button.addEventListener('click', () => {
-      // Google Analytics 4
       if (typeof gtag === 'function') {
         (window as any).gtag('event', 'whatsapp_click', {
           event_category: 'engagement',
@@ -285,7 +289,6 @@ const {
         });
       }
 
-      // Plausible
       if (typeof (window as any).plausible === 'function') {
         (window as any).plausible('WhatsApp Click', {
           props: { product: product || 'general' },
@@ -293,34 +296,30 @@ const {
       }
     });
 
-    // ── Dismiss label ──
-    if (labelClose && label) {
-      labelClose.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        label.classList.add('wa-widget__label--hidden');
-        // Remember dismissal for session
-        try {
-          sessionStorage.setItem('wa-label-dismissed', '1');
-        } catch { /* storage unavailable */ }
-      });
+    // ── Label: show fresh on every page, auto-dismiss after 8s ──
+    if (label) {
+      // Ensure label is visible (remove any stale hidden state)
+      label.classList.remove('wa-widget__label--hidden');
 
-      // Auto-hide if previously dismissed
-      try {
-        if (sessionStorage.getItem('wa-label-dismissed') === '1') {
+      if (labelClose) {
+        labelClose.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
           label.classList.add('wa-widget__label--hidden');
-        }
-      } catch { /* ignore */ }
+        });
+      }
 
-      // Auto-dismiss after 8 seconds
       setTimeout(() => {
-        if (!label.classList.contains('wa-widget__label--hidden')) {
+        if (label && !label.classList.contains('wa-widget__label--hidden')) {
           label.classList.add('wa-widget__label--hidden');
         }
       }, 8000);
     }
 
-    // ── Show widget with entrance animation ──
+    // ── Show widget ──
     widget.style.transform = 'translateY(0)';
-  });
+  }
+
+  document.addEventListener('DOMContentLoaded', setupWaWidget);
+  document.addEventListener('astro:page-load', setupWaWidget);
 </script>

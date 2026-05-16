@@ -1110,33 +1110,10 @@ function initFloatingElements() {
 /* ═══════════════════════════════════════════
    MODULE: SCROLL-TO-TOP BUTTON
    ═══════════════════════════════════════════ */
-function initScrollToTop() {
-  const btn = document.getElementById('scroll-top-btn');
-  if (!btn) return;
-
-  registerContext('scrollTop', () => {
-    ScrollTrigger.create({
-      trigger: document.documentElement,
-      start: 'top -400',
-      onEnter: () => btn.classList.add('is-visible'),
-      onLeaveBack: () => btn.classList.remove('is-visible'),
-    });
-  });
-
-  const clickHandler = () => {
-    if (STATE.lenis) {
-      STATE.lenis.scrollTo(0, { duration: 1.5 });
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
-  btn.addEventListener('click', clickHandler);
-  onCleanup(() => {
-    btn.removeEventListener('click', clickHandler);
-    btn.classList.remove('is-visible');
-  });
-}
+   function initScrollToTop() {
+    // Scroll-to-top is now self-contained in ScrollProgress.astro
+    // with its own inline script. Nothing to do here.
+  }
 
 /* ═══════════════════════════════════════════
    MODULE: PAGE TRANSITIONS
@@ -1206,109 +1183,119 @@ function initMouseTracking() {
    function initPinnedSteps() {
     var sections = document.querySelectorAll('[data-pinned-steps]');
     if (!sections.length) return;
-    if (window.innerWidth < 1024) return;
-  
+
     sections.forEach(function (section) {
       var panels = Array.from(section.querySelectorAll('[data-step-panel]'));
       var indicators = Array.from(section.querySelectorAll('[data-step-indicator]'));
-      if (panels.length < 2) return;
-  
-      registerContext(
-        'pinnedSteps-' + Math.random().toString(36).slice(2, 8),
-        function () {
-          var n = panels.length;
-          var activeIdx = 0;
-  
-          panels.forEach(function (panel, i) {
-            gsap.set(panel, {
-              autoAlpha: i === 0 ? 1 : 0,
-              y: i === 0 ? 0 : 25,
-              force3D: true,
-            });
+      if (!panels.length) return;
+
+      // Abort previous listeners on re-init (resize breakpoint change)
+      if (section['_stepAbort']) section['_stepAbort'].abort();
+      section['_stepAbort'] = new AbortController();
+      var signal = section['_stepAbort'].signal;
+
+      // Reset inline styles from any previous init
+      panels.forEach(function (panel) {
+        panel.style.position = '';
+        panel.style.inset = '';
+        panel.style.display = '';
+        panel.style.transition = '';
+        panel.style.opacity = '';
+        panel.style.transform = '';
+        panel.style.visibility = '';
+        panel.style.pointerEvents = '';
+      });
+      indicators.forEach(function (ind) {
+        ind.style.cursor = '';
+        ind.classList.remove('is-active');
+      });
+
+      var isDesktop = window.innerWidth >= 1024;
+      var currentIdx = 0;
+
+      if (isDesktop) {
+        // ── Desktop: overlay panels, crossfade on click ──
+        panels.forEach(function (panel, i) {
+          panel.style.position = 'absolute';
+          panel.style.inset = '0';
+          panel.style.display = 'flex';
+          panel.style.transition = 'opacity 0.5s cubic-bezier(0.4,0,0.2,1), transform 0.5s cubic-bezier(0.4,0,0.2,1)';
+          panel.style.opacity = i === 0 ? '1' : '0';
+          panel.style.transform = i === 0 ? 'translateY(0)' : 'translateY(20px)';
+          panel.style.visibility = i === 0 ? 'visible' : 'hidden';
+          panel.style.pointerEvents = i === 0 ? 'auto' : 'none';
+        });
+
+        // Activate first indicator
+        if (indicators[0]) indicators[0].classList.add('is-active');
+        indicators.forEach(function (ind) { ind.style.cursor = 'pointer'; });
+
+        // Event delegation — one listener, clean abort
+        section.addEventListener('click', function (e) {
+          var target = e.target;
+          if (!target || typeof target.closest !== 'function') return;
+          var indicator = target.closest('[data-step-indicator]');
+          if (!indicator) return;
+          var idx = indicators.indexOf(indicator);
+          if (idx === -1 || idx === currentIdx) return;
+
+          // Outgoing panel
+          panels[currentIdx].style.opacity = '0';
+          panels[currentIdx].style.transform = 'translateY(-20px)';
+          panels[currentIdx].style.visibility = 'hidden';
+          panels[currentIdx].style.pointerEvents = 'none';
+
+          // Incoming panel — force reflow so transition fires
+          panels[idx].style.visibility = 'visible';
+          panels[idx].style.pointerEvents = 'auto';
+          void panels[idx].offsetWidth;
+          panels[idx].style.opacity = '1';
+          panels[idx].style.transform = 'translateY(0)';
+
+          // Update indicators
+          indicators.forEach(function (ind, i) {
+            ind.classList.toggle('is-active', i === idx);
           });
-  
-          var tl = gsap.timeline({
-            scrollTrigger: {
-              trigger: section,
-              start: 'top top',
-              end: function () {
-                return '+=' + ((n - 1) * 40) + '%';
-              },
-              pin: true,
-              anticipatePin: 1,
-              scrub: 0.12,
-              invalidateOnRefresh: true,
-              snap: {
-                snapTo: 1 / (n - 1),
-                duration: { min: 0.15, max: 0.4 },
-                delay: 0,
-                ease: 'power3.out',
-              },
-              onUpdate: function (self) {
-                var idx = Math.round(self.progress * (n - 1));
-                idx = Math.max(0, Math.min(n - 1, idx));
-                if (idx !== activeIdx) {
-                  activeIdx = idx;
-                  for (var j = 0; j < indicators.length; j++) {
-                    indicators[j].classList.toggle('is-active', j === idx);
-                  }
-                }
-              },
-            },
-          });
-  
-          /*
-           * SEQUENTIAL transitions — exit FIRST, then enter.
-           * Per step (duration = 1 unit):
-           *   Exit:  i → i+0.4  (current panel fades out)
-           *   Enter: i+0.35 → i+1.0  (next panel fades in)
-           *   Overlap zone: 5% (i+0.35 to i+0.4) — both nearly invisible
-           *   Timeline total = exactly n-1 (snaps align perfectly)
-           */
-          for (var i = 0; i < n - 1; i++) {
-            tl.to(
-              panels[i],
-              {
-                autoAlpha: 0,
-                y: -20,
-                duration: 0.4,
-                ease: 'power2.in',
-              },
-              i
-            );
-  
-            tl.fromTo(
-              panels[i + 1],
-              { autoAlpha: 0, y: 25 },
-              {
-                autoAlpha: 1,
-                y: 0,
-                duration: 0.65,
-                ease: 'power2.out',
-              },
-              i + 0.35
-            );
-          }
-  
-          if (indicators[0]) indicators[0].classList.add('is-active');
-        }
-      );
+
+          currentIdx = idx;
+        }, { signal: signal });
+
+      } else {
+        // ── Mobile: stack all panels vertically ──
+        panels.forEach(function (panel) {
+          panel.style.position = 'relative';
+          panel.style.opacity = '1';
+          panel.style.transform = 'none';
+          panel.style.visibility = 'visible';
+          panel.style.pointerEvents = 'auto';
+        });
+      }
     });
   }
 
 /* ═══════════════════════════════════════════
    FALLBACK
    ═══════════════════════════════════════════ */
-function makeEverythingVisible() {
-  const sel = '[data-animate], [data-stagger] > *, [data-bento-item], [data-cta-title], [data-cta-button]';
-  document.querySelectorAll(sel).forEach((el) => {
-    el.style.opacity = '1';
-    el.style.transform = 'none';
-    el.style.filter = 'none';
-    el.style.clipPath = 'none';
-    el.style.visibility = 'visible';
-  });
-}
+   function makeEverythingVisible() {
+    const sel = '[data-animate], [data-stagger] > *, [data-bento-item], [data-cta-title], [data-cta-button]';
+    document.querySelectorAll(sel).forEach((el) => {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+      el.style.filter = 'none';
+      el.style.clipPath = 'none';
+      el.style.visibility = 'visible';
+    });
+
+    // ── Counters: set final target values immediately ──
+    document.querySelectorAll('[data-counter]').forEach((el) => {
+      const target = parseFloat(el.getAttribute('data-counter'));
+      if (isNaN(target)) return;
+      const suffix = el.getAttribute('data-suffix') || '';
+      const prefix = el.getAttribute('data-prefix') || '';
+      const decimals = parseInt(el.getAttribute('data-decimals'), 10) || 0;
+      el.textContent = prefix + (decimals > 0 ? target.toFixed(decimals) : target.toLocaleString()) + suffix;
+    });
+  }
 
 /* ═══════════════════════════════════════════
    CLEANUP
@@ -1329,75 +1316,71 @@ function cleanup() {
 /* ═══════════════════════════════════════════
    MASTER INIT
    ═══════════════════════════════════════════ */
-export async function initAnimations() {
-  try {
-    cleanup();
+   export async function initAnimations() {
+    try {
+      cleanup();
+  
+      // Click-based step navigation — always runs, no GSAP dependency
+      initPinnedSteps();
 
-    ScrollTrigger.config({ limitCallbacks: true });
-
-    STATE.isDesktop = checkDesktop();
-    STATE.isReducedMotion = checkReducedMotion();
-    STATE.perfTier = detectPerformanceTier();
-
-    await initSmoothScroll();
-
-    document.documentElement.classList.add('gsap-ready');
-
-    if (STATE.isReducedMotion) {
-      makeEverythingVisible();
-      return;
-    }
-
-    requestAnimationFrame(() => {
-      try {
-        // Scroll system
-        initScrollProgress();
-        initSectionSnap();
-
-        // Cursor & mouse (tier-gated inside each function)
-        initCustomCursor();
-        initMouseTracking();
-        initMagneticElements();
-        initMouseBackground();
-
-        // Content animations (always run)
-        initRevealAnimations();
-        initStaggerAnimations();
-        initHeroAnimations();
-        initCounterAnimations();
-        initBentoGrid();
-        initCTASection();
-        initPinnedSteps();
-
-        // Movement
-        initParallax();
-        initHorizontalScroll();
-        init3DTilt();
-        initFloatingElements();
-
-        // UI
-        initScrollToTop();
-        initPageTransitions();
-
-        // Pause marquee when tab is hidden (saves CPU/battery)
-        document.addEventListener('visibilitychange', function () {
-          var tracks = document.querySelectorAll('.marquee-track');
-          for (var i = 0; i < tracks.length; i++) {
-            tracks[i].style.animationPlayState = document.hidden ? 'paused' : 'running';
-          }
-        });
-
-        ScrollTrigger.refresh();
-      } catch (e) {
-        console.warn('Animation init error:', e);
+      // ━━━ EARLY BAIL‑OUT: Reduced‑motion or no‑JS fallback ━━━
+      STATE.isReducedMotion = checkReducedMotion();
+      if (STATE.isReducedMotion) {
         makeEverythingVisible();
+        document.documentElement.classList.add('gsap-ready');
+        return; // No Lenis, no ScrollTrigger, no heavy animations
       }
-    });
-  } catch (e) {
-    console.warn('GSAP init error:', e);
-    makeEverythingVisible();
+  
+      ScrollTrigger.config({ limitCallbacks: true });
+  
+      STATE.isDesktop = checkDesktop();
+      STATE.perfTier = detectPerformanceTier();
+  
+      await initSmoothScroll();
+  
+      document.documentElement.classList.add('gsap-ready');
+  
+      requestAnimationFrame(() => {
+        try {
+          // ... rest of initialisation remains exactly the same ...
+          initScrollProgress();
+          initSectionSnap();
+          initCustomCursor();
+          initMouseTracking();
+          initMagneticElements();
+          initMouseBackground();
+          initRevealAnimations();
+          initStaggerAnimations();
+          initHeroAnimations();
+          initCounterAnimations();
+          initBentoGrid();
+          initCTASection();
+          initPinnedSteps();
+          initParallax();
+          initHorizontalScroll();
+          init3DTilt();
+          initFloatingElements();
+          initScrollToTop();
+          initPageTransitions();
+  
+          document.addEventListener('visibilitychange', function () {
+            var tracks = document.querySelectorAll('.marquee-track');
+            for (var i = 0; i < tracks.length; i++) {
+              tracks[i].style.animationPlayState = document.hidden ? 'paused' : 'running';
+            }
+          });
+  
+          ScrollTrigger.refresh();
+        } catch (e) {
+          console.warn('Animation init error:', e);
+          makeEverythingVisible();
+        }
+      });
+    } catch (e) {
+      console.warn('GSAP init error:', e);
+      makeEverythingVisible();
+    }
   }
-}
 
 /* ═══════════════════════════════════════════
    RESPONSIVE

@@ -30,6 +30,29 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="UTF-8" />
     <DarkModeScript />
+    <!-- ── No‑JS fallback: ensure animated elements are visible ── -->
+    <noscript>
+      <style>
+        [data-animate],
+        [data-stagger] > *,
+        [data-bento-item],
+        [data-cta-title],
+        [data-cta-button],
+        .split-line-wrapper,
+        .split-line {
+          opacity: 1 !important;
+          transform: none !important;
+          visibility: visible !important;
+        }
+        /* No JS available — stack panels vertically as fallback */
+        [data-pinned-steps] [data-step-panel] {
+          position: relative !important;
+          opacity: 1 !important;
+          transform: none !important;
+          visibility: visible !important;
+        }
+      </style>
+    </noscript>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
 
@@ -114,9 +137,57 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           initAnimations();
         } catch (e) {
           console.warn('Animation initialization failed:', e);
-          document.querySelectorAll('[data-animate], [data-stagger] > *, [data-bento-item], [data-cta-title], [data-step-panel]').forEach((el) => {
+          document.querySelectorAll('[data-animate], [data-stagger] > *, [data-bento-item], [data-cta-title]').forEach((el) => {
             (el as HTMLElement).style.opacity = '1';
             (el as HTMLElement).style.transform = 'none';
+          });
+          // Step panels: click-to-switch on desktop, stack on mobile
+          document.querySelectorAll('[data-pinned-steps]').forEach(function (container) {
+            var panels = Array.from(container.querySelectorAll('[data-step-panel]'));
+            var indicators = Array.from(container.querySelectorAll('[data-step-indicator]'));
+            var isDesktop = window.innerWidth >= 1024;
+            panels.forEach(function (panel, i) {
+              if (isDesktop) {
+                panel.style.position = 'absolute';
+                panel.style.inset = '0';
+                panel.style.opacity = i === 0 ? '1' : '0';
+                panel.style.visibility = i === 0 ? 'visible' : 'hidden';
+                panel.classList.toggle('is-active', i === 0);
+              } else {
+                panel.style.position = 'relative';
+                panel.style.opacity = '1';
+                panel.style.visibility = 'visible';
+              }
+            });
+            if (isDesktop && panels.length) {
+              var wrapper = panels[0].parentElement;
+              if (wrapper) {
+                var maxH = 0;
+                panels.forEach(function (p) { if (p.scrollHeight > maxH) maxH = p.scrollHeight; });
+                wrapper.style.minHeight = maxH + 'px';
+              }
+              indicators.forEach(function (ind, i) { ind.classList.toggle('is-active', i === 0); });
+              indicators.forEach(function (indicator, idx) {
+                indicator.style.cursor = 'pointer';
+                indicator.addEventListener('click', function () {
+                  panels.forEach(function (p, i) {
+                    p.style.opacity = i === idx ? '1' : '0';
+                    p.style.visibility = i === idx ? 'visible' : 'hidden';
+                    p.classList.toggle('is-active', i === idx);
+                  });
+                  indicators.forEach(function (ind, i) { ind.classList.toggle('is-active', i === idx); });
+                });
+              });
+            }
+          });
+          document.querySelectorAll('[data-counter]').forEach((el) => {
+            var t = parseFloat((el as HTMLElement).getAttribute('data-counter') || '0');
+            if (!isNaN(t)) {
+              var s = (el as HTMLElement).getAttribute('data-suffix') || '';
+              var p = (el as HTMLElement).getAttribute('data-prefix') || '';
+              var d = parseInt((el as HTMLElement).getAttribute('data-decimals') || '0', 10) || 0;
+              (el as HTMLElement).textContent = p + (d > 0 ? t.toFixed(d) : t.toLocaleString()) + s;
+            }
           });
         }
       }
@@ -124,13 +195,219 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       document.addEventListener('astro:page-load', safeInit);
     </script>
 
+    <!-- Dynamic floating buttons — avoids footer credit overlap -->
+    <script is:inline>
+      function initFloatingButtons() {
+        var chatToggle = document.getElementById('chat-toggle');
+        var scrollTopBtn = document.getElementById('scroll-top-btn');
+        var credit = document.getElementById('footer-credit');
+
+        if (!chatToggle || !credit) return;
+
+        var CHAT_H = 56;   // w-14 h-14 = 56px
+        var SCROLL_H = 44; // 44px
+        var GAP = 20;      // gap above credit
+        var BETWEEN = 12;  // gap between the two buttons
+
+        function update() {
+          var creditRect = credit.getBoundingClientRect();
+          var viewportH = window.innerHeight;
+
+          if (creditRect.top < viewportH && creditRect.bottom > 0) {
+            var needed = (viewportH - creditRect.top) + GAP;
+
+            if (needed > 24) {
+              chatToggle.style.bottom = needed + 'px';
+              if (scrollTopBtn) {
+                scrollTopBtn.style.bottom = (needed + CHAT_H + BETWEEN) + 'px';
+              }
+            } else {
+              chatToggle.style.bottom = '';
+              if (scrollTopBtn) scrollTopBtn.style.bottom = '';
+            }
+          } else {
+            chatToggle.style.bottom = '';
+            if (scrollTopBtn) scrollTopBtn.style.bottom = '';
+          }
+        }
+
+        var ticking = false;
+        window.addEventListener('scroll', function() {
+          if (!ticking) {
+            requestAnimationFrame(function() { update(); ticking = false; });
+            ticking = true;
+          }
+        }, { passive: true });
+
+        window.addEventListener('resize', update, { passive: true });
+        update();
+      }
+
+      document.addEventListener('astro:page-load', initFloatingButtons);
+      initFloatingButtons();
+    </script>
+
+    <!-- Universal floating buttons: coordinates chat, WhatsApp, scroll-to-top, avoids footer credit -->
+    <script is:inline>
+      (function() {
+        function initFloatingButtons() {
+          // Clean up previous instance (View Transitions)
+          if (window._fbCleanup) window._fbCleanup();
+
+          var chat = document.getElementById('chat-toggle');
+          var scrollBtn = document.getElementById('scroll-top-btn');
+          var waWidget = document.getElementById('wa-widget');
+          var credit = document.getElementById('footer-credit');
+
+          if (!chat) return;
+
+          // ── Constants ──
+          var CHAT_H = 56;    // w-14 h-14
+          var WA_H = 56;      // w-14 h-14 (WhatsApp button)
+          var GAP = 12;       // gap between buttons
+          var CREDIT_GAP = 24; // gap above footer credit
+
+          // ── Capture default positions ──
+          // Chat: read from CSS class (bottom-6 = 1.5rem ≈ 24px)
+          var chatBase = parseFloat(getComputedStyle(chat).bottom) || 24;
+
+          // WhatsApp: read from server-set inline style
+          var waBase = waWidget ? (parseInt(waWidget.style.bottom) || 92) : null;
+
+          // Scroll-to-top: positioned above whichever button is above chat
+          var scrollBase;
+          if (waBase !== null) {
+            scrollBase = waBase + WA_H + GAP; // e.g. 92 + 56 + 12 = 160
+          } else {
+            scrollBase = chatBase + CHAT_H + GAP; // e.g. 24 + 56 + 12 = 92
+          }
+          if (scrollBtn) scrollBtn.style.bottom = scrollBase + 'px';
+
+          // ── Update function ──
+          function update() {
+            if (!credit) return;
+
+            var rect = credit.getBoundingClientRect();
+            var vh = window.innerHeight;
+
+            // Is the credit text visible on screen?
+            if (rect.top < vh && rect.bottom > 0) {
+              var needed = (vh - rect.top) + CREDIT_GAP;
+
+              if (needed > chatBase) {
+                // Push chat up
+                chat.style.bottom = needed + 'px';
+
+                // Push WhatsApp up (above chat)
+                if (waWidget && waBase !== null) {
+                  waWidget.style.bottom = (needed + CHAT_H + GAP) + 'px';
+                }
+
+                // Push scroll-to-top up (above everything)
+                if (scrollBtn) {
+                  var sNew = needed + CHAT_H + GAP;
+                  if (waBase !== null) sNew += WA_H + GAP;
+                  scrollBtn.style.bottom = sNew + 'px';
+                }
+              } else {
+                resetDefaults();
+              }
+            } else {
+              resetDefaults();
+            }
+          }
+
+          function resetDefaults() {
+            chat.style.bottom = '';
+            if (waWidget && waBase !== null) waWidget.style.bottom = waBase + 'px';
+            if (scrollBtn) scrollBtn.style.bottom = scrollBase + 'px';
+          }
+
+          // ── Throttled scroll listener ──
+          var ticking = false;
+          function onScroll() {
+            if (!ticking) {
+              requestAnimationFrame(function() { update(); ticking = false; });
+              ticking = true;
+            }
+          }
+
+          window.addEventListener('scroll', onScroll, { passive: true });
+          window.addEventListener('resize', update, { passive: true });
+          update();
+
+          // ── Cleanup for View Transitions ──
+          window._fbCleanup = function() {
+            window.removeEventListener('scroll', onScroll);
+            window.removeEventListener('resize', update);
+            chat.style.bottom = '';
+            if (waWidget && waBase !== null) waWidget.style.bottom = waBase + 'px';
+            if (scrollBtn) scrollBtn.style.bottom = '';
+          };
+        }
+
+        document.addEventListener('astro:page-load', initFloatingButtons);
+        initFloatingButtons();
+      })();
+    </script>
+
     <script is:inline>
       setTimeout(function() {
         if (!document.documentElement.classList.contains('gsap-ready')) {
-          var els = document.querySelectorAll('[data-animate], [data-stagger] > *, [data-bento-item], [data-cta-title], [data-step-panel]');
+          var els = document.querySelectorAll('[data-animate], [data-stagger] > *, [data-bento-item], [data-cta-title]');
           for (var i = 0; i < els.length; i++) {
             els[i].style.opacity = '1';
             els[i].style.transform = 'none';
+          }
+          // Step panels: click-to-switch on desktop, stack on mobile
+          var sections = document.querySelectorAll('[data-pinned-steps]');
+          for (var s = 0; s < sections.length; s++) {
+            var panels = sections[s].querySelectorAll('[data-step-panel]');
+            var indicators = sections[s].querySelectorAll('[data-step-indicator]');
+            var isDesktop = window.innerWidth >= 1024;
+            for (var j = 0; j < panels.length; j++) {
+              if (isDesktop) {
+                panels[j].style.position = 'absolute';
+                panels[j].style.inset = '0';
+                panels[j].style.opacity = j === 0 ? '1' : '0';
+                panels[j].style.visibility = j === 0 ? 'visible' : 'hidden';
+                panels[j].classList.toggle('is-active', j === 0);
+              } else {
+                panels[j].style.position = 'relative';
+                panels[j].style.opacity = '1';
+                panels[j].style.visibility = 'visible';
+              }
+            }
+            if (isDesktop && panels.length) {
+              var wrapper = panels[0].parentElement;
+              if (wrapper) {
+                var maxH = 0;
+                for (var m = 0; m < panels.length; m++) { if (panels[m].scrollHeight > maxH) maxH = panels[m].scrollHeight; }
+                wrapper.style.minHeight = maxH + 'px';
+              }
+              for (var n = 0; n < indicators.length; n++) { indicators[n].classList.toggle('is-active', n === 0); }
+              (function(idx) {
+                indicators[idx].style.cursor = 'pointer';
+                indicators[idx].addEventListener('click', function() {
+                  for (var p = 0; p < panels.length; p++) {
+                    panels[p].style.opacity = p === idx ? '1' : '0';
+                    panels[p].style.visibility = p === idx ? 'visible' : 'hidden';
+                    panels[p].classList.toggle('is-active', p === idx);
+                  }
+                  for (var q = 0; q < indicators.length; q++) { indicators[q].classList.toggle('is-active', q === idx); }
+                });
+              })(n);
+            }
+          }
+          var counters = document.querySelectorAll('[data-counter]');
+          for (var k = 0; k < counters.length; k++) {
+            var target = parseFloat(counters[k].getAttribute('data-counter'));
+            if (!isNaN(target)) {
+              var suffix = counters[k].getAttribute('data-suffix') || '';
+              var prefix = counters[k].getAttribute('data-prefix') || '';
+              var decimals = parseInt(counters[k].getAttribute('data-decimals') || '0', 10) || 0;
+              counters[k].textContent = prefix + (decimals > 0 ? target.toFixed(decimals) : target.toLocaleString()) + suffix;
+            }
           }
         }
       }, 3000);

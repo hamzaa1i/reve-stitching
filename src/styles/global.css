@@ -380,18 +380,25 @@ html.has-custom-cursor, html.has-custom-cursor * { cursor: none !important; }
 .scroll-top-btn {
   position: fixed; bottom: 5.5rem; right: 1.5rem;
   width: 44px; height: 44px; border-radius: 50%;
-  background: var(--c-primary); color: white; border: none;
+  background: #16a34a; color: white; border: none;
   display: flex; align-items: center; justify-content: center;
   z-index: 9990; opacity: 0;
   transform: translateY(20px) scale(0.8);
   transition: opacity 0.4s cubic-bezier(0.16,1,0.3,1),
               transform 0.4s cubic-bezier(0.16,1,0.3,1),
-              background 0.3s;
+              background 0.3s,
+              bottom 0.35s cubic-bezier(0.16,1,0.3,1);
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(var(--c-primary-rgb), 0.3);
+  box-shadow: 0 4px 20px rgba(22, 163, 74, 0.3);
+}
+.dark .scroll-top-btn {
+  background: #22c55e;
+  color: #18181b;
+  box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
 }
 .scroll-top-btn.is-visible { opacity: 1; transform: translateY(0) scale(1); }
-.scroll-top-btn:hover { background: var(--c-primary-dark); transform: translateY(-3px) scale(1.05); }
+.scroll-top-btn:hover { background: #15803d; transform: translateY(-3px) scale(1.05); }
+.dark .scroll-top-btn:hover { background: #4ade80; }
 
 /* --- Link Underline Animation --- */
 .link-hover-fx { position: relative; text-decoration: none; }
@@ -414,17 +421,80 @@ html.has-custom-cursor, html.has-custom-cursor * { cursor: none !important; }
 @keyframes vt-fade-out { to { opacity: 0; transform: translateY(-8px); filter: blur(4px); } }
 @keyframes vt-fade-in { from { opacity: 0; transform: translateY(12px); filter: blur(4px); } }
 
-/* --- Reduced Motion --- */
+/* --- Scroll-to-top & chat: dynamic positioning handled by JS --- */
+
+/* --- Reduced Motion — Full accessibility override --- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
+
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  body {
+    overflow: visible !important;
+  }
+
+  /* Hide purely decorative elements */
   .mouse-bg, .cursor-dot, .cursor-follower, .cursor-trail-dot,
   .scroll-progress, .mouse-bg__grain { display: none !important; }
-  html.has-custom-cursor, html.has-custom-cursor * { cursor: auto !important; }
-}
+
+  html.has-custom-cursor,
+  html.has-custom-cursor * { cursor: auto !important; }
+
+  /* ── Force GSAP‑animated elements visible ── */
+  [data-animate],
+  [data-stagger] > *,
+  [data-bento-item],
+  [data-cta-title],
+  [data-cta-button],
+  .split-line-wrapper,
+  .split-line {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+    filter: none !important;
+    clip-path: none !important;
+  }
+
+  /* ── Step panels: click-to-switch (desktop) ──
+     Keep position:absolute so panels overlay, but only show
+     the .is-active one. Indicators become clickable tabs. */
+     @media (min-width: 1024px) {
+      [data-pinned-steps] [data-step-panel] {
+        position: absolute !important;
+        inset: 0 !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transform: none !important;
+        transition: opacity 0.2s ease !important;
+      }
+  
+      [data-pinned-steps] [data-step-panel].is-active {
+        opacity: 1 !important;
+        visibility: visible !important;
+      }
+    }
+  
+    /* Mobile: stack vertically as normal */
+    @media (max-width: 1023px) {
+      [data-pinned-steps] [data-step-panel] {
+        position: relative !important;
+        opacity: 1 !important;
+        transform: none !important;
+        visibility: visible !important;
+      }
+    }
+  
+    [data-step-indicator] {
+      cursor: pointer !important;
+    }
+  }
 
 /* ══════════════════════════════════════
    PINNED STEPS — Process Section

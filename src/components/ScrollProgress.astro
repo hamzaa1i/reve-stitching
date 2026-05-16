@@ -1,10 +1,30 @@
 ---
 /**
- * Vertical scroll progress bar on the right edge.
+ * Scroll-to-top button only.
  */
 ---
 
-<div id="scroll-progress" class="scroll-progress" aria-hidden="true">
-  <div id="scroll-progress-bar" class="scroll-progress__bar"></div>
-  <div id="scroll-progress-glow" class="scroll-progress__glow"></div>
-</div>
+<button id="scroll-top-btn" class="scroll-top-btn" aria-label="Scroll to top">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <path d="M18 15l-6-6-6 6"/>
+  </svg>
+</button>
+
+<script is:inline>
+  (function() {
+    function init() {
+      var btn = document.getElementById('scroll-top-btn');
+      if (!btn) return;
+      function check() {
+        btn.classList.toggle('is-visible', window.scrollY > 400);
+      }
+      window.addEventListener('scroll', check, { passive: true });
+      check();
+      btn.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+    init();
+    document.addEventListener('astro:page-load', init);
+  })();
+</script>

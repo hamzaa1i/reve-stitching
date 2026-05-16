@@ -34,7 +34,7 @@ const certifications = [
 ];
 ---
 
-<footer class="bg-zinc-950 pb-8 pt-20 text-zinc-400" role="contentinfo">
+<footer class="border-t border-zinc-800 bg-zinc-950 pb-12 pt-24 text-zinc-400 lg:pt-32" role="contentinfo">
   <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16">
 
     <!-- ━━━ Top Grid ━━━ -->
@@ -70,7 +70,7 @@ const certifications = [
       <!-- Column 2 — Quick Links -->
       <div>
         <h3 class="mb-5 text-sm font-semibold uppercase tracking-wider text-white">Quick Links</h3>
-        <ul class="space-y-3">
+        <ul class="space-y-4">
           {quickLinks.map((link) => (
             <li>
               <a href={link.href} class="inline-flex items-center gap-1.5 text-sm transition-colors duration-200 hover:text-green-400">
@@ -85,7 +85,7 @@ const certifications = [
       <!-- Column 3 — Products -->
       <div>
         <h3 class="mb-5 text-sm font-semibold uppercase tracking-wider text-white">Our Products</h3>
-        <ul class="space-y-3">
+        <ul class="space-y-4">
           {productLinks.map((product) => (
             <li>
               <a href="/products/" class="inline-flex items-center gap-1.5 text-sm transition-colors duration-200 hover:text-green-400">
@@ -115,7 +115,7 @@ const certifications = [
           </li>
           <li class="flex items-start gap-3">
             <svg class="mt-0.5 h-5 w-5 shrink-0 text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <span class="text-sm">Mon–Sat: 8 AM – 6 PM<br/>Sunday: Closed</span>
+            <span class="text-sm">Mon–Sat: 9 AM – 6 PM<br/>Sunday: Closed</span>
           </li>
         </ul>
       </div>
@@ -139,9 +139,9 @@ const certifications = [
     </div>
 
     <!-- ━━━ Copyright + Credit ━━━ -->
-<div class="flex flex-col items-center justify-between gap-4 pt-8 text-xs sm:flex-row">
+<div class="flex flex-col items-center justify-between gap-4 pt-12 text-xs sm:flex-row">
   <p class="text-zinc-600">&copy; {currentYear} Reve Stitching (Pvt.) Ltd. All rights reserved.</p>
-  <p class="text-zinc-700">
+  <p id="footer-credit" class="text-zinc-700">
     Designed & developed by 
     <a 
       href="https://hamzaalidev.vercel.app" 

@@ -9,7 +9,7 @@
 <!-- ━━━ Chat Toggle Button ━━━ -->
 <button
   id="chat-toggle"
-  class="fixed bottom-6 right-6 w-14 h-14 bg-primary rounded-full shadow-xl shadow-primary/30 flex items-center justify-center text-white hover:bg-primary-light hover:scale-110 hover:shadow-2xl hover:shadow-primary/40 transition-all duration-300 group"
+  class="fixed bottom-6 right-6 w-14 h-14 bg-green-600 dark:bg-green-500 dark:text-zinc-950 rounded-full shadow-xl shadow-green-600/30 flex items-center justify-center text-white hover:bg-green-700 dark:hover:bg-green-400 hover:scale-110 hover:shadow-2xl hover:shadow-green-600/40 transition-[background-color,box-shadow,transform,opacity,bottom] duration-300 group"
   style="z-index: 9999;"
   aria-label="Open chat"
 >
@@ -38,7 +38,7 @@
   <div class="bg-white rounded-2xl shadow-2xl shadow-black/15 border border-zinc-200 overflow-hidden flex flex-col" style="height: min(600px, calc(100vh - 140px));">
     
 <!-- ━━━ Chat Header ━━━ -->
-    <div class="bg-primary px-5 py-4 flex items-center gap-3 shrink-0">
+    <div class="bg-green-600 dark:bg-green-500 px-5 py-4 flex items-center gap-3 shrink-0">
       <div class="relative">
         <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
           <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -46,7 +46,7 @@
           </svg>
         </div>
         <!-- Online status -->
-        <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-primary"></span>
+          <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-green-600 dark:border-green-500"></span>
       </div>
       <div class="flex-1">
         <h3 class="text-white font-semibold text-sm">Reve Stitching</h3>
@@ -96,12 +96,12 @@
           placeholder="Type your message..."
           autocomplete="off"
           rows="1"
-          class="flex-1 px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm placeholder-zinc-400 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all resize-none overflow-hidden"
+          class="flex-1 px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm placeholder-zinc-400 focus:outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20 dark:focus:border-green-500 dark:focus:ring-green-500/20 transition-all resize-none overflow-hidden"
           style="max-height: 120px;"
         ></textarea>
         <button
           type="submit"
-          class="w-11 h-11 bg-primary rounded-xl flex items-center justify-center text-white hover:bg-primary-light transition-colors shrink-0"
+          class="w-11 h-11 bg-green-600 dark:bg-green-500 dark:text-zinc-950 rounded-xl flex items-center justify-center text-white hover:bg-green-700 dark:hover:bg-green-400 transition-colors shrink-0"
           aria-label="Send message"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -110,7 +110,7 @@
         </button>
       </form>
       <p class="text-[10px] text-zinc-400 text-center mt-2">
-        Powered by Reve Stitching • <button id="request-human-btn" class="text-primary hover:underline font-medium">Talk to a human</button>
+        Powered by Reve Stitching • <button id="request-human-btn" class="text-green-600 dark:text-green-400 hover:underline font-medium">Talk to a human</button>
       </p>
     </div>
   </div>
@@ -202,7 +202,7 @@
       visitorToken: 'reve-chat-visitor-token',
     };
 
-    const botIconSvg = `<svg class="w-3.5 h-3.5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"/></svg>`;
+    const botIconSvg = `<svg class="w-3.5 h-3.5 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"/></svg>`;
 
     const adminIconSvg = `<svg class="w-3.5 h-3.5 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>`;
 
@@ -530,13 +530,13 @@
         div.className = 'chat-msg flex justify-end';
         div.innerHTML = `
           <div class="max-w-[80%]">
-            <div class="bg-primary text-white rounded-2xl rounded-tr-md px-4 py-3 text-sm leading-relaxed">${formatMessage(text)}</div>
+            <div class="bg-green-600 text-white rounded-2xl rounded-tr-md px-4 py-3 text-sm leading-relaxed">${formatMessage(text)}</div>
             <span class="text-[10px] text-zinc-400 mt-1 block text-right pr-1">${t}</span>
           </div>`;
       } else {
         // bot or admin
         const icon = sender === 'admin' ? adminIconSvg : botIconSvg;
-        const iconBg = sender === 'admin' ? 'bg-green-100' : 'bg-primary/10';
+        const iconBg = sender === 'admin' ? 'bg-green-100' : 'bg-green-600/10';
         div.className = 'chat-msg flex justify-start';
         div.innerHTML = `
           <div class="flex gap-2.5 max-w-[85%]">
@@ -566,7 +566,7 @@
       div.className = 'chat-msg flex justify-start';
       div.innerHTML = `
         <div class="flex gap-2.5">
-          <div class="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-1">${botIconSvg}</div>
+          <div class="w-7 h-7 rounded-full bg-green-600/10 flex items-center justify-center shrink-0 mt-1">${botIconSvg}</div>
           <div class="bg-zinc-100 rounded-2xl rounded-tl-md px-4 py-3 flex items-center gap-1.5">
             <div class="w-2 h-2 bg-zinc-400 rounded-full typing-dot"></div>
             <div class="w-2 h-2 bg-zinc-400 rounded-full typing-dot"></div>
@@ -593,13 +593,13 @@
         if (item.value?.startsWith('__LINK__')) {
           const a = document.createElement('a');
           a.href = item.value.replace('__LINK__', '');
-          a.className = 'inline-flex items-center gap-1 px-3 py-2 bg-surface border border-border rounded-full text-xs font-medium text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-200 cursor-pointer';
+          a.className = 'inline-flex items-center gap-1 px-3 py-2 bg-surface border border-border rounded-full text-xs font-medium text-green-600 hover:bg-green-600 hover:text-white hover:border-green-600 transition-all duration-200 cursor-pointer';
           a.textContent = `🔗 ${item.label}`;
           quickContainer.appendChild(a);
           return;
         }
         const btn = document.createElement('button');
-        btn.className = 'px-3 py-2 bg-surface border border-border rounded-full text-xs font-medium text-zinc-600 hover:bg-primary hover:text-white hover:border-primary transition-all duration-200 cursor-pointer';
+        btn.className = 'px-3 py-2 bg-surface border border-border rounded-full text-xs font-medium text-zinc-600 hover:bg-green-600 hover:text-white hover:border-green-600 transition-all duration-200 cursor-pointer';
         btn.textContent = item.label;
         btn.addEventListener('click', () => handleUserMessage(item.value || item.label));
         quickContainer.appendChild(btn);
@@ -641,10 +641,10 @@
         quickContainer.innerHTML = `
           <div class="w-full space-y-2 p-2">
             <p class="text-xs text-zinc-500">Optional: share your info so we can assist you better</p>
-            <input id="live-name" type="text" placeholder="Your name" class="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs focus:outline-none focus:border-primary" />
-            <input id="live-email" type="email" placeholder="Your email" class="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs focus:outline-none focus:border-primary" />
+            <input id="live-name" type="text" placeholder="Your name" class="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs focus:outline-none focus:border-green-600" />
+            <input id="live-email" type="email" placeholder="Your email" class="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs focus:outline-none focus:border-green-600" />
             <div class="flex gap-2">
-              <button id="live-connect-btn" class="flex-1 px-3 py-2 bg-primary text-white rounded-lg text-xs font-medium hover:bg-primary-light transition-colors">Connect Now</button>
+              <button id="live-connect-btn" class="flex-1 px-3 py-2 bg-green-600 text-white rounded-lg text-xs font-medium hover:bg-green-700 transition-colors">Connect Now</button>
               <button id="live-skip-btn" class="px-3 py-2 border border-zinc-200 rounded-lg text-xs text-zinc-600 hover:bg-zinc-50 transition-colors">Skip</button>
             </div>
           </div>`;

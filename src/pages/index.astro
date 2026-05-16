@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 
 const title = 'Reve Stitching — Premium Garment Manufacturing';
 const description =
-  '100% export-oriented knitted garment manufacturer based in Faisalabad, Pakistan. 300K+ monthly capacity, 25-50 day lead times, serving UK & EU retailers.';
+  '100% export-oriented knitted garment manufacturer based in Faisalabad, Pakistan. 150K+ monthly capacity, 25-50 day lead times, serving UK & EU retailers.';
 
 const steps = [
   {
@@ -162,18 +162,18 @@ const clients = [
         <h1>
           <span
             class="block font-serif font-bold leading-[0.88] tracking-tight text-zinc-900 dark:text-white"
-            style="font-size:clamp(2.75rem,7vw,8.5rem)"
+            style="font-size:clamp(2.25rem,6vw,7rem)"
             data-animate="fade-up"
           >Premium Garment</span>
           <span
             class="block font-serif font-bold leading-[0.88] tracking-tight text-zinc-900 dark:text-white"
-            style="font-size:clamp(2.75rem,7vw,8.5rem)"
+            style="font-size:clamp(2.25rem,6vw,7rem)"
             data-animate="fade-up"
             data-delay="0.08"
           >Manufacturing for</span>
           <span
             class="block font-serif font-bold leading-[0.88] tracking-tight"
-            style="font-size:clamp(2.75rem,7vw,8.5rem)"
+            style="font-size:clamp(2.25rem,6vw,7rem)"
             data-animate="fade-up"
             data-delay="0.16"
           ><span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Global Brands</span></span>
@@ -185,7 +185,7 @@ const clients = [
             data-animate="fade-up"
             data-delay="0.24"
           >
-            100% export-oriented knitted garment manufacturer with 300,000+
+            100% export-oriented knitted garment manufacturer with 150,000+
             monthly capacity. From concept to container — delivering quality
             UK &amp; EU retailers trust.
           </p>
@@ -215,7 +215,7 @@ const clients = [
     <!-- Floating stat badges (desktop only) -->
     <div class="pointer-events-none absolute right-[7%] top-[24%] z-10 hidden xl:block" data-float>
       <div class="rounded-2xl border border-zinc-200 bg-white/90 px-5 py-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-        <span class="block text-2xl font-bold text-zinc-900 dark:text-white">300K+</span>
+        <span class="block text-2xl font-bold text-zinc-900 dark:text-white">150K+</span>
         <span class="text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Monthly Pieces</span>
       </div>
     </div>
@@ -248,7 +248,7 @@ const clients = [
        ═══════════════════════════════════════ -->
   <section
     id="stats"
-    class="bg-white py-20 dark:bg-zinc-950 lg:py-24"
+    class="bg-white py-24 dark:bg-zinc-950 lg:py-32"
     aria-label="Key Statistics"
   >
     <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16">
@@ -256,7 +256,7 @@ const clients = [
 
         <div class="text-center" data-animate="fade-up">
           <div class="font-serif text-4xl font-bold text-zinc-900 dark:text-white sm:text-5xl lg:text-6xl">
-            <span data-counter="300000">0</span><span class="text-green-600 dark:text-green-400">+</span>
+            <span data-counter="150000">0</span><span class="text-green-600 dark:text-green-400">+</span>
           </div>
           <p class="mt-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">Monthly Capacity</p>
         </div>
@@ -352,9 +352,12 @@ const clients = [
 
               <div class="mt-6 flex flex-wrap gap-2">
                 {step.tags.map((tag: string) => (
-                  <span class="rounded-full border border-zinc-300 bg-white px-4 py-1.5 text-xs font-medium text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400">
+                  <button
+                    type="button"
+                    class="step-tag rounded-full border border-zinc-300 bg-white px-4 py-1.5 text-xs font-medium text-zinc-600 transition-all duration-200 hover:border-green-500 hover:bg-green-50 hover:text-green-700 hover:scale-105 active:scale-95 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:border-green-400 dark:hover:bg-green-500/10 dark:hover:text-green-400 cursor-pointer select-none"
+                  >
                     {tag}
-                  </span>
+                  </button>
                 ))}
               </div>
             </div>
@@ -371,7 +374,7 @@ const clients = [
        ═══════════════════════════════════════ -->
   <section
     id="capabilities"
-    class="bg-white py-24 dark:bg-zinc-950 lg:py-32"
+    class="bg-white py-28 dark:bg-zinc-950 lg:py-36"
     aria-label="Our Capabilities"
   >
     <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16">
@@ -492,7 +495,7 @@ const clients = [
 
 
   <!-- ═══════════════════════════════════════
-       PRODUCTS — Horizontal scroll with images
+       PRODUCTS — Scrollable with native fallback
        ═══════════════════════════════════════ -->
   <section
     id="products"
@@ -508,44 +511,59 @@ const clients = [
             What We Manufacture
           </h2>
         </div>
-        <a href="/products/" class="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-green-600 transition-colors hover:text-green-700 dark:text-green-400" data-magnetic>
-          View All Products
-          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-        </a>
+        <div class="flex items-center gap-4">
+          <!-- Navigation arrows (desktop only) -->
+          <div class="hidden items-center gap-2 lg:flex">
+            <button type="button" id="products-prev" class="products-nav-btn" aria-label="Scroll products left">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button type="button" id="products-next" class="products-nav-btn" aria-label="Scroll products right">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+          <a href="/products/" class="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-green-600 transition-colors hover:text-green-700 dark:text-green-400" data-magnetic>
+            View All Products
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+          </a>
+        </div>
       </div>
     </div>
 
     <div class="mt-12 pb-24 lg:mt-16 lg:pb-32">
-      <div class="flex flex-col gap-6 px-6 sm:px-8 lg:flex-row lg:gap-8 lg:px-12 xl:px-16" data-horizontal-track>
-        {products.map((product) => (
-          <a
-            href="/products/"
-            class="group relative block flex-shrink-0 overflow-hidden rounded-2xl lg:w-[380px] xl:w-[440px]"
-            data-tilt
-          >
-            <div class="aspect-[4/5] overflow-hidden bg-zinc-200 dark:bg-zinc-800">
-              <img
-                src={product.image}
-                alt={product.alt}
-                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-            <div class="absolute inset-0 bg-gradient-to-t from-zinc-900/70 via-transparent to-transparent"></div>
-            <div class="absolute inset-x-0 bottom-0 p-6">
-              <div class="flex items-end justify-between">
-                <div>
-                  <span class="mb-1 block text-[11px] font-semibold uppercase tracking-[0.2em] text-green-400">Category</span>
-                  <h3 class="text-lg font-bold text-white sm:text-xl lg:text-2xl">{product.name}</h3>
-                </div>
-                <span class="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white transition-all duration-300 group-hover:border-green-400 group-hover:bg-green-500 group-hover:text-zinc-950">
-                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg>
-                </span>
+      <div class="products-scroll-wrapper relative">
+        <!-- Fade edges -->
+        <div class="products-fade products-fade--left pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-16 lg:block"></div>
+        <div class="products-fade products-fade--right pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-16 lg:block"></div>
+
+        <div
+          id="products-track"
+          class="products-track flex flex-col gap-6 px-6 sm:px-8 lg:flex-row lg:gap-8 lg:overflow-x-auto lg:snap-x lg:snap-mandatory lg:scroll-smooth lg:px-12 xl:px-16 lg:pb-6"
+          data-horizontal-track
+        >
+          {products.map((product) => (
+            <a
+              href="/products/"
+              class="group relative block flex-shrink-0 overflow-hidden rounded-2xl lg:w-[380px] xl:w-[440px] lg:snap-start"
+              data-tilt
+            >
+              <div class="aspect-[4/5] overflow-hidden bg-zinc-200 dark:bg-zinc-800">
+                <img src={product.image} alt={product.alt} class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async" width="440" height="550" />
               </div>
-            </div>
-          </a>
-        ))}
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-900/70 via-transparent to-transparent"></div>
+              <div class="absolute inset-x-0 bottom-0 p-6">
+                <div class="flex items-end justify-between">
+                  <div>
+                    <span class="mb-1 block text-[11px] font-semibold uppercase tracking-[0.2em] text-green-400">Category</span>
+                    <h3 class="text-lg font-bold text-white sm:text-xl lg:text-2xl">{product.name}</h3>
+                  </div>
+                  <span class="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white transition-all duration-300 group-hover:border-green-400 group-hover:bg-green-500 group-hover:text-zinc-950">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg>
+                  </span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
       </div>
     </div>
   </section>
@@ -556,7 +574,7 @@ const clients = [
        ═══════════════════════════════════════ -->
   <section
     id="clients"
-    class="overflow-hidden bg-white py-20 dark:bg-zinc-950 lg:py-24"
+    class="overflow-hidden bg-white py-24 dark:bg-zinc-950 lg:py-32"
     aria-label="Our Clients"
   >
     <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16">
@@ -594,7 +612,7 @@ const clients = [
        ═══════════════════════════════════════ -->
   <section
     id="cta"
-    class="relative flex min-h-[70vh] items-center bg-green-50 py-24 dark:bg-zinc-950 lg:min-h-[80vh] lg:py-32"
+    class="relative flex min-h-[70vh] items-center bg-green-50 py-28 dark:bg-zinc-950 lg:min-h-[80vh] lg:py-36"
     data-cta-section
     aria-label="Call to Action"
   >
@@ -618,7 +636,7 @@ const clients = [
       </h2>
 
       <p class="mx-auto mt-8 max-w-lg text-lg leading-relaxed text-zinc-600 dark:text-zinc-400" data-animate="fade-up" data-delay="0.1">
-        300K+ monthly capacity · UK &amp; EU export specialists · SEDEX certified.
+        150K+ monthly capacity · UK &amp; EU export specialists · SEDEX certified.
         Get your free quote within 24 hours.
       </p>
 
@@ -647,6 +665,90 @@ const clients = [
     </div>
   </section>
 
+  <script is:inline>
+    function initStepTags() {
+      document.querySelectorAll('[data-pinned-steps]').forEach(function(section) {
+        section.querySelectorAll('.step-tag').forEach(function(tag) {
+          tag.removeEventListener('click', toggleStepTag);
+          tag.addEventListener('click', toggleStepTag);
+        });
+      });
+    }
+    function toggleStepTag() {
+      this.classList.toggle('is-selected');
+    }
+    document.addEventListener('astro:page-load', initStepTags);
+    initStepTags();
+  </script>
+
+  <!-- Products track navigation -->
+  <script is:inline>
+    function initProductsNav() {
+      var track = document.getElementById('products-track');
+      var prev = document.getElementById('products-prev');
+      var next = document.getElementById('products-next');
+      if (!track || !prev || !next) return;
+
+      var scrollAmount = 420;
+
+      prev.addEventListener('click', function() {
+        track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+      });
+      next.addEventListener('click', function() {
+        track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      });
+
+      function updateArrows() {
+        var sl = track.scrollLeft;
+        var maxScroll = track.scrollWidth - track.clientWidth;
+        prev.style.opacity = sl > 10 ? '1' : '0.3';
+        prev.style.pointerEvents = sl > 10 ? 'auto' : 'none';
+        next.style.opacity = sl < maxScroll - 10 ? '1' : '0.3';
+        next.style.pointerEvents = sl < maxScroll - 10 ? 'auto' : 'none';
+      }
+
+      track.addEventListener('scroll', updateArrows, { passive: true });
+      // Initial state
+      requestAnimationFrame(updateArrows);
+      window.addEventListener('resize', updateArrows);
+
+      // Drag-to-scroll on desktop
+      var isDragging = false;
+      var startX = 0;
+      var scrollStart = 0;
+
+      track.addEventListener('mousedown', function(e) {
+        // Only on desktop (lg+)
+        if (window.innerWidth < 1024) return;
+        isDragging = true;
+        startX = e.pageX;
+        scrollStart = track.scrollLeft;
+        track.style.cursor = 'grabbing';
+        track.style.userSelect = 'none';
+      });
+      document.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
+        var dx = e.pageX - startX;
+        track.scrollLeft = scrollStart - dx;
+      });
+      document.addEventListener('mouseup', function() {
+        if (!isDragging) return;
+        isDragging = false;
+        track.style.cursor = '';
+        track.style.userSelect = '';
+      });
+
+      // Prevent link clicks after drag
+      track.addEventListener('click', function(e) {
+        if (Math.abs(track.scrollLeft - scrollStart) > 5) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }, true);
+    }
+    document.addEventListener('astro:page-load', initProductsNav);
+    initProductsNav();
+  </script>
 </Layout>
 
 <style is:global>
@@ -657,4 +759,106 @@ const clients = [
     to { transform: translateX(-100%); }
   }
   .marquee-container:hover .marquee-track { animation-play-state: paused; }
+
+  /* ── Step tags: selected state ── */
+  .step-tag.is-selected {
+    background-color: rgb(22, 101, 52);
+    border-color: rgb(22, 101, 52);
+    color: #fff;
+    transform: scale(1.05);
+  }
+  .dark .step-tag.is-selected {
+    background-color: rgb(34, 197, 94);
+    border-color: rgb(34, 197, 94);
+    color: rgb(24, 24, 27);
+  }
+
+  /* ── Products: native scrollbar ── */
+  .products-track {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,0,0,0.15) transparent;
+  }
+  .products-track::-webkit-scrollbar {
+    height: 6px;
+  }
+  .products-track::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .products-track::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.12);
+    border-radius: 3px;
+  }
+  .products-track::-webkit-scrollbar-thumb:hover {
+    background: rgba(0,0,0,0.22);
+  }
+  .dark .products-track {
+    scrollbar-color: rgba(255,255,255,0.12) transparent;
+  }
+  .dark .products-track::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.1);
+  }
+  .dark .products-track::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.2);
+  }
+
+  /* ── Products: nav arrows ── */
+  .products-nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.1);
+    background: white;
+    color: #3f3f46;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .products-nav-btn:hover {
+    background: #166534;
+    border-color: #166534;
+    color: white;
+    transform: scale(1.08);
+  }
+  .dark .products-nav-btn {
+    background: #27272a;
+    border-color: #3f3f46;
+    color: #a1a1aa;
+  }
+  .dark .products-nav-btn:hover {
+    background: #22c55e;
+    border-color: #22c55e;
+    color: #09090b;
+  }
+
+  /* ── Products: fade edges ── */
+  .products-fade--left {
+    background: linear-gradient(to right, rgb(250 250 250), transparent);
+  }
+  .products-fade--right {
+    background: linear-gradient(to left, rgb(250 250 250), transparent);
+  }
+  .dark .products-fade--left {
+    background: linear-gradient(to right, rgb(24 24 27), transparent);
+  }
+  .dark .products-fade--right {
+    background: linear-gradient(to left, rgb(24 24 27), transparent);
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .step-tag,
+    .products-nav-btn {
+      transition-duration: 0.01ms !important;
+    }
+    .step-tag:hover,
+    .step-tag.is-selected {
+      transform: none !important;
+    }
+    .products-nav-btn:hover {
+      transform: none !important;
+    }
+  }
 </style>
