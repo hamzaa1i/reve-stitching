@@ -247,7 +247,7 @@ const {
     const widget = document.getElementById('wa-widget');
     const button = document.getElementById('wa-button') as HTMLAnchorElement | null;
     const label = document.getElementById('wa-label');
-    const labelClose = document.getElementById('wa-label-close');
+    let labelClose = document.getElementById('wa-label-close');
 
     if (!widget || !button) return;
 

@@ -1,5 +1,5 @@
 ---
-import { ViewTransitions } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ChatWidget from '../components/ChatWidget.astro';
@@ -115,7 +115,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       }
     })} />
 
-    <ViewTransitions />
+    <ClientRouter />
   </head>
 
   <body class="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-300">
@@ -265,7 +265,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           var waWidget = document.getElementById('wa-widget');
           var credit = document.getElementById('footer-credit');
 
-          if (!chat) return;
+          if (!chat || !credit) return;
 
           // ── Constants ──
           var CHAT_H = 56;    // w-14 h-14

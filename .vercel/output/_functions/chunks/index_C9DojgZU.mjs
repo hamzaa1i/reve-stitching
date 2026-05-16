@@ -1,0 +1,165 @@
+import { c as createComponent } from './astro-component_jWm3wabT.mjs';
+import 'piccolore';
+import { b8 as renderTemplate, aW as maybeRenderHead, a5 as addAttribute } from './params-and-props_CgCnFJtu.mjs';
+import { r as renderComponent } from './entrypoint_Bu1exgrV.mjs';
+import { $ as $$AdminLayout } from './AdminLayout_aVs5BGT6.mjs';
+import { c as getTemplateSettings, T as TEMPLATE_DEFAULTS } from './template-storage_Dbz2aNJw.mjs';
+import { a as generateQuoteUnderReviewEmail, g as generateAdminReminderEmail, c as generateReengagementEmail } from './quote-reengagement_Cg833LUq.mjs';
+
+var __freeze = Object.freeze;
+var __defProp = Object.defineProperty;
+var __template = (cooked, raw) => __freeze(__defProp(cooked, "raw", { value: __freeze(raw || cooked.slice()) }));
+var _a;
+const prerender = false;
+const $$Index = createComponent(async ($$result, $$props, $$slots) => {
+  const Astro2 = $$result.createAstro($$props, $$slots);
+  Astro2.self = $$Index;
+  const settings = await getTemplateSettings();
+  const sampleQuote = {
+    reference_number: "RQ-20260308-DEMO",
+    company_name: "Example Fashion Ltd",
+    contact_person: "John Smith",
+    email: "john@example.com",
+    product_type: "hoodies",
+    quantity: 2500,
+    estimated_price_range: "$12,000 - $18,500",
+    created_at: (/* @__PURE__ */ new Date()).toISOString()
+  };
+  const previewId = Astro2.url.searchParams.get("preview");
+  let previewHtml = "";
+  let previewSubject = "";
+  if (previewId === "24h") {
+    const result = await generateQuoteUnderReviewEmail(sampleQuote);
+    previewHtml = result.html;
+    previewSubject = result.subject;
+  } else if (previewId === "48h") {
+    const result = await generateAdminReminderEmail(sampleQuote);
+    previewHtml = result.html;
+    previewSubject = result.subject;
+  } else if (previewId === "7d") {
+    const result = await generateReengagementEmail(sampleQuote);
+    previewHtml = result.html;
+    previewSubject = result.subject;
+  }
+  const templates = [
+    {
+      id: "24h",
+      name: TEMPLATE_DEFAULTS["24h"].name,
+      description: "Sent to the buyer 24 hours after quote submission if still unread.",
+      trigger: "Auto: 24h after submission, status = new",
+      recipient: "Buyer",
+      iconType: "mail"
+    },
+    {
+      id: "48h",
+      name: TEMPLATE_DEFAULTS["48h"].name,
+      description: "Sent to the admin team when a quote has no response after 48 hours.",
+      trigger: "Auto: 48h after submission, status = new",
+      recipient: "Admin Team",
+      iconType: "alert"
+    },
+    {
+      id: "7d",
+      name: TEMPLATE_DEFAULTS["7d"].name,
+      description: "Sent to the buyer after 7 days if the quote is still unread.",
+      trigger: "Auto: 7 days after submission, status = new",
+      recipient: "Buyer",
+      iconType: "refresh"
+    }
+  ];
+  return renderTemplate(_a || (_a = __template(["", ` <script>
+  document.getElementById('send-test-btn')?.addEventListener('click', async function() {
+    var btn = this;
+    var templateId = btn.dataset.template;
+    
+    var email = prompt('Enter email address to send test to:', 'hamzali.revesystems@gmail.com');
+    if (!email) return;
+    
+    btn.disabled = true;
+    btn.innerHTML = 'Sending...';
+    
+    try {
+      var response = await fetch('/api/admin/send-test-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ templateId: templateId, email: email }),
+        credentials: 'include',
+      });
+      
+      var result = await response.json();
+      
+      if (result.success) {
+        alert('Test email sent to ' + email + '!\\n\\nCheck your inbox (and spam folder).');
+      } else {
+        alert('Error: ' + (result.error || 'Failed to send'));
+      }
+    } catch (err) {
+      alert('Error: ' + err.message);
+    }
+    
+    btn.disabled = false;
+    btn.innerHTML = '<svg class="h-3.5 w-3.5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> Send Test Email';
+  });
+<\/script>`], ["", ` <script>
+  document.getElementById('send-test-btn')?.addEventListener('click', async function() {
+    var btn = this;
+    var templateId = btn.dataset.template;
+    
+    var email = prompt('Enter email address to send test to:', 'hamzali.revesystems@gmail.com');
+    if (!email) return;
+    
+    btn.disabled = true;
+    btn.innerHTML = 'Sending...';
+    
+    try {
+      var response = await fetch('/api/admin/send-test-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ templateId: templateId, email: email }),
+        credentials: 'include',
+      });
+      
+      var result = await response.json();
+      
+      if (result.success) {
+        alert('Test email sent to ' + email + '!\\\\n\\\\nCheck your inbox (and spam folder).');
+      } else {
+        alert('Error: ' + (result.error || 'Failed to send'));
+      }
+    } catch (err) {
+      alert('Error: ' + err.message);
+    }
+    
+    btn.disabled = false;
+    btn.innerHTML = '<svg class="h-3.5 w-3.5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> Send Test Email';
+  });
+<\/script>`])), renderComponent($$result, "AdminLayout", $$AdminLayout, { "title": "Automated Email System" }, { "default": async ($$result2) => renderTemplate` ${maybeRenderHead()}<div class="mb-6 flex items-center justify-between"> <div> <h1 class="text-2xl font-bold text-zinc-900">Automated Email System</h1> <p class="mt-1 text-sm text-zinc-500">
+Preview, test, and edit the automated follow-up emails sent to buyers and your team.
+</p> </div> <a href="/admin/email-templates/edit" class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow hover:bg-primary-light transition"> <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+Edit Branding
+</a> </div>  <div class="mb-8 rounded-xl bg-white p-6 shadow ring-1 ring-zinc-200"> <h2 class="text-sm font-bold text-zinc-900 mb-4">Current Branding</h2> <div class="flex items-center gap-6"> <div class="flex items-center gap-4"> <div${addAttribute(`width: 48px; height: 48px; background: ${settings.brand_color}; border-radius: 10px; display: flex; align-items: center; justify-content: center;`, "style")}> <span style="color: white; font-size: 20px; font-weight: bold;">${settings.logo_text}</span> </div> <div> <p class="text-sm font-bold text-zinc-900">${settings.company_name}</p> <p class="text-xs text-zinc-500">${settings.tagline}</p> </div> </div> <div class="flex-1"></div> <div class="text-right text-xs text-zinc-400"> <p>Color: <span class="font-mono">${settings.brand_color}</span></p> <p>Updated: ${new Date(settings.updated_at).toLocaleDateString()}</p> </div> </div> </div>  <h2 class="text-sm font-bold text-zinc-900 mb-4">Automated Email System</h2> <div class="grid gap-4 lg:grid-cols-3 mb-8"> ${templates.map((tpl) => renderTemplate`<div${addAttribute(`rounded-xl bg-white p-5 shadow ring-1 flex flex-col h-full ${previewId === tpl.id ? "ring-primary ring-2" : "ring-zinc-200"}`, "class")}> <div class="flex items-start justify-between mb-3"> <div class="flex items-center gap-2"> <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-100"> ${tpl.iconType === "mail" && renderTemplate`<svg class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>`} ${tpl.iconType === "alert" && renderTemplate`<svg class="h-4 w-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`} ${tpl.iconType === "refresh" && renderTemplate`<svg class="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>`} </span> <h3 class="text-sm font-bold text-zinc-900">${tpl.name}</h3> </div> <span class="inline-block rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-semibold text-green-700">Active</span> </div> <p class="text-xs text-zinc-500 mb-3">${tpl.description}</p> <div class="text-xs text-zinc-400 mb-4"> <span class="inline-block bg-zinc-100 rounded px-2 py-0.5">${tpl.recipient}</span> <span class="mx-1">&middot;</span> <span>${tpl.trigger.replace("Auto: ", "")}</span> </div> <div class="flex gap-2 mt-auto pt-2"> <a${addAttribute(`/admin/email-templates?preview=${tpl.id}`, "href")}${addAttribute(`flex-1 text-center rounded-lg px-3 py-2 text-xs font-medium transition ${previewId === tpl.id ? "bg-primary text-white" : "border border-zinc-300 text-zinc-700 hover:bg-zinc-50"}`, "class")}> <svg class="h-3.5 w-3.5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+Preview
+</a> <a${addAttribute(`/admin/email-templates/${tpl.id}`, "href")} class="flex-1 text-center rounded-lg px-3 py-2 text-xs font-medium border border-zinc-300 text-zinc-700 hover:bg-zinc-50 transition"> <svg class="h-3.5 w-3.5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+Edit Content
+</a> </div> </div>`)} </div>  ${previewHtml && renderTemplate`<div class="mb-8"> <div class="flex items-center justify-between mb-4"> <div> <h2 class="text-lg font-bold text-zinc-900"> ${templates.find((t) => t.id === previewId)?.name} Preview
+</h2> <p class="text-xs text-zinc-500 mt-1"> <strong>Subject:</strong> ${previewSubject} </p> </div> <div class="flex gap-2"> <button id="send-test-btn"${addAttribute(previewId, "data-template")} class="inline-flex items-center gap-1 rounded-lg border border-zinc-300 px-3 py-2 text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition"> <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+Send Test Email
+</button> <a href="/admin/email-templates" class="inline-flex items-center gap-1 rounded-lg border border-zinc-300 px-3 py-2 text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition"> <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+Close Preview
+</a> </div> </div> <div class="rounded-xl bg-white shadow ring-1 ring-zinc-200 overflow-hidden"> <div class="bg-zinc-100 px-4 py-2 border-b border-zinc-200 flex items-center gap-4 text-xs text-zinc-500"> <span><strong>From:</strong> ${settings.company_name} &lt;notifications@revestitching.com&gt;</span> <span><strong>To:</strong> ${previewId === "48h" ? "Admin Team" : "john@example.com"}</span> </div> <iframe${addAttribute(previewHtml, "srcdoc")} class="w-full border-0" style="height: 700px;" title="Email Preview"></iframe> </div> </div>`} <div class="rounded-xl bg-zinc-50 p-6 ring-1 ring-zinc-200"> <h3 class="text-sm font-bold text-zinc-900 mb-2">How It Works</h3> <ul class="text-sm text-zinc-600 space-y-2"> <li class="flex items-start gap-2"> <svg class="h-4 w-4 text-primary mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> <span>Click <strong>"Preview"</strong> on any template to see the full email with sample data</span> </li> <li class="flex items-start gap-2"> <svg class="h-4 w-4 text-primary mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> <span>Click <strong>"Edit Content"</strong> to change subject, body text, and button labels</span> </li> <li class="flex items-start gap-2"> <svg class="h-4 w-4 text-primary mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> <span>Click <strong>"Edit Branding"</strong> to change logo, colors, and footer for all emails</span> </li> <li class="flex items-start gap-2"> <svg class="h-4 w-4 text-primary mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> <span>Use <strong>${`{first_name}`}, ${`{reference_number}`}, ${`{product_type}`}, ${`{quantity}`}</strong> as placeholders in text</span> </li> </ul> </div> ` }));
+}, "/home/hamzaa1i/reve-stitching/src/pages/admin/email-templates/index.astro", void 0);
+
+const $$file = "/home/hamzaa1i/reve-stitching/src/pages/admin/email-templates/index.astro";
+const $$url = "/admin/email-templates";
+
+const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: $$Index,
+  file: $$file,
+  prerender,
+  url: $$url
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const page = () => _page;
+
+export { page };

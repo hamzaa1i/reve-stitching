@@ -1,0 +1,220 @@
+import { c as createComponent } from './astro-component_jWm3wabT.mjs';
+import 'piccolore';
+import { b8 as renderTemplate, a5 as addAttribute, aW as maybeRenderHead } from './params-and-props_CgCnFJtu.mjs';
+import { r as renderComponent } from './entrypoint_Bu1exgrV.mjs';
+import { $ as $$Layout } from './Layout_Bm9rNR0d.mjs';
+
+var __freeze = Object.freeze;
+var __defProp = Object.defineProperty;
+var __template = (cooked, raw) => __freeze(__defProp(cooked, "raw", { value: __freeze(cooked.slice()) }));
+var _a;
+const $$About = createComponent(($$result, $$props, $$slots) => {
+  const timeline = [
+    {
+      num: "01",
+      year: "2019",
+      title: "Company Established",
+      description: "Reve Stitching was founded in Faisalabad with a clear mission: deliver world-class knitted garments for global fashion brands with uncompromising quality and ethical practices."
+    },
+    {
+      num: "02",
+      year: "2020",
+      title: "SEDEX Certification",
+      description: "Achieved SEDEX compliance within the first year, demonstrating our commitment to ethical manufacturing, worker welfare, and responsible supply chain practices."
+    },
+    {
+      num: "03",
+      year: "2021",
+      title: "SGS Training Program",
+      description: "Partnered with SGS to implement comprehensive workforce training, ensuring every team member maintains AQL 1.5-4.0 quality standards on every production run."
+    },
+    {
+      num: "04",
+      year: "2022",
+      title: "Production Expansion",
+      description: "Expanded our facility with 150+ modern machines, increasing monthly production capacity to 150,000+ garments while maintaining precision quality standards."
+    },
+    {
+      num: "05",
+      year: "2023",
+      title: "Full Composite Knitwear",
+      description: "Expanded in-house capabilities across cutting, stitching, finishing, and quality control — managing every stage from raw fabric to finished garment, with trusted partners for knitting and dyeing."
+    },
+    {
+      num: "06",
+      year: "2024",
+      title: "Global Recognition",
+      description: "Expanded our client portfolio to include major international fashion brands across Europe, serving Boohoo, Pull&Bear, Yours Clothing, and more."
+    },
+    {
+      num: "07",
+      year: "2025",
+      title: "Sustainability & Automation",
+      description: "Launched our green manufacturing initiative with energy-efficient processes, sustainable material sourcing, and advanced ERP-powered automation."
+    }
+  ];
+  const leaders = [
+    {
+      name: "Haroon Iqbal",
+      role: "Director",
+      image: "/images/team/director-haroon.jpg",
+      desc: "Leads operations and production strategy, optimizing manufacturing processes for quality and efficiency."
+    },
+    {
+      name: "Abdul Basit",
+      role: "Director",
+      image: "/images/team/director-basit.jpg",
+      desc: "Oversees client relations and international business development, ensuring seamless communication with global brands."
+    },
+    {
+      name: "Ghulam Jilani",
+      role: "General Manager",
+      image: "/images/team/gm.jpg",
+      desc: "Manages day-to-day operations, coordinating all departments to deliver consistent, on-time production output."
+    }
+  ];
+  return renderTemplate`${renderComponent($$result, "Layout", $$Layout, { "title": "About Us", "description": "Learn about Reve Stitching — our story, leadership, and commitment to ethical, world-class knitted garment manufacturing since 2019." }, { "default": ($$result2) => renderTemplate(_a || (_a = __template(["  ", `<section class="relative overflow-hidden bg-zinc-50 py-28 dark:bg-zinc-950 lg:py-36" aria-label="About hero"> <div class="pointer-events-none absolute inset-0 dark:hidden" aria-hidden="true" style="background-image:linear-gradient(rgba(0,0,0,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.04) 1px,transparent 1px);background-size:72px 72px"></div> <div class="pointer-events-none absolute inset-0 hidden dark:block" aria-hidden="true" style="background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:72px 72px"></div> <div class="relative z-10 mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16"> <div class="grid items-center gap-16 lg:grid-cols-2"> <div> <div class="mb-6 flex items-center gap-3" data-animate="fade-up"> <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span> <span class="text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400">About Reve Stitching</span> </div> <h1 class="font-serif text-3xl font-bold leading-tight text-zinc-900 dark:text-white sm:text-5xl lg:text-6xl" data-animate="fade-up" data-delay="0.08">
+Crafting Excellence <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Since 2019</span> </h1> <p class="mt-6 text-base leading-relaxed text-zinc-500 dark:text-zinc-400 sm:text-lg" data-animate="fade-up" data-delay="0.16">
+Reve Stitching is a leading 100% export-oriented knitted garment manufacturer, strategically located in Faisalabad — the heart of Pakistan's textile industry.
+</p> <p class="mt-4 text-base leading-relaxed text-zinc-500 dark:text-zinc-400 sm:text-lg" data-animate="fade-up" data-delay="0.2">
+From a modest beginning in 2019, we've grown into a full composite knitwear facility with 150+ modern machines and a monthly production capacity exceeding 150,000 garments.
+</p> <!-- Stat cards with hover interaction --> <div class="mt-8 flex flex-wrap gap-4" data-animate="fade-up" data-delay="0.28"> <div class="group rounded-xl border border-zinc-200 bg-white px-6 py-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-green-500/30 hover:shadow-lg hover:shadow-green-600/10 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-green-400/30 dark:hover:shadow-green-400/5" data-tilt data-tilt-max="12" data-tilt-perspective="600" data-tilt-glare data-magnetic> <div class="text-2xl font-bold text-green-600 transition-transform duration-300 group-hover:scale-110 dark:text-green-400">150K+</div> <div class="mt-1 text-xs font-medium text-zinc-500">Monthly Capacity</div> </div> <div class="group rounded-xl border border-zinc-200 bg-white px-6 py-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-green-500/30 hover:shadow-lg hover:shadow-green-600/10 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-green-400/30 dark:hover:shadow-green-400/5" data-tilt data-tilt-max="12" data-tilt-perspective="600" data-tilt-glare data-magnetic> <div class="text-2xl font-bold text-green-600 transition-transform duration-300 group-hover:scale-110 dark:text-green-400">150+</div> <div class="mt-1 text-xs font-medium text-zinc-500">Modern Machines</div> </div> <div class="group rounded-xl border border-zinc-200 bg-white px-6 py-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-green-500/30 hover:shadow-lg hover:shadow-green-600/10 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-green-400/30 dark:hover:shadow-green-400/5" data-tilt data-tilt-max="12" data-tilt-perspective="600" data-tilt-glare data-magnetic> <div class="text-2xl font-bold text-green-600 transition-transform duration-300 group-hover:scale-110 dark:text-green-400">6+</div> <div class="mt-1 text-xs font-medium text-zinc-500">Years of Excellence</div> </div> </div> </div> <div class="relative" data-animate="fade-left" data-delay="0.2" data-parallax="0.12"> <div class="aspect-[4/5] overflow-hidden rounded-3xl bg-zinc-200 shadow-2xl shadow-green-600/10 dark:bg-zinc-800 dark:shadow-green-400/5"> <img src="https://images.unsplash.com/photo-1565688534245-05d6b5be184a?auto=format&fit=crop&w=1000&h=1250&q=80" alt="Inside the Reve Stitching manufacturing facility" class="h-full w-full object-cover" loading="eager" decoding="async" width="1000" height="1250"> </div> <div class="absolute -bottom-6 -right-6 -z-10 h-32 w-32 rounded-2xl bg-green-500/10 dark:bg-green-400/5" aria-hidden="true"></div> </div> </div> </div> </section>  <section id="timeline" class="relative bg-white dark:bg-zinc-950 lg:overflow-hidden" data-pinned-steps aria-labelledby="timeline-heading"> <div class="lg:flex lg:h-screen"> <!-- LEFT: Info + year indicators --> <div class="px-6 py-16 sm:px-8 lg:flex lg:w-[42%] lg:flex-col lg:justify-center lg:px-16 lg:py-0 xl:px-20"> <div> <div class="mb-4 flex items-center gap-3" data-animate="fade-up"> <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span> <span class="text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400">Our Journey</span> </div> <h2 id="timeline-heading" class="font-serif text-2xl font-bold leading-tight text-zinc-900 dark:text-white sm:text-4xl lg:text-5xl" data-animate="fade-up">
+A Timeline of<br><span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Growth</span> </h2> <p class="mt-5 max-w-md text-base leading-relaxed text-zinc-500 dark:text-zinc-400" data-animate="fade-up">
+From our founding in 2019 to becoming a globally recognized manufacturer, every year marks a milestone in our journey.
+</p> <!-- Year indicators (desktop only) --> <div class="mt-10 hidden lg:flex lg:flex-col lg:gap-1"> `, ' </div> </div> </div> <!-- RIGHT: Year panels --> <div class="relative lg:flex-1" data-steps-container> ', ` </div> </div> </section>  <script>
+    (function(){
+      var sec = document.currentScript.previousElementSibling;
+      if (!sec || !sec.hasAttribute('data-pinned-steps')) {
+        sec = document.querySelector('[data-pinned-steps]');
+      }
+      if (!sec) return;
+
+      var panels = sec.querySelectorAll('[data-step-panel]');
+      var indicators = sec.querySelectorAll('[data-step-indicator]');
+      var inner = sec.children[0];
+      var activeIdx = 0;
+      var guard = null;
+
+      function showPanel(idx) {
+        activeIdx = idx;
+        if (inner) {
+          inner.style.setProperty('height','100vh','important');
+          inner.style.setProperty('display','flex','important');
+        }
+        for (var i = 0; i < panels.length; i++) {
+          if (i === idx) {
+            panels[i].style.setProperty('display','flex','important');
+            panels[i].style.setProperty('opacity','1','important');
+            panels[i].style.setProperty('visibility','visible','important');
+            panels[i].style.setProperty('position','relative','important');
+            panels[i].style.setProperty('height','100%','important');
+          } else {
+            panels[i].style.setProperty('display','none','important');
+            panels[i].style.removeProperty('height');
+          }
+        }
+        for (var j = 0; j < indicators.length; j++) {
+          indicators[j].classList.toggle('is-active', j === idx);
+        }
+      }
+
+      function startGuard() {
+        if (guard) guard.disconnect();
+        guard = new MutationObserver(function() {
+          showPanel(activeIdx);
+        });
+        for (var i = 0; i < panels.length; i++) {
+          guard.observe(panels[i], { attributes: true, attributeFilter: ['style'] });
+        }
+      }
+
+      function activate() {
+        showPanel(0);
+        startGuard();
+        if (window.innerWidth >= 1024) {
+          for (var j = 0; j < indicators.length; j++) {
+            (function(idx) {
+              indicators[idx].style.cursor = 'pointer';
+              indicators[idx].addEventListener('click', function() {
+                showPanel(idx);
+              });
+            })(j);
+          }
+        }
+      }
+
+      function deactivate() {
+        if (guard) { guard.disconnect(); guard = null; }
+        sec.style.removeProperty('overflow');
+        if (inner) {
+          inner.style.removeProperty('height');
+          inner.style.removeProperty('display');
+        }
+        for (var i = 0; i < panels.length; i++) {
+          panels[i].style.removeProperty('display');
+          panels[i].style.removeProperty('opacity');
+          panels[i].style.removeProperty('visibility');
+          panels[i].style.removeProperty('position');
+          panels[i].style.removeProperty('height');
+        }
+        for (var j = 0; j < indicators.length; j++) {
+          indicators[j].classList.remove('is-active');
+          indicators[j].style.cursor = '';
+        }
+      }
+
+      var mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (mq.matches) activate();
+      mq.addEventListener('change', function(e) {
+        if (e.matches) activate();
+        else deactivate();
+      });
+    })();
+  <\/script>  <section class="bg-zinc-50 py-28 dark:bg-zinc-900 lg:py-36" aria-labelledby="leadership-heading"> <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16"> <div class="mx-auto mb-16 max-w-2xl text-center"> <span class="mb-3 inline-block text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400" data-animate="fade-up">Leadership</span> <h2 id="leadership-heading" class="font-serif text-2xl font-bold text-zinc-900 dark:text-white sm:text-4xl lg:text-5xl" data-animate="fade-up" data-delay="0.08">
+Meet Our <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Team</span> </h2> <p class="mt-4 text-base text-zinc-500 dark:text-zinc-400" data-animate="fade-up" data-delay="0.16">
+Experienced professionals dedicated to delivering excellence in every garment we produce.
+</p> </div> <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"> `, ' </div> </div> </section>  <section class="bg-white py-28 dark:bg-zinc-950 lg:py-36" aria-labelledby="quality-heading"> <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16"> <div class="grid items-center gap-16 lg:grid-cols-2"> <div class="relative" data-animate="fade-right"> <div class="aspect-[4/3] overflow-hidden rounded-3xl bg-zinc-200 shadow-xl dark:bg-zinc-800"> <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&h=900&q=80" alt="Quality control inspection process at Reve Stitching" class="h-full w-full object-cover" loading="lazy" decoding="async" width="1200" height="900"> </div> </div> <div> <div class="mb-4 flex items-center gap-3" data-animate="fade-up"> <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span> <span class="text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400">Quality Commitment</span> </div> <h2 id="quality-heading" class="font-serif text-2xl font-bold leading-tight text-zinc-900 dark:text-white sm:text-4xl lg:text-5xl" data-animate="fade-up" data-delay="0.08">\nUncompromising <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Quality</span> Standards\n</h2> <p class="mt-5 text-base leading-relaxed text-zinc-500 dark:text-zinc-400 sm:text-lg" data-animate="fade-up" data-delay="0.16">\nQuality is the cornerstone of everything we do. Our SGS-trained workforce maintains AQL 1.5-4.0 standards across every production run.\n</p> <div class="mt-8 space-y-4" data-animate="fade-up" data-delay="0.2"> ', ` </div> </div> </div> </div> </section>  <section class="bg-zinc-50 py-28 dark:bg-zinc-950 lg:py-36" aria-labelledby="tech-heading"> <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16"> <div class="mx-auto mb-16 max-w-2xl text-center"> <div class="mb-4 flex items-center justify-center gap-3" data-animate="fade-up"> <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span> <span class="text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400">Technology & Innovation</span> <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span> </div> <h2 id="tech-heading" class="font-serif text-2xl font-bold text-zinc-900 dark:text-white sm:text-4xl lg:text-5xl" data-animate="fade-up" data-delay="0.08">
+Digitally <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Integrated</span> Manufacturing
+</h2> <p class="mt-4 text-base leading-relaxed text-zinc-500 dark:text-zinc-400" data-animate="fade-up" data-delay="0.16">
+We don't just manufacture — we track every stage digitally. Our custom ERP system brings transparency, accuracy, and speed to every order.
+</p> </div> <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4"> <!-- Card 1: ERP System --> <div class="group rounded-2xl border border-zinc-200 bg-white p-8 transition-all duration-300 hover:border-green-500/30 hover:shadow-xl hover:shadow-green-600/5 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-green-400/30 dark:hover:shadow-green-400/5" data-animate="fade-up" data-delay="0" data-tilt> <span class="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-green-500/10"> <svg class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"> <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008V17.25zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008V17.25zm0-6h.008v.008h-.008v-.008z"></path> </svg> </span> <h3 class="text-lg font-bold text-zinc-900 dark:text-white">ERP Production Tracking</h3> <p class="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">Custom-built ERP system tracks every order from fabric issuance through cutting, stitching, and final dispatch in real time.</p> </div> <!-- Card 2: Digital QC --> <div class="group rounded-2xl border border-zinc-200 bg-white p-8 transition-all duration-300 hover:border-green-500/30 hover:shadow-xl hover:shadow-green-600/5 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-green-400/30 dark:hover:shadow-green-400/5" data-animate="fade-up" data-delay="0" data-tilt> <span class="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-green-500/10"> <svg class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"> <path stroke-linecap="round" stroke-linejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12"></path> </svg> </span> <h3 class="text-lg font-bold text-zinc-900 dark:text-white">Digital Quality Logs</h3> <p class="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">Every inspection, measurement check, and AQL audit is digitally recorded — full traceability from raw material to shipment.</p> </div> <!-- Card 3: Modern Machinery --> <div class="group rounded-2xl border border-zinc-200 bg-white p-8 transition-all duration-300 hover:border-green-500/30 hover:shadow-xl hover:shadow-green-600/5 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-green-400/30 dark:hover:shadow-green-400/5" data-animate="fade-up" data-delay="0" data-tilt> <span class="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-green-500/10"> <svg class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"> <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z"></path> </svg> </span> <h3 class="text-lg font-bold text-zinc-900 dark:text-white">150+ Modern Machines</h3> <p class="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">Computerised knitting, automatic cutting, and precision stitching equipment — built for speed, accuracy, and scale.</p> </div> <!-- Card 4: Reporting --> <div class="group rounded-2xl border border-zinc-200 bg-white p-8 transition-all duration-300 hover:border-green-500/30 hover:shadow-xl hover:shadow-green-600/5 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-green-400/30 dark:hover:shadow-green-400/5" data-animate="fade-up" data-delay="0" data-tilt> <span class="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-green-500/10"> <svg class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"> <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"></path> </svg> </span> <h3 class="text-lg font-bold text-zinc-900 dark:text-white">Data-Driven Dashboards</h3> <p class="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">Automated reports on production output, fabric consumption, and delivery timelines — no manual spreadsheets or guesswork.</p> </div> </div> </div> </section>  <section class="relative bg-zinc-900 py-24 dark:bg-zinc-950 lg:py-32" aria-label="Call to action"> <div class="pointer-events-none absolute inset-0 opacity-[0.04]" aria-hidden="true" style="background-image:radial-gradient(circle at 1px 1px, white 1px, transparent 0);background-size:40px 40px"></div> <div class="relative z-10 mx-auto max-w-[90rem] px-6 text-center sm:px-8 lg:px-12 xl:px-16"> <h2 class="font-serif text-2xl font-bold text-white sm:text-3xl lg:text-4xl" data-animate="fade-up">Ready to Partner With Us?</h2> <p class="mx-auto mt-4 max-w-lg text-zinc-400" data-animate="fade-up" data-delay="0.1">
+Join the growing list of international brands that trust Reve Stitching for their manufacturing needs.
+</p> <a href="/quote/" class="mt-8 inline-flex items-center gap-2 rounded-full bg-green-500 px-8 py-4 text-sm font-bold uppercase tracking-wider text-zinc-950 shadow-lg transition-all hover:bg-green-400" data-magnetic data-animate="fade-up" data-delay="0.15">
+Contact Our Team
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"></path></svg> </a> </div> </section>  <script>
+  function initMilestoneTags() {
+    document.querySelectorAll('.milestone-tag').forEach(function(tag) {
+      tag.removeEventListener('click', toggleMilestoneTag);
+      tag.addEventListener('click', toggleMilestoneTag);
+    });
+  }
+  function toggleMilestoneTag() {
+    this.classList.toggle('is-selected');
+  }
+  document.addEventListener('astro:page-load', initMilestoneTags);
+  initMilestoneTags();
+<\/script> `])), maybeRenderHead(), timeline.map((item, i) => renderTemplate`<div${addAttribute(i, "data-step-indicator")} class="flex items-center gap-3 rounded-lg px-3 py-2"> <span class="step-dot flex h-8 w-8 items-center justify-center rounded-full border text-xs font-bold"> ${item.year} </span> <span class="step-label text-sm font-medium text-zinc-600 dark:text-zinc-400"> ${item.title} </span> </div>`), timeline.map((item, i) => renderTemplate`<div data-step-panel${addAttribute(`px-6 py-14 sm:px-8 lg:flex lg:items-center lg:px-16 lg:py-0 xl:px-20 ${i < timeline.length - 1 ? "border-b border-zinc-100 dark:border-zinc-800 lg:border-0" : ""}`, "class")}> <div class="w-full max-w-xl"> <div class="mb-5 flex items-center gap-4"> <span class="flex h-14 w-14 items-center justify-center rounded-xl bg-green-100 font-serif text-lg font-bold text-green-700 dark:bg-green-500/10 dark:text-green-400"> ${item.year} </span> <div class="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" aria-hidden="true"></div> </div> <h3 class="font-serif text-2xl font-bold text-zinc-900 dark:text-white sm:text-3xl lg:text-4xl"> ${item.title} </h3> <p class="mt-4 text-base leading-relaxed text-zinc-600 dark:text-zinc-400 sm:text-lg"> ${item.description} </p> <div class="mt-6"> <button type="button" class="milestone-tag inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-4 py-2 text-xs font-semibold text-green-600 transition-all duration-200 hover:border-green-500 hover:bg-green-50 hover:text-green-700 hover:scale-105 active:scale-95 dark:border-zinc-700 dark:bg-zinc-800 dark:text-green-400 dark:hover:border-green-400 dark:hover:bg-green-500/10 dark:hover:text-green-300 cursor-pointer select-none"> <span class="h-1.5 w-1.5 rounded-full bg-green-500"></span>
+Milestone ${item.num} of 07
+</button> </div> </div> </div>`), leaders.map((leader, i) => renderTemplate`<article class="group overflow-hidden rounded-2xl border border-zinc-200 bg-white transition-all duration-500 hover:shadow-xl hover:shadow-green-600/5 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:shadow-green-400/5" data-animate="fade-up"${addAttribute(String(i * 0.08), "data-delay")} data-tilt> <div class="relative aspect-[3/4] overflow-hidden bg-zinc-200 dark:bg-zinc-800"> <img${addAttribute(leader.image, "src")}${addAttribute(`${leader.name} — ${leader.role} at Reve Stitching`, "alt")} class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" decoding="async" width="400" height="534"> <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div> </div> <div class="p-6"> <h3 class="text-lg font-bold text-zinc-900 dark:text-white">${leader.name}</h3> <p class="text-sm font-semibold text-green-600 dark:text-green-400">${leader.role}</p> <p class="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">${leader.desc}</p> </div> </article>`), [
+    "AQL 1.5-4.0 quality standards on every order",
+    "SGS-trained quality control team",
+    "Multi-stage inspection process (14 checkpoints)",
+    "SEDEX-compliant ethical manufacturing",
+    "Dedicated quality lab with modern testing equipment",
+    "Full traceability from raw material to finished product"
+  ].map((item) => renderTemplate`<div class="flex items-start gap-3"> <div class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-500/10"> <svg class="h-3.5 w-3.5 text-green-600 dark:text-green-400" viewBox="0 0 20 20" fill="currentColor"> <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd"></path> </svg> </div> <span class="text-sm font-medium text-zinc-600 dark:text-zinc-400">${item}</span> </div>`)) })}`;
+}, "/home/hamzaa1i/reve-stitching/src/pages/about.astro", void 0);
+
+const $$file = "/home/hamzaa1i/reve-stitching/src/pages/about.astro";
+const $$url = "/about";
+
+const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: $$About,
+  file: $$file,
+  url: $$url
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const page = () => _page;
+
+export { page };
