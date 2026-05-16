@@ -340,7 +340,7 @@ to send automated follow-up emails for pending quotes.
 ---
 
 <p align="center">
-  Built by <strong>[Hamza Ali](https://hamzaalidev.vercel.app)</strong>
+  Built by <strong><a href="https://hamzaalidev.vercel.app">Hamza Ali</a></strong>
 </p>
 
 <p align="center">
