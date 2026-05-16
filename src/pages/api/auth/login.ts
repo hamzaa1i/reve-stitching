@@ -4,52 +4,56 @@ import {
   verifyCredentials,
   COOKIE_CONFIG,
 } from '../../../lib/auth';
+import {
+  checkRateLimit,
+  getClientIp,
+  sanitizeString,
+  isValidEmail,
+} from '../../../lib/security';
 
 export const prerender = false;
 
-const attempts = new Map<string, { count: number; last: number }>();
-const MAX_ATTEMPTS = 5;
-const LOCKOUT_MS = 15 * 60 * 1000;
-
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
-    const ip =
-      request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+    const ip = getClientIp(request);
 
-    const record = attempts.get(ip);
-    if (record && record.count >= MAX_ATTEMPTS) {
-      const remaining = record.last + LOCKOUT_MS - Date.now();
-      if (remaining > 0) {
-        const mins = Math.ceil(remaining / 60000);
-        return json({ error: `Too many attempts. Try again in ${mins} minutes.` }, 429);
-      }
-      attempts.delete(ip);
+    // Rate limit: 5 attempts per 15 minutes
+    if (!checkRateLimit(ip, 5, 15 * 60_000)) {
+      return json({ error: 'Too many attempts. Try again later.' }, 429);
     }
 
-    const body = await request.json();
+    let body: { email?: string; password?: string };
+    try {
+      body = await request.json();
+    } catch {
+      return json({ error: 'Invalid request body.' }, 400);
+    }
+
     const { email, password } = body;
 
     if (!email || !password) {
       return json({ error: 'Email and password are required.' }, 400);
     }
 
-    if (!verifyCredentials(email, password)) {
-      const current = attempts.get(ip) || { count: 0, last: 0 };
-      attempts.set(ip, { count: current.count + 1, last: Date.now() });
-      const left = MAX_ATTEMPTS - (current.count + 1);
-      console.warn(`[Auth] Failed login: ${email} from ${ip}`);
-      return json({
-        error: left > 0
-          ? `Invalid credentials. ${left} attempt${left === 1 ? '' : 's'} remaining.`
-          : 'Account locked. Try again in 15 minutes.',
-      }, 401);
+    const cleanEmail = sanitizeString(email).toLowerCase();
+
+    if (!isValidEmail(cleanEmail)) {
+      return json({ error: 'Please provide a valid email address.' }, 400);
     }
 
-    const token = createAdminToken(email);
-    cookies.set(COOKIE_CONFIG.name, token, COOKIE_CONFIG.options);
-    attempts.delete(ip);
+    if (password.length > 200) {
+      return json({ error: 'Invalid credentials.' }, 401);
+    }
 
-    console.log(`[Auth] Admin logged in: ${email}`);
+    if (!verifyCredentials(cleanEmail, password)) {
+      console.warn(`[Auth] Failed login from ${ip}`);
+      return json({ error: 'Invalid credentials.' }, 401);
+    }
+
+    const token = createAdminToken(cleanEmail);
+    cookies.set(COOKIE_CONFIG.name, token, COOKIE_CONFIG.options);
+
+    console.log(`[Auth] Admin logged in from ${ip}`);
     return json({ success: true });
   } catch (err) {
     console.error('[Auth] Login error:', err);

@@ -10,6 +10,8 @@ export function getServiceClient() {
 }
 
 // Authenticated client (for admin pages — respects RLS)
+// ⚠️ NOTE: All anon/authenticated access is denied by RLS policies.
+// This client cannot read/write any tables. Use getServiceClient() instead.
 export function getAuthClient(accessToken: string) {
   return createClient(supabaseUrl, supabaseAnonKey, {
     global: {

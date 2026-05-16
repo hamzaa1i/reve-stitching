@@ -30,7 +30,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="UTF-8" />
     <DarkModeScript />
-    <!-- ── No‑JS fallback: ensure animated elements are visible ── -->
+        <!-- No-JS fallback: force all animated elements visible -->
     <noscript>
       <style>
         [data-animate],
@@ -39,12 +39,18 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         [data-cta-title],
         [data-cta-button],
         .split-line-wrapper,
-        .split-line {
+        .split-line,
+        .gsap-reveal,
+        .animate-in,
+        .fade-in,
+        .reveal,
+        [data-scroll],
+        [data-fade] {
           opacity: 1 !important;
           transform: none !important;
           visibility: visible !important;
         }
-        /* No JS available — stack panels vertically as fallback */
+        /* No JS — stack pinned-step panels vertically as fallback */
         [data-pinned-steps] [data-step-panel] {
           position: relative !important;
           opacity: 1 !important;

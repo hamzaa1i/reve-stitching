@@ -454,7 +454,13 @@ html.has-custom-cursor, html.has-custom-cursor * { cursor: none !important; }
   [data-cta-title],
   [data-cta-button],
   .split-line-wrapper,
-  .split-line {
+  .split-line,
+  .gsap-reveal,
+  .animate-in,
+  .fade-in,
+  .reveal,
+  [data-scroll],
+  [data-fade] {
     opacity: 1 !important;
     transform: none !important;
     visibility: visible !important;

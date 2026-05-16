@@ -1349,7 +1349,7 @@ function initMouseTracking() {
    FALLBACK
    ═══════════════════════════════════════════ */
    function makeEverythingVisible() {
-    const sel = '[data-animate], [data-stagger] > *, [data-bento-item], [data-cta-title], [data-cta-button]';
+   const sel = '[data-animate], [data-stagger] > *, [data-bento-item], [data-cta-title], [data-cta-button], .gsap-reveal, .animate-in, .fade-in, .reveal, [data-scroll], [data-fade]';
     document.querySelectorAll(sel).forEach((el) => {
       el.style.opacity = '1';
       el.style.transform = 'none';

@@ -1,19 +1,41 @@
 import type { APIRoute } from 'astro';
 import { getServiceClient } from '../../../lib/supabase';
 import { notifyNewChat } from '../../../lib/notifications';
+import {
+  checkRateLimit,
+  getClientIp,
+  sanitizeString,
+  truncate,
+} from '../../../lib/security';
 
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    const ip = getClientIp(request);
+    if (!checkRateLimit(ip, 10, 60_000)) {
+      return new Response(
+        JSON.stringify({ error: 'Too many requests. Please wait.' }),
+        { status: 429, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
     const { visitorToken, visitorName, visitorEmail } = await request.json();
 
-    if (!visitorToken) {
-      return new Response(JSON.stringify({ error: 'Visitor token required.' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
+    if (!visitorToken || typeof visitorToken !== 'string') {
+      return new Response(
+        JSON.stringify({ error: 'Visitor token required.' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
     }
+
+    const cleanToken = truncate(sanitizeString(visitorToken), 200);
+    const cleanName = visitorName
+      ? truncate(sanitizeString(visitorName), 200)
+      : null;
+    const cleanEmail = visitorEmail
+      ? truncate(sanitizeString(visitorEmail), 254)
+      : null;
 
     const supabase = getServiceClient();
 
@@ -21,24 +43,24 @@ export const POST: APIRoute = async ({ request }) => {
     const { data: existing } = await supabase
       .from('chat_sessions')
       .select('id')
-      .eq('visitor_token', visitorToken)
+      .eq('visitor_token', cleanToken)
       .in('status', ['waiting', 'active'])
       .single();
 
     if (existing) {
-      return new Response(JSON.stringify({ sessionId: existing.id }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return new Response(
+        JSON.stringify({ sessionId: existing.id }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
     }
 
     // Create new session
     const { data, error } = await supabase
       .from('chat_sessions')
       .insert({
-        visitor_token: visitorToken,
-        visitor_name: visitorName?.trim() || null,
-        visitor_email: visitorEmail?.trim() || null,
+        visitor_token: cleanToken,
+        visitor_name: cleanName,
+        visitor_email: cleanEmail,
         status: 'waiting',
       })
       .select('id')
@@ -48,8 +70,8 @@ export const POST: APIRoute = async ({ request }) => {
 
     await notifyNewChat({
       sessionId: data.id,
-      visitorName: visitorName?.trim(),
-      visitorEmail: visitorEmail?.trim(),
+      visitorName: cleanName,
+      visitorEmail: cleanEmail,
     });
 
     return new Response(JSON.stringify({ sessionId: data.id }), {
@@ -58,9 +80,9 @@ export const POST: APIRoute = async ({ request }) => {
     });
   } catch (e) {
     console.error('Chat session error:', e);
-    return new Response(JSON.stringify({ error: 'Failed to create session.' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({ error: 'Failed to create session.' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 };

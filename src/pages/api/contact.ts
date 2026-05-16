@@ -1,51 +1,86 @@
 import type { APIRoute } from 'astro';
 import { getServiceClient } from '../../lib/supabase';
 import { notifyNewContact } from '../../lib/notifications';
+import {
+  checkRateLimit,
+  getClientIp,
+  sanitizeString,
+  isValidEmail,
+  truncate,
+} from '../../lib/security';
 
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    const ip = getClientIp(request);
+    if (!checkRateLimit(ip, 5, 60_000)) {
+      return json({ error: 'Too many requests. Please wait a minute.' }, 429);
+    }
+
     const body = await request.json();
     const { name, email, company, phone, subject, message } = body;
 
     // Validation
     if (!name || !email || !subject || !message) {
-      return new Response(JSON.stringify({ error: 'Name, email, subject, and message are required.' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return json(
+        { error: 'Name, email, subject, and message are required.' },
+        400
+      );
+    }
+
+    if (!isValidEmail(email)) {
+      return json({ error: 'Please provide a valid email address.' }, 400);
+    }
+
+    // Sanitize + truncate
+    const cleanName = truncate(sanitizeString(name), 200);
+    const cleanEmail = truncate(email.trim().toLowerCase(), 254);
+    const cleanCompany = company
+      ? truncate(sanitizeString(company), 200)
+      : null;
+    const cleanPhone = phone ? truncate(sanitizeString(phone), 50) : null;
+    const cleanSubject = truncate(sanitizeString(subject), 300);
+    const cleanMessage = truncate(sanitizeString(message), 5000);
+
+    if (cleanName.length < 2) {
+      return json({ error: 'Name must be at least 2 characters.' }, 400);
+    }
+
+    if (cleanMessage.length < 5) {
+      return json({ error: 'Message must be at least 5 characters.' }, 400);
     }
 
     const supabase = getServiceClient();
     const { error } = await supabase.from('contact_submissions').insert({
-      name: name.trim(),
-      email: email.trim(),
-      company: company?.trim() || null,
-      phone: phone?.trim() || null,
-      subject: subject.trim(),
-      message: message.trim(),
+      name: cleanName,
+      email: cleanEmail,
+      company: cleanCompany,
+      phone: cleanPhone,
+      subject: cleanSubject,
+      message: cleanMessage,
     });
 
     if (error) throw error;
 
     await notifyNewContact({
-      name: name.trim(),
-      email: email.trim(),
-      company: company?.trim(),
-      subject: subject.trim(),
-      message: message.trim(),
+      name: cleanName,
+      email: cleanEmail,
+      company: cleanCompany,
+      subject: cleanSubject,
+      message: cleanMessage,
     });
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return json({ success: true }, 200);
   } catch (e) {
     console.error('Contact form error:', e);
-    return new Response(JSON.stringify({ error: 'Failed to submit. Please try again.' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return json({ error: 'Failed to submit. Please try again.' }, 500);
   }
 };
+
+function json(data: object, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
