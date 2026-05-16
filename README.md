@@ -1,458 +1,348 @@
 # 🧵 Reve Stitching — Official Website
 
-[![Made with Astro](https://img.shields.io/badge/Made%20with-Astro-FF5D01?style=flat-square&logo=astro)](https://astro.build)
-[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com/)
-[![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com/)
+<p align="center">
+  The corporate website and client portal for
+  <strong>Reve Stitching (Pvt.) Ltd.</strong>,
+  a 100% export-oriented knitted garment manufacturer based in Faisalabad, Pakistan.
+</p>
 
-**Reve Stitching** is a modern, feature-rich website for a 100% export-oriented knitted garment manufacturer. Built for performance, scalability, and a seamless user experience for both buyers and the internal admin team.
-
-🌐 **Live Website:** [revestitching.com](https://revestitching.com)
-
----
-
-## 🏭 About Reve Stitching
-
-Reve Stitching (Pvt.) Ltd. is a leading 100% export-oriented knitted garment manufacturer strategically located in Faisalabad, Pakistan — the heart of the textile industry.
-
-### ✨ Key Highlights
-
-| Metric | Value |
-| :--- | :--- |
-| 🏭 Monthly Capacity | 300,000+ garments |
-| ⚙️ Modern Machines | 150+ units |
-| 📅 Established | 2019 |
-| ✅ Compliance | SEDEX Certified |
-| 🎯 Quality Standards | AQL 1.5 – 4.0 |
-| 🌍 Market Focus | 100% Export (UK, EU) |
-| 🎖️ Major Clients | Boohoo, Pull&Bear, Yours Clothing |
+<p align="center">
+  🌐 <strong>Live:</strong>
+  <a href="https://revestitching.com">revestitching.com</a>
+</p>
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Technology | Purpose |
-| :--- | :--- |
-| **Astro 5** | Static site generator with SSR support |
-| **Tailwind CSS** | Utility-first CSS framework |
-| **GSAP** | Professional-grade animations |
-| **Lenis** | Smooth scroll library |
-| **Supabase** | PostgreSQL database + file storage |
-| **Resend** | Transactional email service |
-| **GitHub Models** | AI-powered features (GPT-4o) |
-| **Vercel** | Hosting & deployment |
-| **Discord** | Real-time notifications |
+| Layer | Technology |
+|---|---|
+| Framework | [Astro 5](https://astro.build/) (SSR) |
+| Styling | [Tailwind CSS](https://tailwindcss.com/) |
+| Animation | [GSAP 3](https://greensock.com/gsap/) + [Lenis](https://lenis.darkroom.engineering/) |
+| Database | [Supabase PostgreSQL](https://supabase.com/) |
+| Email | [Resend](https://resend.com/) |
+| AI | GitHub Models (GPT-4o) |
+| Hosting | [Vercel](https://vercel.com/) |
+| Notifications | Discord Webhooks |
 
 ---
 
 ## ✨ Features
 
-### 🎯 For Buyers
+### 🧑‍💼 Buyer-Facing
 
-- **Instant Price Calculator** — Get rough estimates in seconds (USD/GBP)
-- **Smart Quote Wizard** — 5-step guided quote request with AI analysis
-- **AI Tech Pack Analysis** — Upload images, AI extracts product specs
-- **Live Chat Widget** — AI-powered bot with human handoff
-- **WhatsApp Integration** — Click-to-chat for instant contact
-- **Product Catalog** — Browse 8 product categories with detailed specs
-- **Fabric Portfolio** — View all available fabric types and GSM ranges
+- Product catalog with 8 garment categories and detailed specifications
+- Instant price calculator with dual currency support (USD/GBP)
+- Auto-currency detection based on visitor region
+- 5-step guided quote wizard with file uploads
+- AI-powered quote analysis and recommendations
+- AI chatbot with human handoff support
+- WhatsApp click-to-chat integration
 
-### 🔧 For Admin Team
+### 🛡️ Admin Panel
 
-- **Admin Dashboard** — Real-time stats and quote management
-- **Quote Management** — View, filter, assign, and track all inquiries
-- **AI Insights** — Auto-generated price estimates and action items
-- **Live Chat Management** — Handle customer conversations in real-time
-- **Contact Management** — Track all form submissions
-- **File Downloads** — Access tech packs and reference images
-- **WhatsApp Quick Reply** — Message buyers directly from admin panel
+- Dashboard with quote analytics and conversion funnel
+- Geographic inquiry tracking
+- Quote management pipeline with AI-generated insights
+- Contact submission management
+- Live chat session handling
+- Email template editor with live preview
+- Automated follow-up email workflows
 
-### 🤖 AI-Powered
+### 🤖 AI Capabilities
 
-- **Price Estimation** — AI analyzes specs and suggests pricing
-- **Tech Pack Analysis** — Extracts product details from uploaded files
-- **Missing Info Detection** — Flags incomplete quote requests
-- **Action Items Generation** — Creates tasks for sales team
-- **Chatbot** — Answers common questions 24/7
+- Automatic quote summarization
+- AI-generated price estimation
+- Tech pack analysis from uploaded files/images
+- Missing information detection
+- Action item generation for sales staff
+- 24/7 chatbot for common buyer questions
 
----
+### 🔐 Security
 
-## 📁 Project Structure
+- Row Level Security (RLS) enabled on all Supabase tables
+- Service-role-only database access via server-side API routes
+- Rate limiting on public endpoints
+- Input sanitization and email validation
+- JWT-based admin authentication
+- Lockout protection for repeated failed logins
+- Security headers:
+  - `X-Frame-Options`
+  - `X-Content-Type-Options`
+  - `Referrer-Policy`
+  - `Content-Security-Policy`
 
-```text
-reve-stitching/
-├── public/
-│   ├── favicon.svg
-│   └── images/
-│       ├── products/
-│       ├── team/
-│       ├── clients/
-│       └── certifications/
-├── src/
-│   ├── components/
-│   │   ├── Header.astro
-│   │   ├── Footer.astro
-│   │   ├── ChatWidget.astro          # Live chat widget
-│   │   ├── QuoteWizard.astro         # 5-step quote form
-│   │   ├── PriceCalculator.astro     # Instant price calculator
-│   │   ├── WhatsAppWidget.astro      # WhatsApp click-to-chat
-│   │   ├── StatsBar.astro
-│   │   ├── BentoGrid.astro
-│   │   ├── ProcessSteps.astro
-│   │   ├── ProductCard.astro
-│   │   ├── TimelineItem.astro
-│   │   ├── FAQ.astro
-│   │   └── admin/
-│   │       └── WhatsAppContactButton.astro
-│   ├── layouts/
-│   │   ├── Layout.astro              # Main layout
-│   │   └── AdminLayout.astro         # Admin panel layout
-│   ├── lib/
-│   │   ├── supabase.ts               # Supabase client
-│   │   ├── pricing.ts                # Price calculation engine
-│   │   ├── notifications.ts          # Email + Discord helpers
-│   │   ├── types/
-│   │   │   └── quote.ts              # TypeScript types
-│   │   └── services/
-│   │       ├── storage.ts            # File upload helpers
-│   │       ├── ai-summary.ts         # AI price estimation
-│   │       ├── techpack-analyzer.ts  # AI tech pack analysis
-│   │       └── whatsapp-links.ts     # WhatsApp URL builders
-│   ├── pages/
-│   │   ├── index.astro               # Homepage
-│   │   ├── about.astro               # Company info
-│   │   ├── products.astro            # Product catalog
-│   │   ├── clients.astro             # Client portfolio
-│   │   ├── contact.astro             # Contact page
-│   │   ├── quote.astro               # Quote request page
-│   │   ├── admin/
-│   │   │   ├── index.astro           # Dashboard
-│   │   │   ├── login.astro           # Admin login
-│   │   │   ├── logout.ts             # Logout handler
-│   │   │   ├── quotes/
-│   │   │   │   ├── index.astro       # Quote list
-│   │   │   │   └── [id].astro        # Quote detail
-│   │   │   └── chat/
-│   │   │       └── [id].astro        # Live chat admin view
-│   │   └── api/
-│   │       ├── contact.ts
-│   │       ├── quote/
-│   │       │   └── submit.ts         # Quote submission endpoint
-│   │       ├── chat/
-│   │       │   ├── bot.ts            # AI chatbot
-│   │       │   ├── session.ts        # Chat session management
-│   │       │   ├── send.ts           # Send message
-│   │       │   ├── poll.ts           # Poll for new messages
-│   │       │   ├── heartbeat.ts      # Keep session alive
-│   │       │   └── close.ts          # End session
-│   │       ├── auth/
-│   │       │   ├── login.ts          # Admin login
-│   │       │   └── logout.ts         # Admin logout
-│   │       └── admin/
-│   │           ├── contact-status.ts # Update contact status
-│   │           └── dashboard-stats.ts # Dashboard metrics
-│   ├── scripts/
-│   │   └── animations.js             # GSAP animations
-│   └── styles/
-│       └── global.css                # Global styles
-├── astro.config.mjs                  # Astro configuration
-├── tailwind.config.mjs               # Tailwind configuration
-├── package.json
-└── README.md
-```
+### ♿ Accessibility
+
+- Full `prefers-reduced-motion` support
+- No-JS fallback using `<noscript>` styles
+- Keyboard navigation support
+- Focus-visible indicators
+- Performance-adaptive animation system (`full`, `mid`, `lite`)
 
 ---
 
-## 🚀 Quick Start
+## 🚦 Getting Started
 
-### Prerequisites
+### 📋 Prerequisites
 
 - Node.js 18+
-- npm or yarn
-- Supabase account (for database)
-- Resend account (optional, for emails)
-- GitHub account (for AI features)
+- npm
+- Supabase account
+- Resend account
+- GitHub account (AI features)
 
-### Installation
+---
+
+## 📥 Installation
+
+### Clone Repository
 
 ```bash
-# Clone the repository
-git clone https://github.com/qxcz1/reve-stitching.git
-
-# Navigate to project directory
+git clone https://github.com/hamzaa1i/reve-stitching.git
 cd reve-stitching
-
-# Install dependencies
-npm install
-
-# Set up environment variables (see below)
-cp .env.example .env
-
-# Start development server
-npm run dev
 ```
 
-### Available Commands
+### Install Dependencies
 
-| Command | Action |
-| :--- | :--- |
-| `npm run dev` | Start local dev server at `localhost:4321` |
-| `npm run build` | Build production site to `./dist/` |
-| `npm run preview` | Preview build locally before deploying |
+```bash
+npm install
+```
 
 ---
 
 ## 🔐 Environment Variables
 
-Create a `.env` file in the root directory:
+Create a `.env` file in the project root:
 
 ```env
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# SUPABASE (Database & Storage)
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# SUPABASE
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SUPABASE_URL=
+SUPABASE_SERVICE_ROLE_KEY=
+PUBLIC_SUPABASE_URL=
+PUBLIC_SUPABASE_ANON_KEY=
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # ADMIN AUTHENTICATION
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-ADMIN_JWT_SECRET=your-secret-key-min-32-chars
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ADMIN_JWT_SECRET=
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # AI (GitHub Models)
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-GITHUB_TOKEN=ghp_your_github_token
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+GITHUB_TOKEN=
+GITHUB_MODEL=
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# EMAIL NOTIFICATIONS (Resend)
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-RESEND_API_KEY=re_your_api_key
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# EMAIL (RESEND)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+RESEND_API_KEY=
+NOTIFICATION_EMAIL=
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # DISCORD NOTIFICATIONS
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DISCORD_WEBHOOK_URL=
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# WHATSAPP (Click-to-Chat Only)
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-PUBLIC_WHATSAPP_NUMBER=923329555786
-WHATSAPP_BUSINESS_NUMBER=923329555786
-WHATSAPP_DISPLAY_NAME=Reve Stitching Sales
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# WHATSAPP
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WHATSAPP_DISPLAY_NAME=
+PUBLIC_WHATSAPP_NUMBER=
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# SITE
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SITE_URL=
+CRON_SECRET=
 ```
 
 ---
 
-## 📊 Database Setup
-
-### Supabase Tables
-
-#### 1. `quote_requests` — Quote submissions
-
-```sql
-CREATE TABLE quote_requests (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  reference_number TEXT UNIQUE NOT NULL,
-  company_name TEXT NOT NULL,
-  contact_person TEXT NOT NULL,
-  email TEXT NOT NULL,
-  phone TEXT,
-  product_type TEXT NOT NULL,
-  quantity INTEGER NOT NULL,
-  fabric_type TEXT,
-  gsm INTEGER,
-  sizes TEXT[],
-  color_count INTEGER,
-  customizations TEXT[],
-  destination TEXT,
-  target_date DATE,
-  has_sample BOOLEAN,
-  is_rush BOOLEAN,
-  notes TEXT,
-  tech_pack_url TEXT,
-  reference_images TEXT[],
-  ai_summary TEXT,
-  estimated_price_range TEXT,
-  suggested_moq INTEGER,
-  ai_flags TEXT,
-  ai_extracted_data JSONB,
-  ai_confidence_score DECIMAL(3,2),
-  ai_missing_fields TEXT[],
-  action_items JSONB,
-  status TEXT DEFAULT 'new',
-  assigned_to TEXT,
-  admin_notes TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-```
-
-#### 2. `chat_sessions` — Live chat data
-
-```sql
-CREATE TABLE chat_sessions (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  session_id TEXT UNIQUE NOT NULL,
-  visitor_name TEXT,
-  visitor_email TEXT,
-  messages JSONB DEFAULT '[]'::JSONB,
-  status TEXT DEFAULT 'active',
-  assigned_admin TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  last_activity TIMESTAMPTZ DEFAULT NOW()
-);
-```
-
-#### 3. `contact_submissions` — Contact form entries
-
-```sql
-CREATE TABLE contact_submissions (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  company TEXT,
-  phone TEXT,
-  product TEXT,
-  message TEXT,
-  status TEXT DEFAULT 'new',
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-```
-
----
-
-## 📦 Products We Manufacture
-
-- **Premium Cotton T-Shirts** — 100% combed cotton, SGS certified, MOQ 500
-- **Corporate Polo Shirts** — Pique cotton, embroidery-ready, MOQ 300
-- **Premium Hoodies** — Terry fleece, brushed interior, MOQ 250
-- **Athletic Joggers** — Moisture management fabric, MOQ 400
-- **Sweatshirts Collection** — Double jersey, fleece options, MOQ 350
-- **Ladies' Wear** — Modal blends, lycra rib, MOQ 300
-- **Kids' Wear** — Skin-friendly, certified safe dyes, MOQ 500
-- **Specialized Fabrics** — Lurex, burnout, metallic blends, MOQ 200
-
----
-
-## 💰 Pricing Features
-
-### Instant Price Calculator
-
-- **7 Product Categories** — T-shirts, Polos, Hoodies, Joggers, etc.
-- **Volume Discounts** — Up to 42% savings at 5,000+ pieces
-- **Dual Currency** — Auto-detects UK visitors (shows GBP), others see USD
-- **Currency Toggle** — 🇺🇸 USD / 🇬🇧 GBP switcher
-- **Real-Time Updates** — Prices recalculate as user changes options
-- **Lead Time Display** — 25-50 days depending on quantity
-- **Customization Costs** — Screen print, embroidery, DTG, custom labels
-
-**Example Calculation:**
-- Product: Premium Hoodies
-- Quantity: 1,000 pieces
-- Fabric: Terry Fleece (320 GSM)
-- Customization: Embroidery + Custom Labels
-- **Result: $13,500 - $21,500 (£10,665 - £16,985)**
-- **Lead Time: 35-40 days**
-
----
-
-## 🏆 Certifications & Compliance
-
-<p align="center">
-  <img src="https://img.shields.io/badge/SEDEX-Compliant-166534?style=flat-square" alt="SEDEX" />
-  <img src="https://img.shields.io/badge/SGS-Trained-166534?style=flat-square" alt="SGS" />
-  <img src="https://img.shields.io/badge/BCI-Member-166534?style=flat-square" alt="BCI" />
-  <img src="https://img.shields.io/badge/GOTS-Certified-166534?style=flat-square" alt="GOTS" />
-  <img src="https://img.shields.io/badge/ISO%209001-2015-166534?style=flat-square" alt="ISO" />
-  <img src="https://img.shields.io/badge/GRS-Certified-166534?style=flat-square" alt="GRS" />
-</p>
-
----
-
-## 🚢 Deployment
-
-### Vercel (Current)
+## 🧪 Development
 
 ```bash
-# Automatic deployment on git push
+npm run dev       # Start dev server at localhost:4321
+npm run build     # Build production bundle
+npm run preview   # Preview production build locally
+```
+
+---
+
+## 🗄️ Database Setup
+
+Run the required SQL statements in the Supabase SQL Editor.
+
+### 📦 Tables
+
+| Table | Purpose |
+|---|---|
+| `quote_requests` | Quote submissions with AI analysis |
+| `chat_sessions` | Live chat session data |
+| `contact_submissions` | Contact form submissions |
+
+---
+
+## 🔒 Security Model
+
+All tables use **Row Level Security (RLS)** with deny-all policies enabled.
+
+### Architecture Rules
+
+- All database operations go through Astro API routes
+- Only the `service_role` key can access the database
+- No direct client-side Supabase queries
+- Public anonymous access is blocked entirely
+
+### Relevant Files
+
+```text
+src/lib/supabase.ts
+src/lib/security.ts
+src/lib/auth.ts
+```
+
+---
+
+## 📂 Project Structure
+
+```text
+src/
+├── components/
+│   └── admin/
+│
+├── layouts/
+│   ├── Layout.astro
+│   └── AdminLayout.astro
+│
+├── lib/
+│   ├── supabase.ts
+│   ├── security.ts
+│   ├── auth.ts
+│   ├── pricing.ts
+│   ├── notifications.ts
+│   ├── analytics.ts
+│   ├── email-templates/
+│   ├── services/
+│   └── types/
+│
+├── pages/
+│   ├── index.astro
+│   ├── about.astro
+│   ├── products.astro
+│   ├── clients.astro
+│   ├── contact.astro
+│   ├── quote.astro
+│   ├── admin/
+│   └── api/
+│       ├── contact.ts
+│       ├── quote/
+│       ├── chat/
+│       ├── auth/
+│       ├── admin/
+│       ├── samples/
+│       └── cron/
+│
+├── scripts/
+│   └── animations.js
+│
+├── styles/
+│   └── global.css
+│
+└── middleware.ts
+```
+
+---
+
+## 🚀 Deployment
+
+<p align="center">
+  Deployed on <strong>Vercel</strong> with automatic deployments on push to <code>main</code>.
+</p>
+
+### Push Changes
+
+```bash
 git add .
-git commit -m "Your commit message"
+git commit -m "your message"
 git push
-
-# Vercel auto-builds and deploys
 ```
 
-- **Live URL:** `revestitching.com`
-- **Environment Variables:** Configured in Vercel Dashboard
+### Environment Variables
+
+Configured inside the Vercel Dashboard.
+
+### Cron Jobs
+
+A scheduled cron job runs daily at:
+
+```text
+9:00 AM UTC
+```
+
+to send automated follow-up emails for pending quotes.
 
 ---
 
-## 📈 Performance
+## 🏗️ Architecture Decisions
 
-- **Lighthouse Score:** 95+ (Desktop), 90+ (Mobile)
-- **First Contentful Paint:** < 1.5s
-- **Time to Interactive:** < 3s
-- **SEO Score:** 100
-- **Accessibility Score:** 95+
-
----
-
-## 📞 Contact & Support
-
-**Reve Stitching (Pvt.) Ltd.**
-📍 **Address:** Chak No. 196/R.B, Ghona Road, Faisalabad (38000), Pakistan
-📧 **Email:** info@revestitching.com
-📞 **Phone:** +92 41 8548041
-💬 **WhatsApp:** +92 332 9555786
-🌐 **Website:** revestitching.com
+| Decision | Rationale |
+|---|---|
+| Service-role-only DB access | All database actions run through Astro API routes using `service_role`. No direct client-side queries allowed. |
+| Performance-adaptive animations | Hardware detection assigns `full`, `mid`, or `lite` animation tier based on CPU/memory capabilities. |
+| Reduced-motion bail-out | If `prefers-reduced-motion: reduce` is active, GSAP and Lenis never initialize. |
+| In-memory rate limiting | Lightweight `Map`-based limiter without Redis dependency. Suitable for current traffic scale. |
 
 ---
 
-## 📄 License
+## 📬 Contact
 
-© 2026 Reve Stitching (Pvt.) Ltd. All rights reserved.
+<p align="center">
+  <strong>Reve Stitching (Pvt.) Ltd.</strong>
+</p>
 
-Website designed & developed with ❤️ by [Hamza Ali](https://hamzaalidev.vercel.app).
+<p align="center">
+  📍 Chak No. 196/R.B, Ghona Road,<br>
+  Faisalabad 38000, Pakistan
+</p>
 
----
+<p align="center">
+  📧 Email:
+  <a href="mailto:info@revestitching.com">
+    info@revestitching.com
+  </a>
+</p>
 
-## 🛣️ Development Roadmap
+<p align="center">
+  📞 Phone:
+  <a href="tel:+92418548041">
+    +92 41 8548041
+  </a>
+</p>
 
-### ✅ Completed (Phase 1)
-- ✅ Modern responsive website with animations
-- ✅ Product catalog with detailed specifications
-- ✅ Contact form with email notifications
-- ✅ Admin panel with authentication
-- ✅ Live chat widget with AI bot
-- ✅ Quote wizard with file uploads
-- ✅ AI-powered price estimation
-- ✅ AI tech pack analysis
-- ✅ WhatsApp integration (click-to-chat)
-- ✅ Price calculator with dual currency
-- ✅ Auto-currency detection for UK visitors
+<p align="center">
+  💬 WhatsApp:
+  <a href="https://wa.me/923329555786">
+    +92 332 9555786
+  </a>
+</p>
 
-### 🔄 In Progress (Phase 2)
-- 🔄 Quote Wizard pre-fill from Price Calculator
-- 🔄 Enhanced admin analytics dashboard
-- 🔄 Email template customization
-- 🔄 Multi-language support (Urdu)
-
-### 🔮 Planned (Phase 3)
-- 🔮 Client portal (order tracking)
-- 🔮 Automated follow-up emails
-- 🔮 Sample request system
-- 🔮 Production timeline tracker
-- 🔮 Invoice generation
-- 🔮 Inventory management integration
+<p align="center">
+  🌐 Website:
+  <a href="https://revestitching.com">
+    revestitching.com
+  </a>
+</p>
 
 ---
 
 <p align="center">
-  <strong>🌿 Committed to Sustainable & Ethical Manufacturing 🌿</strong>
+  Built by <strong>[Hamza Ali](https://hamzaalidev.vercel.app)</strong>
 </p>
 
 <p align="center">
-  <sub>Built with Astro • Powered by AI • Deployed on Vercel</sub>
+  © 2026 Reve Stitching (Pvt.) Ltd. All rights reserved.
 </p>
-```
