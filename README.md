@@ -336,7 +336,7 @@ to send automated follow-up emails for pending quotes.
     revestitching.com
   </a>
 </p>
-
+ 
 ---
 
 <p align="center">
