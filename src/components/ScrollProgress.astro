@@ -12,18 +12,36 @@
 
 <script is:inline>
   (function() {
+    var scrollHandler = null;
+    var clickHandler = null;
+    var currentBtn = null;
+
     function init() {
+      // Clean up previous listeners (prevents stacking on page transitions)
+      if (scrollHandler) window.removeEventListener('scroll', scrollHandler);
+      if (currentBtn && clickHandler) currentBtn.removeEventListener('click', clickHandler);
+
       var btn = document.getElementById('scroll-top-btn');
       if (!btn) return;
-      function check() {
+      currentBtn = btn;
+
+      scrollHandler = function() {
         btn.classList.toggle('is-visible', window.scrollY > 400);
-      }
-      window.addEventListener('scroll', check, { passive: true });
-      check();
-      btn.addEventListener('click', function() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
+      };
+      window.addEventListener('scroll', scrollHandler, { passive: true });
+      scrollHandler();
+
+      clickHandler = function() {
+        // Use Lenis if available — it intercepts native scrollTo
+        if (window.__lenis) {
+          window.__lenis.scrollTo(0, { duration: 1 });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      };
+      btn.addEventListener('click', clickHandler);
     }
+
     init();
     document.addEventListener('astro:page-load', init);
   })();

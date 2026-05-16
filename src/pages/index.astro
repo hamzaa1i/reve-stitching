@@ -368,6 +368,96 @@ const clients = [
     </div>
   </section>
 
+  <!-- Reduced-motion: pinned-step panel switcher -->
+  <script is:inline>
+    (function(){
+      var sec = document.currentScript.previousElementSibling;
+      if (!sec || !sec.hasAttribute('data-pinned-steps')) {
+        sec = document.querySelector('[data-pinned-steps]');
+      }
+      if (!sec) return;
+
+      var panels = sec.querySelectorAll('[data-step-panel]');
+      var indicators = sec.querySelectorAll('[data-step-indicator]');
+      var inner = sec.children[0];
+      var activeIdx = 0;
+      var guard = null;
+
+      function showPanel(idx) {
+        activeIdx = idx;
+        if (inner) {
+          inner.style.setProperty('height','100vh','important');
+          inner.style.setProperty('display','flex','important');
+        }
+        for (var i = 0; i < panels.length; i++) {
+          if (i === idx) {
+            panels[i].style.setProperty('display','flex','important');
+            panels[i].style.setProperty('opacity','1','important');
+            panels[i].style.setProperty('visibility','visible','important');
+            panels[i].style.setProperty('position','relative','important');
+            panels[i].style.setProperty('height','100%','important');
+          } else {
+            panels[i].style.setProperty('display','none','important');
+            panels[i].style.removeProperty('height');
+          }
+        }
+        for (var j = 0; j < indicators.length; j++) {
+          indicators[j].classList.toggle('is-active', j === idx);
+        }
+      }
+
+      function startGuard() {
+        if (guard) guard.disconnect();
+        guard = new MutationObserver(function() {
+          showPanel(activeIdx);
+        });
+        for (var i = 0; i < panels.length; i++) {
+          guard.observe(panels[i], { attributes: true, attributeFilter: ['style'] });
+        }
+      }
+
+      function activate() {
+        showPanel(0);
+        startGuard();
+        if (window.innerWidth >= 1024) {
+          for (var j = 0; j < indicators.length; j++) {
+            (function(idx) {
+              indicators[idx].style.cursor = 'pointer';
+              indicators[idx].addEventListener('click', function() {
+                showPanel(idx);
+              });
+            })(j);
+          }
+        }
+      }
+
+      function deactivate() {
+        if (guard) { guard.disconnect(); guard = null; }
+        sec.style.removeProperty('overflow');
+        if (inner) {
+          inner.style.removeProperty('height');
+          inner.style.removeProperty('display');
+        }
+        for (var i = 0; i < panels.length; i++) {
+          panels[i].style.removeProperty('display');
+          panels[i].style.removeProperty('opacity');
+          panels[i].style.removeProperty('visibility');
+          panels[i].style.removeProperty('position');
+        }
+        for (var j = 0; j < indicators.length; j++) {
+          indicators[j].classList.remove('is-active');
+          indicators[j].style.cursor = '';
+        }
+      }
+
+      var mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (mq.matches) activate();
+      mq.addEventListener('change', function(e) {
+        if (e.matches) activate();
+        else deactivate();
+      });
+    })();
+  </script>
 
   <!-- ═══════════════════════════════════════
        CAPABILITIES — Bento Grid with 3D tilt
@@ -681,73 +771,75 @@ const clients = [
     initStepTags();
   </script>
 
-  <!-- Products track navigation -->
+  <!-- Products track navigation (FIX 3: no native scrollBy conflict with GSAP) -->
   <script is:inline>
-    function initProductsNav() {
-      var track = document.getElementById('products-track');
-      var prev = document.getElementById('products-prev');
-      var next = document.getElementById('products-next');
-      if (!track || !prev || !next) return;
+    (function() {
+      function initProductScroll() {
+        var track = document.getElementById('products-track');
+        if (!track) return;
 
-      var scrollAmount = 420;
+        // Only handle reduced‑motion / mobile – GSAP handles desktop with full animations
+        var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var isMobile = window.innerWidth < 1024;
 
-      prev.addEventListener('click', function() {
-        track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-      });
-      next.addEventListener('click', function() {
-        track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-      });
+        if (!reducedMotion && !isMobile) {
+          // GSAP mode: ensure track has overflow hidden (GSAP sets it), arrow buttons do nothing
+          return;
+        }
 
-      function updateArrows() {
-        var sl = track.scrollLeft;
-        var maxScroll = track.scrollWidth - track.clientWidth;
-        prev.style.opacity = sl > 10 ? '1' : '0.3';
-        prev.style.pointerEvents = sl > 10 ? 'auto' : 'none';
-        next.style.opacity = sl < maxScroll - 10 ? '1' : '0.3';
-        next.style.pointerEvents = sl < maxScroll - 10 ? 'auto' : 'none';
+        // Native scroll mode – ensure proper overflow and snap behaviour
+        track.style.overflowX = 'auto';
+        track.style.scrollSnapType = 'x mandatory';
+        track.style.scrollBehavior = 'smooth';
+
+        var leftArrow = document.getElementById('products-prev');
+        var rightArrow = document.getElementById('products-next');
+        var cards = track.children;
+
+        function getCardStep() {
+          if (cards.length < 2) return 300;
+          return cards[1].getBoundingClientRect().left - cards[0].getBoundingClientRect().left;
+        }
+
+        if (leftArrow) {
+          leftArrow.onclick = function() {
+            var step = getCardStep();
+            var current = track.scrollLeft;
+            // Snap to zero if close to start – prevents "half product" at beginning
+            if (current < step * 0.5) {
+              track.scrollTo({ left: 0, behavior: 'smooth' });
+            } else {
+              track.scrollBy({ left: -step, behavior: 'smooth' });
+            }
+          };
+        }
+
+        if (rightArrow) {
+          rightArrow.onclick = function() {
+            var step = getCardStep();
+            track.scrollBy({ left: step, behavior: 'smooth' });
+          };
+        }
+
+        // Update arrow opacity/pointer-events (visual feedback for start/end)
+        function updateArrows() {
+          if (!leftArrow || !rightArrow) return;
+          var sl = track.scrollLeft;
+          var maxScroll = track.scrollWidth - track.clientWidth;
+          leftArrow.style.opacity = sl > 10 ? '1' : '0.3';
+          leftArrow.style.pointerEvents = sl > 10 ? 'auto' : 'none';
+          rightArrow.style.opacity = sl < maxScroll - 10 ? '1' : '0.3';
+          rightArrow.style.pointerEvents = sl < maxScroll - 10 ? 'auto' : 'none';
+        }
+
+        track.addEventListener('scroll', updateArrows, { passive: true });
+        window.addEventListener('resize', updateArrows);
+        requestAnimationFrame(updateArrows);
       }
 
-      track.addEventListener('scroll', updateArrows, { passive: true });
-      // Initial state
-      requestAnimationFrame(updateArrows);
-      window.addEventListener('resize', updateArrows);
-
-      // Drag-to-scroll on desktop
-      var isDragging = false;
-      var startX = 0;
-      var scrollStart = 0;
-
-      track.addEventListener('mousedown', function(e) {
-        // Only on desktop (lg+)
-        if (window.innerWidth < 1024) return;
-        isDragging = true;
-        startX = e.pageX;
-        scrollStart = track.scrollLeft;
-        track.style.cursor = 'grabbing';
-        track.style.userSelect = 'none';
-      });
-      document.addEventListener('mousemove', function(e) {
-        if (!isDragging) return;
-        var dx = e.pageX - startX;
-        track.scrollLeft = scrollStart - dx;
-      });
-      document.addEventListener('mouseup', function() {
-        if (!isDragging) return;
-        isDragging = false;
-        track.style.cursor = '';
-        track.style.userSelect = '';
-      });
-
-      // Prevent link clicks after drag
-      track.addEventListener('click', function(e) {
-        if (Math.abs(track.scrollLeft - scrollStart) > 5) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-      }, true);
-    }
-    document.addEventListener('astro:page-load', initProductsNav);
-    initProductsNav();
+      document.addEventListener('astro:page-load', initProductScroll);
+      initProductScroll();
+    })();
   </script>
 </Layout>
 
@@ -859,6 +951,20 @@ const clients = [
     }
     .products-nav-btn:hover {
       transform: none !important;
+    }
+
+    /* Force pinned-step panels visible */
+    [data-pinned-steps] {
+      overflow: visible !important;
+    }
+    [data-pinned-steps] > * {
+      height: auto !important;
+    }
+    [data-step-panel] {
+      display: flex !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      position: static !important;
     }
   }
 </style>

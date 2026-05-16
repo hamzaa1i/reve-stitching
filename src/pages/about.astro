@@ -235,6 +235,97 @@ const leaders = [
     </div>
   </section>
 
+  <!-- Reduced-motion: pinned-step panel switcher -->
+  <script is:inline>
+    (function(){
+      var sec = document.currentScript.previousElementSibling;
+      if (!sec || !sec.hasAttribute('data-pinned-steps')) {
+        sec = document.querySelector('[data-pinned-steps]');
+      }
+      if (!sec) return;
+
+      var panels = sec.querySelectorAll('[data-step-panel]');
+      var indicators = sec.querySelectorAll('[data-step-indicator]');
+      var inner = sec.children[0];
+      var activeIdx = 0;
+      var guard = null;
+
+      function showPanel(idx) {
+        activeIdx = idx;
+        if (inner) {
+          inner.style.setProperty('height','100vh','important');
+          inner.style.setProperty('display','flex','important');
+        }
+        for (var i = 0; i < panels.length; i++) {
+          if (i === idx) {
+            panels[i].style.setProperty('display','flex','important');
+            panels[i].style.setProperty('opacity','1','important');
+            panels[i].style.setProperty('visibility','visible','important');
+            panels[i].style.setProperty('position','relative','important');
+            panels[i].style.setProperty('height','100%','important');
+          } else {
+            panels[i].style.setProperty('display','none','important');
+            panels[i].style.removeProperty('height');
+          }
+        }
+        for (var j = 0; j < indicators.length; j++) {
+          indicators[j].classList.toggle('is-active', j === idx);
+        }
+      }
+
+      function startGuard() {
+        if (guard) guard.disconnect();
+        guard = new MutationObserver(function() {
+          showPanel(activeIdx);
+        });
+        for (var i = 0; i < panels.length; i++) {
+          guard.observe(panels[i], { attributes: true, attributeFilter: ['style'] });
+        }
+      }
+
+      function activate() {
+        showPanel(0);
+        startGuard();
+        if (window.innerWidth >= 1024) {
+          for (var j = 0; j < indicators.length; j++) {
+            (function(idx) {
+              indicators[idx].style.cursor = 'pointer';
+              indicators[idx].addEventListener('click', function() {
+                showPanel(idx);
+              });
+            })(j);
+          }
+        }
+      }
+
+      function deactivate() {
+        if (guard) { guard.disconnect(); guard = null; }
+        sec.style.removeProperty('overflow');
+        if (inner) {
+          inner.style.removeProperty('height');
+          inner.style.removeProperty('display');
+        }
+        for (var i = 0; i < panels.length; i++) {
+          panels[i].style.removeProperty('display');
+          panels[i].style.removeProperty('opacity');
+          panels[i].style.removeProperty('visibility');
+          panels[i].style.removeProperty('position');
+          panels[i].style.removeProperty('height');
+        }
+        for (var j = 0; j < indicators.length; j++) {
+          indicators[j].classList.remove('is-active');
+          indicators[j].style.cursor = '';
+        }
+      }
+
+      var mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (mq.matches) activate();
+      mq.addEventListener('change', function(e) {
+        if (e.matches) activate();
+        else deactivate();
+      });
+    })();
+  </script>
 
   <!-- ═══════════════════════════════════════
        LEADERSHIP

@@ -298,20 +298,35 @@ const {
 
     // ── Label: show fresh on every page, auto-dismiss after 8s ──
     if (label) {
-      // Ensure label is visible (remove any stale hidden state)
+      // Force visible — inline styles override any CSS class
       label.classList.remove('wa-widget__label--hidden');
+      label.style.opacity = '1';
+      label.style.transform = 'translateX(0)';
+      label.style.visibility = 'visible';
+      label.style.pointerEvents = 'auto';
 
       if (labelClose) {
+        // Clone to remove any stale listeners from previous page
+        var newClose = labelClose.cloneNode(true);
+        labelClose.parentNode.replaceChild(newClose, labelClose);
+        labelClose = newClose;
+
         labelClose.addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
           label.classList.add('wa-widget__label--hidden');
+          label.style.opacity = '';
+          label.style.transform = '';
+          label.style.pointerEvents = '';
         });
       }
 
       setTimeout(() => {
         if (label && !label.classList.contains('wa-widget__label--hidden')) {
           label.classList.add('wa-widget__label--hidden');
+          label.style.opacity = '';
+          label.style.transform = '';
+          label.style.pointerEvents = '';
         }
       }, 8000);
     }

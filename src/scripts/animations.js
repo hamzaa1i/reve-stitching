@@ -229,6 +229,9 @@ async function initSmoothScroll() {
     };
     gsap.ticker.add(STATE.tickerCallback);
     gsap.ticker.lagSmoothing(0);
+
+    // Expose for scroll-to-top button & other components
+    window.__lenis = STATE.lenis;
   } catch (e) {
     console.warn('Lenis init skipped:', e);
   }
@@ -980,30 +983,87 @@ function initParallax() {
 /* ═══════════════════════════════════════════
    MODULE: HORIZONTAL SCROLL
    ═══════════════════════════════════════════ */
-function initHorizontalScroll() {
-  const section = document.querySelector('[data-horizontal-scroll]');
-  const track = document.querySelector('[data-horizontal-track]');
+   function initHorizontalScroll() {
+    var section = document.querySelector('[data-horizontal-scroll]');
+    var track = document.querySelector('[data-horizontal-track]');
+    if (!section || !track) return;
+    if (window.innerWidth < 1024) return;
 
-  if (!section || !track) return;
-  if (window.innerWidth < 1024) return;
+    var cards = track.children;
+    if (cards.length < 2) return;
 
-  const totalScroll = track.scrollWidth - window.innerWidth;
-  if (totalScroll <= 0) return;
+    // Reset
+    gsap.set(track, { x: 0 });
+    track.style.scrollLeft = '0';
+    track.style.scrollSnapType = 'none';
+    track.style.scrollBehavior = 'auto';
+    var hWrapper = track.parentElement;
+    if (hWrapper) hWrapper.style.overflow = '';
 
-  gsap.to(track, {
-    x: -totalScroll,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: section,
-      start: 'top top',
-      end: () => `+=${totalScroll}`,
-      pin: true,
-      scrub: 1,
-      invalidateOnRefresh: true,
-      anticipatePin: 1,
-    },
-  });
-}
+    // Make track the offsetParent for accurate offsetLeft measurement
+    track.style.position = 'relative';
+    track.style.overflowX = 'visible';
+    void track.offsetHeight;
+
+    // ── Calculate from layout properties (only reliable method) ──
+    var cardWidth = cards[0].offsetWidth;
+    var gap = cards.length >= 2
+      ? cards[1].offsetLeft - cards[0].offsetLeft - cardWidth
+      : 0;
+    var totalContentWidth = cards.length * cardWidth + (cards.length - 1) * gap;
+    var paddingLeft = parseFloat(getComputedStyle(track).paddingLeft) || 0;
+    var paddingRight = parseFloat(getComputedStyle(track).paddingRight) || 0;
+    var visibleWidth = track.clientWidth - paddingLeft - paddingRight;
+    var totalScroll = totalContentWidth - visibleWidth;
+
+    if (totalScroll <= 0) {
+      track.style.position = '';
+      track.style.overflowX = '';
+      if (hWrapper) hWrapper.style.overflow = '';
+      return;
+    }
+
+    // Clip at the wrapper level, NOT the track — so GSAP transform actually reveals new content
+    if (hWrapper) hWrapper.style.overflow = 'hidden';
+
+    gsap.to(track, {
+      x: -totalScroll,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top top',
+        end: '+=' + totalScroll,
+        pin: true,
+        scrub: true,
+        anticipatePin: 1,
+      },
+    });
+
+    // ── Arrow buttons ──
+    var leftArrow = section.querySelector('#products-prev');
+    var rightArrow = section.querySelector('#products-next');
+    var step = cardWidth + gap;
+
+    if (leftArrow) {
+      leftArrow.addEventListener('click', function () {
+        if (window.__lenis) {
+          window.__lenis.scrollTo(window.scrollY - step, { duration: 0.6 });
+        } else {
+          window.scrollBy({ top: -step, behavior: 'smooth' });
+        }
+      });
+    }
+
+    if (rightArrow) {
+      rightArrow.addEventListener('click', function () {
+        if (window.__lenis) {
+          window.__lenis.scrollTo(window.scrollY + step, { duration: 0.6 });
+        } else {
+          window.scrollBy({ top: step, behavior: 'smooth' });
+        }
+      });
+    }
+  }
 
 /* ═══════════════════════════════════════════
    MODULE: 3D TILT (desktop, not lite)
@@ -1189,12 +1249,17 @@ function initMouseTracking() {
       var indicators = Array.from(section.querySelectorAll('[data-step-indicator]'));
       if (!panels.length) return;
 
-      // Abort previous listeners on re-init (resize breakpoint change)
+      // Abort previous listeners on re-init
       if (section['_stepAbort']) section['_stepAbort'].abort();
       section['_stepAbort'] = new AbortController();
       var signal = section['_stepAbort'].signal;
 
-      // Reset inline styles from any previous init
+      // Reset section-level overrides from previous init
+      section.style.overflow = '';
+      var innerFlex = section.children[0];
+      if (innerFlex) innerFlex.style.height = '';
+
+      // Reset all panel inline styles
       panels.forEach(function (panel) {
         panel.style.position = '';
         panel.style.inset = '';
@@ -1213,24 +1278,43 @@ function initMouseTracking() {
       var isDesktop = window.innerWidth >= 1024;
       var currentIdx = 0;
 
-      if (isDesktop) {
-        // ── Desktop: overlay panels, crossfade on click ──
-        panels.forEach(function (panel, i) {
-          panel.style.position = 'absolute';
-          panel.style.inset = '0';
+      if (isDesktop && STATE.isReducedMotion) {
+        // ── Desktop + reduced motion: show ALL panels stacked, scroll-to on click ──
+        section.style.overflow = 'visible';
+        if (innerFlex) innerFlex.style.height = 'auto';
+
+        panels.forEach(function (panel) {
           panel.style.display = 'flex';
-          panel.style.transition = 'opacity 0.5s cubic-bezier(0.4,0,0.2,1), transform 0.5s cubic-bezier(0.4,0,0.2,1)';
-          panel.style.opacity = i === 0 ? '1' : '0';
-          panel.style.transform = i === 0 ? 'translateY(0)' : 'translateY(20px)';
-          panel.style.visibility = i === 0 ? 'visible' : 'hidden';
-          panel.style.pointerEvents = i === 0 ? 'auto' : 'none';
+          panel.style.opacity = '1';
+          panel.style.visibility = 'visible';
         });
 
-        // Activate first indicator
+        if (indicators[0]) indicators[0].classList.add('is-active');
+        indicators.forEach(function (ind, i) {
+          ind.style.cursor = 'pointer';
+          ind.addEventListener('click', function () {
+            panels[i].scrollIntoView({ behavior: 'instant', block: 'center' });
+            indicators.forEach(function (ind2, j) {
+              ind2.classList.toggle('is-active', j === i);
+            });
+          }, { signal: signal });
+        });
+
+      } else if (isDesktop) {
+        // ── Desktop + full motion: show/hide panels ──
+        panels.forEach(function (panel, i) {
+          if (i === 0) {
+            panel.style.display = 'flex';
+            panel.style.opacity = '1';
+          } else {
+            panel.style.display = 'none';
+            panel.style.opacity = '0';
+          }
+        });
+
         if (indicators[0]) indicators[0].classList.add('is-active');
         indicators.forEach(function (ind) { ind.style.cursor = 'pointer'; });
 
-        // Event delegation — one listener, clean abort
         section.addEventListener('click', function (e) {
           var target = e.target;
           if (!target || typeof target.closest !== 'function') return;
@@ -1239,20 +1323,12 @@ function initMouseTracking() {
           var idx = indicators.indexOf(indicator);
           if (idx === -1 || idx === currentIdx) return;
 
-          // Outgoing panel
+          panels[currentIdx].style.display = 'none';
           panels[currentIdx].style.opacity = '0';
-          panels[currentIdx].style.transform = 'translateY(-20px)';
-          panels[currentIdx].style.visibility = 'hidden';
-          panels[currentIdx].style.pointerEvents = 'none';
 
-          // Incoming panel — force reflow so transition fires
-          panels[idx].style.visibility = 'visible';
-          panels[idx].style.pointerEvents = 'auto';
-          void panels[idx].offsetWidth;
+          panels[idx].style.display = 'flex';
           panels[idx].style.opacity = '1';
-          panels[idx].style.transform = 'translateY(0)';
 
-          // Update indicators
           indicators.forEach(function (ind, i) {
             ind.classList.toggle('is-active', i === idx);
           });
@@ -1263,16 +1339,12 @@ function initMouseTracking() {
       } else {
         // ── Mobile: stack all panels vertically ──
         panels.forEach(function (panel) {
-          panel.style.position = 'relative';
+          panel.style.display = 'flex';
           panel.style.opacity = '1';
-          panel.style.transform = 'none';
-          panel.style.visibility = 'visible';
-          panel.style.pointerEvents = 'auto';
         });
       }
     });
   }
-
 /* ═══════════════════════════════════════════
    FALLBACK
    ═══════════════════════════════════════════ */
@@ -1284,6 +1356,18 @@ function initMouseTracking() {
       el.style.filter = 'none';
       el.style.clipPath = 'none';
       el.style.visibility = 'visible';
+    });
+
+        // ── Horizontal scroll: restore CSS overflow for reduced-motion ──
+    document.querySelectorAll('[data-horizontal-track]').forEach(function(track) {
+      track.style.overflowX = 'auto';
+      track.style.scrollSnapType = 'x mandatory';
+      track.style.scrollBehavior = 'smooth';
+      track.style.scrollLeft = '0';
+      track.style.transform = 'none';
+      delete track._hscroll;
+      var w = track.parentElement;
+      if (w) w.style.overflow = '';
     });
 
     // ── Counters: set final target values immediately ──
@@ -1309,7 +1393,7 @@ function cleanup() {
   ScrollTrigger.getAll().forEach((st) => st.kill());
   ScrollTrigger.clearMatchMedia();
   if (STATE.tickerCallback) { gsap.ticker.remove(STATE.tickerCallback); STATE.tickerCallback = null; }
-  if (STATE.lenis) { STATE.lenis.destroy(); STATE.lenis = null; }
+  if (STATE.lenis) { STATE.lenis.destroy(); STATE.lenis = null; window.__lenis = null; }
   document.documentElement.classList.remove('has-custom-cursor', 'is-scrolling-fast');
 }
 
@@ -1320,13 +1404,13 @@ function cleanup() {
     try {
       cleanup();
   
-      // Click-based step navigation — always runs, no GSAP dependency
-      initPinnedSteps();
-
       // ━━━ EARLY BAIL‑OUT: Reduced‑motion or no‑JS fallback ━━━
       STATE.isReducedMotion = checkReducedMotion();
       if (STATE.isReducedMotion) {
         makeEverythingVisible();
+        // Do NOT call initPinnedSteps — it resets inline !important styles
+        // and a mystery CSS rule overrides opacity to 0.
+        // The inline script in index.astro handles visibility + indicators.
         document.documentElement.classList.add('gsap-ready');
         return; // No Lenis, no ScrollTrigger, no heavy animations
       }
@@ -1354,7 +1438,6 @@ function cleanup() {
           initHeroAnimations();
           initCounterAnimations();
           initBentoGrid();
-          initCTASection();
           initPinnedSteps();
           initParallax();
           initHorizontalScroll();
@@ -1362,15 +1445,19 @@ function cleanup() {
           initFloatingElements();
           initScrollToTop();
           initPageTransitions();
-  
+          initCTASection();
+
           document.addEventListener('visibilitychange', function () {
             var tracks = document.querySelectorAll('.marquee-track');
             for (var i = 0; i < tracks.length; i++) {
               tracks[i].style.animationPlayState = document.hidden ? 'paused' : 'running';
             }
           });
-  
+
           ScrollTrigger.refresh();
+
+          // Safety: re-refresh after async setups (fonts, etc.) settle
+          setTimeout(function () { ScrollTrigger.refresh(); }, 600);
         } catch (e) {
           console.warn('Animation init error:', e);
           makeEverythingVisible();
@@ -1394,4 +1481,10 @@ window.addEventListener('resize', () => {
     if (wasDesktop !== STATE.isDesktop) initAnimations();
     ScrollTrigger.refresh();
   }, 300);
+});
+
+// Re-init when reduced-motion preference changes (handles toggle without reload)
+const motionMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
+motionMQ.addEventListener('change', () => {
+  initAnimations();
 });
