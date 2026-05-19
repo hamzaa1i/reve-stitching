@@ -1,0 +1,720 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ChatWidget from '../components/ChatWidget.astro';
+import WhatsAppWidget from '../components/WhatsAppWidget.astro';
+import DarkModeScript from '../components/DarkModeScript.astro';
+import ScrollProgress from '../components/ScrollProgress.astro';
+import PageTransition from '../components/PageTransition.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const {
+  title,
+  description = 'Reve Stitching — Leading 100% export-oriented knitted garment manufacturer in Faisalabad, Pakistan. 300K+ monthly capacity, SEDEX compliant, AQL 1.5-4.0.',
+  ogImage = '/images/og-default.jpg',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en" class="lenis">
+  <head>
+    <meta charset="UTF-8" />
+    <DarkModeScript />
+    <!-- No-JS fallback: force all animated elements visible -->
+    <noscript>
+      <style>
+        [data-animate],
+        [data-stagger] > *,
+        [data-bento-item],
+        [data-cta-title],
+        [data-cta-button],
+        .split-line-wrapper,
+        .split-line,
+        .gsap-reveal,
+        .animate-in,
+        .fade-in,
+        .reveal,
+        [data-scroll],
+        [data-fade] {
+          opacity: 1 !important;
+          transform: none !important;
+          visibility: visible !important;
+        }
+        /* No JS — stack pinned-step panels vertically as fallback */
+        [data-pinned-steps] [data-step-panel] {
+          position: relative !important;
+          opacity: 1 !important;
+          transform: none !important;
+          visibility: visible !important;
+        }
+      </style>
+    </noscript>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title} | Reve Stitching</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={`${title} | Reve Stitching`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content="Reve Stitching" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} | Reve Stitching`} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Google Search Console verification -->
+    <meta name="google-site-verification" content="d7pKd3JajXzyYEP7irRUAlasvSdclLyxrA82W5KnUcQ" />
+
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Reve Stitching" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "ManufacturingBusiness",
+      "name": "Reve Stitching",
+      "url": "https://revestitching.com",
+      "description": "Leading 100% export-oriented knitted garment manufacturer based in Faisalabad, Pakistan.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Chak No. 196/R.B, Ghona Road",
+        "addressLocality": "Faisalabad",
+        "postalCode": "38000",
+        "addressCountry": "PK"
+      },
+      "telephone": "+923346507556",
+      "email": "haroon@revestitching.com",
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+        "opens": "08:00",
+        "closes": "18:00"
+      }
+    })} />
+
+    <ClientRouter />
+    <!-- Umami Analytics (privacy-friendly, no cookie banner) -->
+    {import.meta.env.PUBLIC_UMAMI_WEBSITE_ID && (
+      <script
+        is:inline
+        defer
+        src="https://cloud.umami.is/script.js"
+        data-website-id={import.meta.env.PUBLIC_UMAMI_WEBSITE_ID}
+      ></script>
+    )}
+    <!-- Cloudflare Turnstile (spam protection) -->
+    <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async></script>
+  </head>
+
+  <body class="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-300">
+    <Header />
+
+    <main class="flex-1 relative z-[1] overflow-x-hidden" id="main-content">
+      <slot />
+    </main>
+
+    <Footer />
+    <ChatWidget />
+    <!-- WhatsAppWidget removed from global layout -->
+    <!-- Add it manually to: homepage, products, quote, contact, samples -->
+
+    <ScrollProgress />
+    <PageTransition />
+
+    <script>
+      import { initAnimations } from '../scripts/animations.js';
+
+      // ── Kill GSAP/ScrollTrigger before Astro swaps the DOM ──
+      document.addEventListener('astro:before-swap', () => {
+        try {
+          const ST = (window as any).ScrollTrigger;
+          if (ST && typeof ST.getAll === 'function') {
+            ST.getAll().forEach((st: any) => st.kill());
+          }
+        } catch (_) { /* ignore */ }
+        try {
+          const g = (window as any).gsap;
+          if (g && typeof g.killTweensOf === 'function') {
+            g.killTweensOf('*');
+          }
+        } catch (_) { /* ignore */ }
+      });
+
+      // ── Reset pinned-step sections to clean state ──
+      function resetPinnedSteps() {
+        document.querySelectorAll('.pin-spacer').forEach((el: Element) => {
+          const parent = el.parentNode;
+          if (!parent) return;
+          while (el.firstChild) {
+            parent.insertBefore(el.firstChild, el);
+          }
+          parent.removeChild(el);
+        });
+
+        document.querySelectorAll('[data-pinned-steps]').forEach((section: Element) => {
+          (section as HTMLElement).removeAttribute('style');
+
+          const inner = section.children[0] as HTMLElement | undefined;
+          if (inner) inner.removeAttribute('style');
+
+          section.querySelectorAll('[data-step-panel]').forEach((panel: Element) => {
+            (panel as HTMLElement).removeAttribute('style');
+          });
+
+          section.querySelectorAll('[data-step-indicator]').forEach((ind: Element) => {
+            ind.classList.remove('is-active');
+            (ind as HTMLElement).removeAttribute('style');
+          });
+        });
+      }
+
+      // ── Fallback for pinned steps (when GSAP fails) ──
+      function applyPinnedStepsFallback(container: HTMLElement) {
+        const panels = Array.from(container.querySelectorAll('[data-step-panel]'));
+        const indicators = Array.from(container.querySelectorAll('[data-step-indicator]'));
+        const isDesktop = window.innerWidth >= 1024;
+
+        panels.forEach((panel, i) => {
+          if (isDesktop) {
+            (panel as HTMLElement).style.position = 'absolute';
+            (panel as HTMLElement).style.inset = '0';
+            (panel as HTMLElement).style.opacity = i === 0 ? '1' : '0';
+            (panel as HTMLElement).style.visibility = i === 0 ? 'visible' : 'hidden';
+            panel.classList.toggle('is-active', i === 0);
+          } else {
+            (panel as HTMLElement).style.position = 'relative';
+            (panel as HTMLElement).style.opacity = '1';
+            (panel as HTMLElement).style.visibility = 'visible';
+          }
+        });
+
+        if (isDesktop && panels.length) {
+          const wrapper = panels[0].parentElement;
+          if (wrapper) {
+            let maxH = 0;
+            panels.forEach((p) => { if (p.scrollHeight > maxH) maxH = p.scrollHeight; });
+            (wrapper as HTMLElement).style.minHeight = maxH + 'px';
+          }
+          indicators.forEach((ind, i) => { ind.classList.toggle('is-active', i === 0); });
+          indicators.forEach((indicator, idx) => {
+            (indicator as HTMLElement).style.cursor = 'pointer';
+            indicator.addEventListener('click', () => {
+              panels.forEach((p, i) => {
+                (p as HTMLElement).style.opacity = i === idx ? '1' : '0';
+                (p as HTMLElement).style.visibility = i === idx ? 'visible' : 'hidden';
+                p.classList.toggle('is-active', i === idx);
+              });
+              indicators.forEach((ind, i) => { ind.classList.toggle('is-active', i === idx); });
+            });
+          });
+        }
+      }
+
+      function safeInit() {
+        resetPinnedSteps();
+
+        try {
+          initAnimations();
+        } catch (e) {
+          console.warn('Animation initialization failed:', e);
+
+          document.querySelectorAll('[data-animate], [data-stagger] > *, [data-bento-item], [data-cta-title]').forEach((el) => {
+            (el as HTMLElement).style.opacity = '1';
+            (el as HTMLElement).style.transform = 'none';
+          });
+
+          document.querySelectorAll('[data-pinned-steps]').forEach((container) => {
+            applyPinnedStepsFallback(container as HTMLElement);
+          });
+
+          document.querySelectorAll('[data-counter]').forEach((el) => {
+            const t = parseFloat((el as HTMLElement).getAttribute('data-counter') || '0');
+            if (!isNaN(t)) {
+              const s = (el as HTMLElement).getAttribute('data-suffix') || '';
+              const p = (el as HTMLElement).getAttribute('data-prefix') || '';
+              const d = parseInt((el as HTMLElement).getAttribute('data-decimals') || '0', 10) || 0;
+              (el as HTMLElement).textContent = p + (d > 0 ? t.toFixed(d) : t.toLocaleString()) + s;
+            }
+          });
+        }
+
+        requestAnimationFrame(() => {
+          document.querySelectorAll('[data-pinned-steps]').forEach((section) => {
+            const panels = section.querySelectorAll('[data-step-panel]');
+            if (panels.length === 0) return;
+
+            const firstPanel = panels[0] as HTMLElement;
+            const computedOpacity = window.getComputedStyle(firstPanel).opacity;
+            const computedVisibility = window.getComputedStyle(firstPanel).visibility;
+
+            if (computedOpacity === '0' || computedVisibility === 'hidden') {
+              applyPinnedStepsFallback(section as HTMLElement);
+            }
+          });
+        });
+      }
+
+      document.addEventListener('astro:page-load', safeInit);
+    </script>
+
+    <!-- Dynamic floating buttons — avoids footer credit overlap -->
+    <script is:inline>
+      function initFloatingButtons() {
+        var chatToggle = document.getElementById('chat-toggle');
+        var scrollTopBtn = document.getElementById('scroll-top-btn');
+        var credit = document.getElementById('footer-credit');
+
+        if (!chatToggle || !credit) return;
+
+        var CHAT_H = 56;
+        var SCROLL_H = 44;
+        var GAP = 20;
+        var BETWEEN = 12;
+
+        function update() {
+          var creditRect = credit.getBoundingClientRect();
+          var viewportH = window.innerHeight;
+
+          if (creditRect.top < viewportH && creditRect.bottom > 0) {
+            var needed = (viewportH - creditRect.top) + GAP;
+
+            if (needed > 24) {
+              chatToggle.style.bottom = needed + 'px';
+              if (scrollTopBtn) {
+                scrollTopBtn.style.bottom = (needed + CHAT_H + BETWEEN) + 'px';
+              }
+            } else {
+              chatToggle.style.bottom = '';
+              if (scrollTopBtn) scrollTopBtn.style.bottom = '';
+            }
+          } else {
+            chatToggle.style.bottom = '';
+            if (scrollTopBtn) scrollTopBtn.style.bottom = '';
+          }
+        }
+
+        var ticking = false;
+        window.addEventListener('scroll', function() {
+          if (!ticking) {
+            requestAnimationFrame(function() { update(); ticking = false; });
+            ticking = true;
+          }
+        }, { passive: true });
+
+        window.addEventListener('resize', update, { passive: true });
+        update();
+      }
+
+      document.addEventListener('astro:page-load', initFloatingButtons);
+      initFloatingButtons();
+    </script>
+
+    <!-- Universal floating buttons: coordinates chat, WhatsApp, scroll-to-top, avoids footer credit -->
+    <script is:inline>
+      (function() {
+        function initFloatingButtons() {
+          if (window._fbCleanup) window._fbCleanup();
+
+          var chat = document.getElementById('chat-toggle');
+          var scrollBtn = document.getElementById('scroll-top-btn');
+          var waWidget = document.getElementById('wa-widget');
+          var credit = document.getElementById('footer-credit');
+
+          if (!chat || !credit) return;
+
+          var CHAT_H = 56;
+          var WA_H = 56;
+          var GAP = 12;
+          var CREDIT_GAP = 24;
+
+          var chatBase = parseFloat(getComputedStyle(chat).bottom) || 24;
+          var waBase = waWidget ? (parseInt(waWidget.style.bottom) || 92) : null;
+
+          var scrollBase;
+          if (waBase !== null) {
+            scrollBase = waBase + WA_H + GAP;
+          } else {
+            scrollBase = chatBase + CHAT_H + GAP;
+          }
+          if (scrollBtn) scrollBtn.style.bottom = scrollBase + 'px';
+
+          function update() {
+            if (!credit) return;
+
+            var rect = credit.getBoundingClientRect();
+            var vh = window.innerHeight;
+
+            if (rect.top < vh && rect.bottom > 0) {
+              var needed = (vh - rect.top) + CREDIT_GAP;
+
+              if (needed > chatBase) {
+                chat.style.bottom = needed + 'px';
+
+                if (waWidget && waBase !== null) {
+                  waWidget.style.bottom = (needed + CHAT_H + GAP) + 'px';
+                }
+
+                if (scrollBtn) {
+                  var sNew = needed + CHAT_H + GAP;
+                  if (waBase !== null) sNew += WA_H + GAP;
+                  scrollBtn.style.bottom = sNew + 'px';
+                }
+              } else {
+                resetDefaults();
+              }
+            } else {
+              resetDefaults();
+            }
+          }
+
+          function resetDefaults() {
+            chat.style.bottom = '';
+            if (waWidget && waBase !== null) waWidget.style.bottom = waBase + 'px';
+            if (scrollBtn) scrollBtn.style.bottom = scrollBase + 'px';
+          }
+
+          var ticking = false;
+          function onScroll() {
+            if (!ticking) {
+              requestAnimationFrame(function() { update(); ticking = false; });
+              ticking = true;
+            }
+          }
+
+          window.addEventListener('scroll', onScroll, { passive: true });
+          window.addEventListener('resize', update, { passive: true });
+          update();
+
+          window._fbCleanup = function() {
+            window.removeEventListener('scroll', onScroll);
+            window.removeEventListener('resize', update);
+            chat.style.bottom = '';
+            if (waWidget && waBase !== null) waWidget.style.bottom = waBase + 'px';
+            if (scrollBtn) scrollBtn.style.bottom = '';
+          };
+        }
+
+        document.addEventListener('astro:page-load', initFloatingButtons);
+        initFloatingButtons();
+      })();
+    </script>
+
+    <script is:inline>
+      setTimeout(function() {
+        if (!document.documentElement.classList.contains('gsap-ready')) {
+          var els = document.querySelectorAll('[data-animate], [data-stagger] > *, [data-bento-item], [data-cta-title]');
+          for (var i = 0; i < els.length; i++) {
+            els[i].style.opacity = '1';
+            els[i].style.transform = 'none';
+          }
+          var sections = document.querySelectorAll('[data-pinned-steps]');
+          for (var s = 0; s < sections.length; s++) {
+            var panels = sections[s].querySelectorAll('[data-step-panel]');
+            var indicators = sections[s].querySelectorAll('[data-step-indicator]');
+            var isDesktop = window.innerWidth >= 1024;
+            for (var j = 0; j < panels.length; j++) {
+              if (isDesktop) {
+                panels[j].style.position = 'absolute';
+                panels[j].style.inset = '0';
+                panels[j].style.opacity = j === 0 ? '1' : '0';
+                panels[j].style.visibility = j === 0 ? 'visible' : 'hidden';
+                panels[j].classList.toggle('is-active', j === 0);
+              } else {
+                panels[j].style.position = 'relative';
+                panels[j].style.opacity = '1';
+                panels[j].style.visibility = 'visible';
+              }
+            }
+            if (isDesktop && panels.length) {
+              var wrapper = panels[0].parentElement;
+              if (wrapper) {
+                var maxH = 0;
+                for (var m = 0; m < panels.length; m++) { if (panels[m].scrollHeight > maxH) maxH = panels[m].scrollHeight; }
+                wrapper.style.minHeight = maxH + 'px';
+              }
+              for (var n = 0; n < indicators.length; n++) { indicators[n].classList.toggle('is-active', n === 0); }
+              (function(idx) {
+                indicators[idx].style.cursor = 'pointer';
+                indicators[idx].addEventListener('click', function() {
+                  for (var p = 0; p < panels.length; p++) {
+                    panels[p].style.opacity = p === idx ? '1' : '0';
+                    panels[p].style.visibility = p === idx ? 'visible' : 'hidden';
+                    panels[p].classList.toggle('is-active', p === idx);
+                  }
+                  for (var q = 0; q < indicators.length; q++) { indicators[q].classList.toggle('is-active', q === idx); }
+                });
+              })(n);
+            }
+          }
+          var counters = document.querySelectorAll('[data-counter]');
+          for (var k = 0; k < counters.length; k++) {
+            var target = parseFloat(counters[k].getAttribute('data-counter'));
+            if (!isNaN(target)) {
+              var suffix = counters[k].getAttribute('data-suffix') || '';
+              var prefix = counters[k].getAttribute('data-prefix') || '';
+              var decimals = parseInt(counters[k].getAttribute('data-decimals') || '0', 10) || 0;
+              counters[k].textContent = prefix + (decimals > 0 ? target.toFixed(decimals) : target.toLocaleString()) + suffix;
+            }
+          }
+        }
+      }, 3000);
+    </script>
+
+    <!-- Exit-Intent Popup (desktop only, once per session) -->
+    <div id="exit-intent-popup" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/50 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Capability deck offer">
+      <div class="exit-content relative mx-4 w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl dark:bg-zinc-900 sm:p-10">
+        <button id="exit-intent-close" type="button" class="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300" aria-label="Close">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+
+        <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 dark:bg-green-500/10">
+          <svg class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+        </div>
+
+        <h3 class="mb-2 text-xl font-bold text-zinc-900 dark:text-white">Before You Go</h3>
+        <p class="mb-6 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+          Get our free capability deck — fabric options, MOQs, lead times, certifications, and factory details at a glance.
+        </p>
+
+        <form id="exit-intent-form" class="space-y-3">
+          <input
+            type="email"
+            placeholder="your@email.com"
+            required
+            class="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 placeholder-zinc-400 outline-none transition-all focus:border-green-600 focus:ring-2 focus:ring-green-600/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-500 dark:focus:border-green-400"
+          />
+          <button
+            type="submit"
+            class="w-full rounded-xl bg-green-600 px-6 py-3 text-sm font-bold uppercase tracking-wider text-white transition-all hover:bg-green-700 dark:bg-green-500 dark:text-zinc-950 dark:hover:bg-green-400"
+          >
+            Send Me the Deck
+          </button>
+        </form>
+
+        <p class="mt-4 text-center text-[11px] text-zinc-400 dark:text-zinc-500">No spam. Just one email with our deck.</p>
+      </div>
+    </div>
+
+    <script is:inline>
+      (function() {
+        var popup = document.getElementById('exit-intent-popup');
+        if (!popup) return;
+        if (window.location.pathname.startsWith('/admin')) return;
+        if (sessionStorage.getItem('exit_shown')) return;
+        if (window.innerWidth < 1024) return;
+
+        var exitArmed = false;
+        var mouseLeftWindow = false;
+        var lastMouseY = -1;
+        var minTimeBeforeTrigger = 2000; // User must be on page at least 2s
+        var pageLoadTime = Date.now();
+
+        function showPopup() {
+          if (sessionStorage.getItem('exit_shown')) return;
+          if (Date.now() - pageLoadTime < minTimeBeforeTrigger) return;
+
+          sessionStorage.setItem('exit_shown', '1');
+          popup.classList.remove('hidden');
+          popup.classList.add('flex');
+          if (window.umami) umami.track('exit_intent_shown');
+        }
+
+        // ── Arm the trigger: fires only when cursor actually leaves the window ──
+        document.addEventListener('mouseleave', function(e) {
+          mouseLeftWindow = true;
+        });
+
+        // Reset if they come back
+        document.addEventListener('mouseenter', function(e) {
+          mouseLeftWindow = false;
+        });
+
+        // ── Track vertical movement ──
+        document.addEventListener('mousemove', function(e) {
+          lastMouseY = e.clientY;
+        });
+
+        // ── Only trigger when: cursor left window AND was moving toward top ──
+        document.addEventListener('mouseout', function(e) {
+          if (!mouseLeftWindow) return;
+          if (e.relatedTarget !== null) return; // still within browser
+          if (e.clientY >= 0) return; // didn't exit from the top edge
+
+          // Extra check: ensure they were actually in the upper area before triggering
+          if (lastMouseY > 30) return; // they weren't even near the top
+
+          showPopup();
+          mouseLeftWindow = false;
+        });
+
+        // ── Close handlers ──
+        var closeBtn = document.getElementById('exit-intent-close');
+        if (closeBtn) {
+          closeBtn.addEventListener('click', function() {
+            popup.classList.add('hidden');
+            popup.classList.remove('flex');
+          });
+        }
+
+        popup.addEventListener('click', function(e) {
+          if (e.target === popup) {
+            popup.classList.add('hidden');
+            popup.classList.remove('flex');
+          }
+        });
+
+        // ── Form submission ──
+        var form = document.getElementById('exit-intent-form');
+        if (form) {
+          form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var emailInput = form.querySelector('input[type="email"]');
+            var email = emailInput ? emailInput.value : '';
+            if (!email) return;
+            var submitBtn = form.querySelector('button');
+            if (submitBtn) { submitBtn.textContent = 'Sending...'; submitBtn.disabled = true; }
+
+            fetch('/api/exit-capture', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: email })
+            }).then(function(res) {
+              if (res.ok) {
+                popup.querySelector('.exit-content').innerHTML =
+                  '<div class="py-8 text-center">' +
+                    '<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-500/10">' +
+                      '<svg class="h-8 w-8 text-green-600 dark:text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>' +
+                    '</div>' +
+                    '<h3 class="mb-2 text-lg font-bold text-zinc-900 dark:text-white">Check Your Inbox!</h3>' +
+                    '<p class="text-sm text-zinc-500 dark:text-zinc-400">We\'ll send the deck to <strong>' + email + '</strong> shortly.</p>' +
+                  '</div>';
+                if (window.umami) umami.track('exit_intent_captured');
+              }
+            }).catch(function() {
+              if (submitBtn) { submitBtn.textContent = 'Try Again'; submitBtn.disabled = false; }
+            });
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
+
+<style is:global>
+
+  /* ── Team photos: grayscale → color ── */
+  .team-photo {
+    filter: grayscale(100%);
+    transition: filter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .group:hover .team-photo {
+    filter: grayscale(0%);
+  }
+
+  /* ── Cert badge tooltip ── */
+  .cert-badge {
+    position: relative;
+  }
+  .cert-badge .cert-tooltip {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    pointer-events: none;
+    z-index: 20;
+  }
+  .cert-badge .cert-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: rgb(24, 24, 27);
+  }
+  .dark .cert-badge .cert-tooltip::after {
+    border-top-color: rgb(39, 39, 42);
+  }
+  .cert-badge:hover .cert-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── Enhanced product card hover ── */
+  .product-card-enhanced .card-image {
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .product-card-enhanced:hover .card-image {
+    transform: scale(1.08);
+  }
+  .product-card-enhanced .card-overlay {
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .product-card-enhanced:hover .card-overlay {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Process step connector ── */
+  .process-connector {
+    position: relative;
+  }
+  .process-connector::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -12px;
+    width: 24px;
+    height: 2px;
+    background: repeating-linear-gradient(
+      to right,
+      rgb(161, 161, 170) 0px,
+      rgb(161, 161, 170) 4px,
+      transparent 4px,
+      transparent 8px
+    );
+  }
+  .dark .process-connector::after {
+    background: repeating-linear-gradient(
+      to right,
+      rgb(82, 82, 91) 0px,
+      rgb(82, 82, 91) 4px,
+      transparent 4px,
+      transparent 8px
+    );
+  }
+  .process-connector:last-child::after {
+    display: none;
+  }
+</style>

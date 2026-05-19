@@ -1,0 +1,37 @@
+---
+// Runs BEFORE page renders — prevents flash. Handles navigation.
+---
+
+<script is:inline>
+  (function() {
+    var theme = localStorage.getItem('theme') || 'light';
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  })();
+
+  // Fix dark mode on Astro page navigation — instant snap, no per-element fade
+  document.addEventListener('astro:after-swap', function() {
+    var theme = localStorage.getItem('theme') || 'light';
+
+    // Freeze all CSS transitions so colors snap instantly
+    var noTransition = document.createElement('style');
+    noTransition.id = 'dm-no-transition';
+    noTransition.textContent = '*,*::before,*::after{transition-duration:0s!important;transition-delay:0s!important}';
+    document.head.appendChild(noTransition);
+
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
+    // Force synchronous layout so the class applies before we restore transitions
+    void document.documentElement.offsetHeight;
+
+    // Re-enable transitions
+    noTransition.remove();
+  });
+</script> 

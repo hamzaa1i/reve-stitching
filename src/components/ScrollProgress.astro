@@ -1,0 +1,48 @@
+---
+/**
+ * Scroll-to-top button only.
+ */
+---
+
+<button id="scroll-top-btn" class="scroll-top-btn" aria-label="Scroll to top">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <path d="M18 15l-6-6-6 6"/>
+  </svg>
+</button>
+
+<script is:inline>
+  (function() {
+    var scrollHandler = null;
+    var clickHandler = null;
+    var currentBtn = null;
+
+    function init() {
+      // Clean up previous listeners (prevents stacking on page transitions)
+      if (scrollHandler) window.removeEventListener('scroll', scrollHandler);
+      if (currentBtn && clickHandler) currentBtn.removeEventListener('click', clickHandler);
+
+      var btn = document.getElementById('scroll-top-btn');
+      if (!btn) return;
+      currentBtn = btn;
+
+      scrollHandler = function() {
+        btn.classList.toggle('is-visible', window.scrollY > 400);
+      };
+      window.addEventListener('scroll', scrollHandler, { passive: true });
+      scrollHandler();
+
+      clickHandler = function() {
+        // Use Lenis if available — it intercepts native scrollTo
+        if (window.__lenis) {
+          window.__lenis.scrollTo(0, { duration: 1 });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      };
+      btn.addEventListener('click', clickHandler);
+    }
+
+    init();
+    document.addEventListener('astro:page-load', init);
+  })();
+</script>

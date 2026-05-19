@@ -1,0 +1,260 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  activePage?: string;
+}
+
+const { title, description = 'Reve Stitching Client Portal', activePage = '' } = Astro.props;
+
+const user = Astro.locals.user;
+
+const navItems = [
+  { href: '/portal/dashboard', label: 'Dashboard', icon: 'M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z', id: 'dashboard' },
+  { href: '/portal/orders', label: 'Orders', icon: 'M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z', id: 'orders' },
+  { href: '/portal/documents', label: 'Documents', icon: 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z', id: 'documents' },
+  { href: '/portal/quotes', label: 'Quotes', icon: 'M11.25 9.75h4.5m-4.5 3h4.5m-4.5 3h4.5m-7.5-9h.008v.008H8.25V9.75zm0 3h.008v.008H8.25V12.75zm0 3h.008v.008H8.25V15.75zm-3-6h.008v.008H5.25V9.75zm0 3h.008v.008H5.25V12.75zm0 3h.008v.008H5.25V15.75zM5.25 6.75h13.5A1.5 1.5 0 0120.25 8.25v9a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-9a1.5 1.5 0 011.5-1.5z', id: 'quotes' },
+  { href: '/portal/messages', label: 'Messages', icon: 'M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z', id: 'messages' },
+];
+
+const isAdmin = user?.role === 'admin';
+---
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <title>{title} | Reve Portal</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script is:inline>document.documentElement.classList.add('dark');</script>
+  <style>
+    .portal-wrap { display: flex; min-height: 100vh; }
+    .portal-sidebar {
+      width: 72px; flex-shrink: 0;
+      transition: width 0.25s cubic-bezier(0.4,0,0.2,1);
+      overflow: hidden;
+    }
+    .portal-sidebar.expanded { width: 260px; }
+    .portal-sidebar .nav-label {
+      opacity: 0; white-space: nowrap;
+      transition: opacity 0.15s ease 0s;
+    }
+    .portal-sidebar.expanded .nav-label { opacity: 1; transition-delay: 0.1s; }
+    .portal-sidebar .logo-text {
+      opacity: 0; white-space: nowrap; overflow: hidden;
+      transition: opacity 0.15s ease 0s;
+    }
+    .portal-sidebar.expanded .logo-text { opacity: 1; transition-delay: 0.1s; }
+    .portal-sidebar .user-info {
+      opacity: 0; white-space: nowrap; overflow: hidden;
+      transition: opacity 0.15s ease 0s;
+    }
+    .portal-sidebar.expanded .user-info { opacity: 1; transition-delay: 0.1s; }
+    .portal-sidebar .close-btn {
+      opacity: 0; width: 0; overflow: hidden;
+      transition: opacity 0.15s ease 0s;
+    }
+    .portal-sidebar.expanded .close-btn { opacity: 1; width: 32px; transition-delay: 0.1s; }
+    .portal-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+    /* Mobile */
+    @media (max-width: 1023px) {
+      .portal-sidebar {
+        position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
+        width: 260px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+      .portal-sidebar.mobile-open {
+        transform: translateX(0);
+        width: 260px;
+      }
+      .portal-sidebar.mobile-open .nav-label,
+      .portal-sidebar.mobile-open .logo-text,
+      .portal-sidebar.mobile-open .user-info,
+      .portal-sidebar.mobile-open .close-btn { opacity: 1; }
+      .portal-sidebar.mobile-open .close-btn { width: 32px; }
+      .portal-overlay {
+        position: fixed; inset: 0; z-index: 40;
+        background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+        opacity: 0; pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+      .portal-overlay.open { opacity: 1; pointer-events: auto; }
+    }
+    @media (min-width: 1024px) {
+      .portal-overlay { display: none !important; }
+      .mobile-only { display: none !important; }
+    }
+    @media (max-width: 1023px) {
+      .desktop-only { display: none !important; }
+    }
+  </style>
+</head>
+<body class="portal-wrap bg-zinc-950 text-white font-sans antialiased">
+
+  <!-- Mobile overlay -->
+  <div id="portal-overlay" class="portal-overlay" aria-hidden="true"></div>
+
+  <!-- Sidebar -->
+  <aside id="portal-sidebar" class="portal-sidebar bg-zinc-900 border-r border-zinc-800 flex flex-col">
+    <!-- Logo row — clickable to expand -->
+    <div id="sidebar-logo-btn" class="flex h-16 items-center gap-3 px-4 border-b border-zinc-800 cursor-pointer select-none hover:bg-zinc-800/50 transition-colors">
+      <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-green-600">
+        <svg class="h-5 w-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 12.75l6 6 9-13.5"/></svg>
+      </div>
+      <div class="logo-text flex-1">
+        <div class="text-sm font-bold text-white leading-tight">Reve Stitching</div>
+        <div class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 leading-tight">Portal</div>
+      </div>
+      <!-- Close button — only visible when expanded -->
+      <button id="sidebar-close" class="close-btn flex shrink-0 items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-700 hover:text-white transition-colors" title="Collapse sidebar">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+      </button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="flex-1 overflow-hidden py-3 px-2 space-y-1">
+      {navItems.map((item) => {
+        const isActive = activePage === item.id;
+        return (
+          <a
+            href={item.href}
+            title={item.label}
+            class={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+              isActive
+                ? 'bg-green-600/10 text-green-400'
+                : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'
+            }`}
+          >
+            <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d={item.icon} />
+            </svg>
+            <span class="nav-label">{item.label}</span>
+          </a>
+        );
+      })}
+
+      {isAdmin && (
+        <>
+          <div class="my-2 border-t border-zinc-800 mx-1"></div>
+          <a href="/portal/admin/clients" title="Clients" class={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${activePage === 'admin-clients' ? 'bg-green-600/10 text-green-400' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'}`}>
+            <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>
+            <span class="nav-label">Clients</span>
+          </a>
+          <a href="/portal/admin/orders" title="Manage Orders" class={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${activePage === 'admin-orders' ? 'bg-green-600/10 text-green-400' : 'text-zinc-400 hover:bg-zinc-800 hover:text-white'}`}>
+            <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" /><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            <span class="nav-label">Manage Orders</span>
+          </a>
+        </>
+      )}
+    </nav>
+
+    <!-- User section -->
+    <div class="border-t border-zinc-800 p-3">
+      <div class="flex items-center gap-3">
+        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-green-600/20 text-sm font-bold text-green-400">
+          {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+        </div>
+        <div class="user-info min-w-0 flex-1 overflow-hidden">
+          <div class="truncate text-sm font-medium text-white">{user?.name || 'User'}</div>
+          <div class="truncate text-xs text-zinc-500">{user?.company || user?.email || ''}</div>
+        </div>
+        <button
+          id="logout-btn"
+          class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-white"
+          title="Logout"
+        >
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main content area -->
+  <div class="portal-main">
+    <!-- Top bar -->
+    <header class="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-zinc-800 bg-zinc-950/80 px-4 backdrop-blur-xl sm:px-6">
+      <!-- Mobile: hamburger -->
+      <button id="sidebar-mobile-toggle" class="mobile-only flex h-9 w-9 items-center justify-center rounded-lg text-zinc-400 hover:bg-zinc-800 hover:text-white">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+      </button>
+
+      <div class="flex-1"></div>
+
+      <a href="/" class="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-white">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" /></svg>
+        <span class="hidden sm:inline">Back to Site</span>
+      </a>
+    </header>
+
+    <!-- Page content -->
+    <main class="flex-1 p-4 sm:p-6 lg:p-8">
+      <slot />
+    </main>
+  </div>
+
+  <script is:inline>
+    const sidebar = document.getElementById('portal-sidebar');
+    const overlay = document.getElementById('portal-overlay');
+    const logoBtn = document.getElementById('sidebar-logo-btn');
+    const closeBtn = document.getElementById('sidebar-close');
+    const mobileToggle = document.getElementById('sidebar-mobile-toggle');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    // Desktop: expand/collapse
+    if (logoBtn && sidebar) {
+      // Restore saved state
+      const saved = localStorage.getItem('portal-sidebar-expanded');
+      if (saved === 'true') sidebar.classList.add('expanded');
+
+      // Click logo area to expand
+      logoBtn.addEventListener('click', (e) => {
+        // If already expanded and clicking close button, collapse
+        if (e.target.closest('#sidebar-close')) return;
+        if (!sidebar.classList.contains('expanded')) {
+          sidebar.classList.add('expanded');
+          localStorage.setItem('portal-sidebar-expanded', 'true');
+        }
+      });
+    }
+
+    if (closeBtn && sidebar) {
+      closeBtn.addEventListener('click', () => {
+        sidebar.classList.remove('expanded');
+        localStorage.setItem('portal-sidebar-expanded', 'false');
+      });
+    }
+
+    // Mobile: open/close overlay
+    function openMobile() {
+      sidebar.classList.add('mobile-open');
+      overlay.classList.add('open');
+    }
+    function closeMobile() {
+      sidebar.classList.remove('mobile-open');
+      overlay.classList.remove('open');
+    }
+
+    if (mobileToggle) mobileToggle.addEventListener('click', openMobile);
+    if (overlay) overlay.addEventListener('click', closeMobile);
+
+    // On mobile, close btn also closes
+    if (closeBtn) closeBtn.addEventListener('click', closeMobile);
+
+    // Logout
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', async () => {
+        await fetch('/api/portal/auth/logout', { method: 'POST' });
+        window.location.href = '/portal/login';
+      });
+    }
+  </script>
+</body>
+</html>

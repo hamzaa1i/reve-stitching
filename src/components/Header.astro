@@ -1,0 +1,1202 @@
+---
+import DarkModeToggle from './DarkModeToggle.astro';
+
+const pathname = Astro.url.pathname;
+
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/about/', label: 'About' },
+  { href: '/products/', label: 'Products' },
+  {
+    label: 'Why Reve',
+    children: [
+      { href: '/sustainability/', label: 'Sustainability' },
+      { href: '/quality/', label: 'Quality' },
+      { href: '/case-studies/', label: 'Case Studies' },
+    ],
+  },
+  { href: '/clients/', label: 'Clients' },
+  { href: '/samples/', label: 'Samples' },
+  { href: '/contact/', label: 'Contact' },
+];
+
+function isActive(href: string): boolean {
+  if (href === '/') return pathname === '/';
+  return pathname.startsWith(href);
+}
+
+function isDropdownActive(children: { href: string }[]): boolean {
+  return children.some((c) => isActive(c.href));
+}
+---
+
+<header
+  id="site-header"
+  class="floating-header"
+  role="banner"
+>
+  <div class="header-inner">
+    <!-- Logo -->
+    <a href="/" class="header-logo group" aria-label="Reve Stitching — Home">
+      <img
+        src="/images/icon.png"
+        alt=""
+        class="header-logo-img"
+      />
+      <span class="header-logo-text">Reve</span>
+      <span class="header-logo-accent">Stitching</span>
+    </a>
+
+    <!-- Desktop Nav -->
+    <nav class="header-nav" aria-label="Main navigation">
+      {navLinks.map((link) => (
+        'children' in link && link.children ? (
+          <div class="nav-dropdown relative" data-dropdown>
+            <button
+              type="button"
+              class:list={[
+                'nav-link',
+                isDropdownActive(link.children) ? 'nav-link-active' : '',
+              ]}
+              aria-expanded="false"
+              aria-haspopup="true"
+            >
+              {link.label}
+              <svg class="nav-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="nav-dropdown-menu">
+              <div class="nav-dropdown-panel">
+                {link.children.map((child) => (
+                  <a
+                    href={child.href}
+                    class:list={[
+                      'nav-dropdown-item',
+                      isActive(child.href) ? 'nav-dropdown-item-active' : '',
+                    ]}
+                    aria-current={isActive(child.href) ? 'page' : undefined}
+                  >
+                    {child.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <a
+            href={link.href!}
+            class:list={[
+              'nav-link',
+              isActive(link.href!) ? 'nav-link-active' : '',
+            ]}
+            aria-current={isActive(link.href!) ? 'page' : undefined}
+          >
+            {link.label}
+          </a>
+        )
+      ))}
+    </nav>
+
+    <!-- Right Side -->
+    <div class="header-actions">
+      <a href="/quote/" class="header-cta" data-magnetic>
+        <span>Get a Quote</span>
+        <svg class="header-cta-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+
+      <DarkModeToggle />
+
+      <button
+        id="mobile-menu-toggle"
+        class="header-hamburger"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <div class="hamburger-lines">
+          <span class="hamburger-line line-1"></span>
+          <span class="hamburger-line line-2"></span>
+          <span class="hamburger-line line-3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Menu Backdrop -->
+<div
+  id="mobile-menu-backdrop"
+  class="mobile-backdrop"
+  aria-hidden="true"
+></div>
+
+<!-- Mobile Menu -->
+<div
+  id="mobile-menu"
+  class="mobile-menu"
+  aria-hidden="true"
+>
+  <div class="mobile-menu-header">
+    <a href="/" class="header-logo group" aria-label="Reve Stitching — Home">
+      <img src="/images/icon.png" alt="" class="header-logo-img" />
+      <span class="header-logo-text">Reve</span>
+      <span class="header-logo-accent">Stitching</span>
+    </a>
+    <button id="mobile-menu-close" class="mobile-close" aria-label="Close menu">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <div class="mobile-menu-body">
+    <nav class="mobile-nav" aria-label="Mobile navigation">
+      {navLinks.map((link, i) => (
+        'children' in link && link.children ? (
+          <div class="mobile-dropdown" data-mobile-dropdown>
+            <button
+              type="button"
+              class:list={[
+                'mobile-nav-link',
+                isDropdownActive(link.children) ? 'mobile-nav-link-active' : '',
+              ]}
+              data-mobile-dropdown-toggle
+              aria-expanded="false"
+            >
+              <span>{link.label}</span>
+              <svg class="mobile-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="mobile-dropdown-panel" data-mobile-dropdown-panel>
+              <div class="mobile-dropdown-inner">
+                {link.children.map((child) => (
+                  <a
+                    href={child.href}
+                    class:list={[
+                      'mobile-dropdown-item',
+                      isActive(child.href) ? 'mobile-dropdown-item-active' : '',
+                    ]}
+                    data-mobile-link
+                    aria-current={isActive(child.href) ? 'page' : undefined}
+                  >
+                    {child.label}
+                    {isActive(child.href) && <span class="mobile-active-dot"></span>}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <a
+            href={link.href!}
+            class:list={[
+              'mobile-nav-link',
+              isActive(link.href!) ? 'mobile-nav-link-active' : '',
+            ]}
+            data-mobile-link
+          >
+            {link.label}
+            {isActive(link.href!) && <span class="mobile-active-dot"></span>}
+          </a>
+        )
+      ))}
+    </nav>
+
+    <div class="mobile-menu-footer">
+      <a href="/quote/" class="mobile-cta" data-mobile-link>
+        Get a Quote
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Spacer -->
+<div class="header-spacer" aria-hidden="true"></div>
+
+<style is:global>
+  /* ═══════════════════════════════════════
+     FLOATING HEADER
+     ═══════════════════════════════════════ */
+  .floating-header {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 1440px;
+    z-index: 100001;
+    height: 6rem;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 0;
+    box-shadow: none;
+    will-change: transform, top, width, max-width, height, border-radius;
+    transition:
+      top 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      width 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      max-width 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      height 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      border-radius 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      background 0.45s ease,
+      border-color 0.45s ease,
+      box-shadow 0.45s ease;
+  }
+
+  @media (min-width: 1024px) {
+    .floating-header {
+      height: 5.5rem;
+    }
+  }
+
+  /* ── Scrolled: floating pill ── */
+  .floating-header.scrolled {
+    top: 0.625rem;
+    width: calc(100% - 1.25rem);
+    max-width: 1100px;
+    height: 4.5rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+      0 1px 0 0 rgba(0, 0, 0, 0.03) inset,
+      0 16px 48px rgba(0, 0, 0, 0.07),
+      0 6px 16px rgba(0, 0, 0, 0.04);
+  }
+
+  html.dark .floating-header.scrolled {
+    background: rgba(9, 9, 11, 0.82);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+      0 1px 0 0 rgba(255, 255, 255, 0.03) inset,
+      0 16px 48px rgba(0, 0, 0, 0.32),
+      0 6px 16px rgba(0, 0, 0, 0.22);
+  }
+
+  @media (min-width: 1024px) {
+    .floating-header.scrolled {
+      top: 0.875rem;
+      width: calc(100% - 2rem);
+      height: 4.5rem;
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     INNER LAYOUT
+     ═══════════════════════════════════════ */
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    padding: 0 1.25rem;
+    max-width: 1440px;
+    margin: 0 auto;
+    gap: 0.5rem;
+    transition: padding 0.6s cubic-bezier(0.22, 1, 0.36, 1), gap 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @media (min-width: 640px) {
+    .header-inner { padding: 0 1.75rem; }
+  }
+
+  @media (min-width: 1024px) {
+    .header-inner { padding: 0 2.5rem; }
+  }
+
+  @media (min-width: 1280px) {
+    .header-inner { padding: 0 3.5rem; }
+  }
+
+  /* Tighter inner when scrolled */
+  .floating-header.scrolled .header-inner {
+    padding: 0 1rem;
+    gap: 0.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .floating-header.scrolled .header-inner {
+      padding: 0 1.25rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .floating-header.scrolled .header-inner {
+      padding: 0 1.5rem;
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     LOGO
+     ═══════════════════════════════════════ */
+  .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    text-decoration: none;
+    transition: gap 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .floating-header.scrolled .header-logo {
+    gap: 0.375rem;
+  }
+
+  .header-logo-img {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    transition: transform 0.3s ease, width 0.6s cubic-bezier(0.22, 1, 0.36, 1), height 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .floating-header.scrolled .header-logo-img {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  .header-logo:hover .header-logo-img {
+    transform: scale(1.05);
+  }
+
+  .header-logo-text {
+    font-family: ui-serif, Georgia, serif;
+    font-weight: 700;
+    font-size: 1.375rem;
+    color: #18181b;
+    line-height: 1;
+    transition: font-size 0.6s cubic-bezier(0.22, 1, 0.36, 1), color 0.3s ease;
+  }
+
+  html.dark .header-logo-text {
+    color: #fafafa;
+  }
+
+  .floating-header.scrolled .header-logo-text {
+    font-size: 1.0625rem;
+  }
+
+  .header-logo-accent {
+    font-family: ui-serif, Georgia, serif;
+    font-weight: 700;
+    font-size: 1.375rem;
+    color: #16a34a;
+    line-height: 1;
+    transition: font-size 0.6s cubic-bezier(0.22, 1, 0.36, 1), color 0.3s ease;
+  }
+
+  html.dark .header-logo-accent {
+    color: #4ade80;
+  }
+
+  .floating-header.scrolled .header-logo-accent {
+    font-size: 1.0625rem;
+  }
+
+  /* ═══════════════════════════════════════
+     DESKTOP NAV
+     ═══════════════════════════════════════ */
+  .header-nav {
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+    transition: gap 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @media (min-width: 1024px) {
+    .header-nav { display: flex; }
+  }
+
+  .floating-header.scrolled .header-nav {
+    gap: 0.25rem;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.625rem 1.125rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #52525b;
+    border-radius: 0.5rem;
+    white-space: nowrap;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition:
+      color 0.2s ease,
+      background 0.2s ease,
+      padding 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      font-size 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      gap 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  html.dark .nav-link {
+    color: #a1a1aa;
+  }
+
+  .nav-link:hover {
+    color: #16a34a;
+    background: rgba(22, 163, 74, 0.06);
+  }
+
+  html.dark .nav-link:hover {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.08);
+  }
+
+  .nav-link-active {
+    color: #16a34a;
+    background: rgba(22, 163, 74, 0.08);
+  }
+
+  html.dark .nav-link-active {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.1);
+  }
+
+  /* Tighter nav links when scrolled */
+  .floating-header.scrolled .nav-link {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    gap: 0.125rem;
+  }
+
+  .nav-chevron {
+    width: 0.75rem;
+    height: 0.75rem;
+    transition: transform 0.2s ease, width 0.6s cubic-bezier(0.22, 1, 0.36, 1), height 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .floating-header.scrolled .nav-chevron {
+    width: 0.625rem;
+    height: 0.625rem;
+  }
+
+  /* ── Dropdown ── */
+  .nav-dropdown-menu {
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%);
+    padding-top: 0.5rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    transform: translateX(-50%) translateY(4px);
+  }
+
+  .floating-header.scrolled .nav-dropdown-menu {
+    padding-top: 0.375rem;
+  }
+
+  .nav-dropdown:hover .nav-dropdown-menu,
+  .nav-dropdown:focus-within .nav-dropdown-menu {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .nav-dropdown:hover .nav-chevron,
+  .nav-dropdown:focus-within .nav-chevron {
+    transform: rotate(180deg);
+  }
+
+  .nav-dropdown-panel {
+    border-radius: 0.75rem;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.97);
+    padding: 0.375rem;
+    min-width: 200px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  html.dark .nav-dropdown-panel {
+    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(9, 9, 11, 0.97);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  .nav-dropdown-item {
+    display: block;
+    padding: 0.5rem 0.875rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #52525b;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+
+  html.dark .nav-dropdown-item {
+    color: #a1a1aa;
+  }
+
+  .nav-dropdown-item:hover {
+    color: #16a34a;
+    background: rgba(22, 163, 74, 0.06);
+  }
+
+  html.dark .nav-dropdown-item:hover {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.08);
+  }
+
+  .nav-dropdown-item-active {
+    color: #16a34a;
+    background: rgba(22, 163, 74, 0.08);
+  }
+
+  html.dark .nav-dropdown-item-active {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.1);
+  }
+
+  /* ═══════════════════════════════════════
+     RIGHT ACTIONS
+     ═══════════════════════════════════════ */
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    transition: gap 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .floating-header.scrolled .header-actions {
+    gap: 0.375rem;
+  }
+
+  /* ── CTA Button ── */
+  .header-cta {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.75rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #fff;
+    background: #16a34a;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(22, 163, 74, 0.2);
+    transition:
+      background 0.2s ease,
+      box-shadow 0.2s ease,
+      padding 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      font-size 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      gap 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  html.dark .header-cta {
+    background: #22c55e;
+    color: #09090b;
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.25);
+  }
+
+  .header-cta:hover {
+    background: #15803d;
+  }
+
+  html.dark .header-cta:hover {
+    background: #4ade80;
+  }
+
+  @media (min-width: 1024px) {
+    .header-cta { display: inline-flex; }
+  }
+
+  /* Tighter CTA when scrolled */
+  .floating-header.scrolled .header-cta {
+    padding: 0.5rem 1.25rem;
+    font-size: 0.6875rem;
+    gap: 0.25rem;
+    box-shadow: 0 1px 4px rgba(22, 163, 74, 0.15);
+  }
+
+  html.dark .floating-header.scrolled .header-cta {
+    box-shadow: 0 1px 4px rgba(34, 197, 94, 0.18);
+  }
+
+  .header-cta-icon {
+    transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1), height 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .floating-header.scrolled .header-cta-icon {
+    width: 11px;
+    height: 11px;
+  }
+
+  /* ── Hamburger ── */
+  .header-hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: none;
+    border: none;
+    padding: 0;
+    border-radius: 0.5rem;
+    transition: background 0.15s ease, width 0.6s cubic-bezier(0.22, 1, 0.36, 1), height 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .floating-header.scrolled .header-hamburger {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .header-hamburger:hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  html.dark .header-hamburger:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  @media (min-width: 1024px) {
+    .header-hamburger { display: none; }
+  }
+
+  .hamburger-lines {
+    width: 1.25rem;
+    height: 0.875rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .hamburger-line {
+    display: block;
+    width: 100%;
+    height: 2px;
+    border-radius: 1px;
+    background: #3f3f46;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease, width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    transform-origin: center;
+  }
+
+  html.dark .hamburger-line {
+    background: #e4e4e7;
+  }
+
+  .line-2 { width: 60%; margin-left: auto; }
+
+  .header-hamburger.open .line-1 { transform: translateY(5.25px) rotate(45deg); }
+  .header-hamburger.open .line-2 { opacity: 0; width: 0; }
+  .header-hamburger.open .line-3 { transform: translateY(-5.25px) rotate(-45deg); }
+
+  /* ═══════════════════════════════════════
+     DARK MODE TOGGLE — compact in scrolled
+     ═══════════════════════════════════════ */
+  .floating-header.scrolled .dark-mode-toggle {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  /* ═══════════════════════════════════════
+     SPACER
+     ═══════════════════════════════════════ */
+  .header-spacer {
+    height: 6rem;
+  }
+
+  @media (min-width: 1024px) {
+    .header-spacer {
+      height: 5.5rem;
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     MOBILE BACKDROP
+     ═══════════════════════════════════════ */
+  .mobile-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 100000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .mobile-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @media (min-width: 1024px) {
+    .mobile-backdrop { display: none; }
+  }
+
+  /* ═══════════════════════════════════════
+     MOBILE MENU
+     ═══════════════════════════════════════ */
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    max-width: 24rem;
+    height: 100%;
+    z-index: 100002;
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-left: 1px solid rgba(0, 0, 0, 0.06);
+    transform: translateX(100%);
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  html.dark .mobile-menu {
+    background: rgba(9, 9, 11, 0.97);
+    border-left-color: rgba(255, 255, 255, 0.06);
+  }
+
+  .mobile-menu.open {
+    transform: translateX(0);
+  }
+
+  @media (min-width: 1024px) {
+    .mobile-menu { display: none; }
+  }
+
+  .mobile-menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    flex-shrink: 0;
+  }
+
+  html.dark .mobile-menu-header {
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+  }
+
+  .mobile-close {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.625rem;
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    color: #52525b;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    cursor: pointer;
+  }
+
+  html.dark .mobile-close {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.06);
+    color: #a1a1aa;
+  }
+
+  .mobile-close:hover {
+    background: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #18181b;
+  }
+
+  html.dark .mobile-close:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #fafafa;
+  }
+
+  .mobile-menu-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1.5rem 1.5rem;
+  }
+
+  .mobile-nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .mobile-nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.875rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: #3f3f46;
+    transition: color 0.15s ease, background 0.15s ease;
+    border: none;
+    background: none;
+    width: 100%;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  html.dark .mobile-nav-link {
+    color: #d4d4d8;
+  }
+
+  .mobile-nav-link:hover {
+    color: #16a34a;
+    background: rgba(22, 163, 74, 0.06);
+  }
+
+  html.dark .mobile-nav-link:hover {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.08);
+  }
+
+  .mobile-nav-link-active {
+    color: #16a34a;
+    background: rgba(22, 163, 74, 0.08);
+  }
+
+  html.dark .mobile-nav-link-active {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.1);
+  }
+
+  .mobile-chevron {
+    width: 1rem;
+    height: 1rem;
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .mobile-nav-link[aria-expanded="true"] .mobile-chevron {
+    transform: rotate(180deg);
+  }
+
+  .mobile-active-dot {
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 50%;
+    background: #16a34a;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  html.dark .mobile-active-dot {
+    background: #4ade80;
+  }
+
+  /* ── Mobile Dropdown ── */
+  .mobile-dropdown-panel {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .mobile-dropdown-inner {
+    padding: 0.25rem 0 0.25rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .mobile-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 0.875rem;
+    border-radius: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #71717a;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+
+  html.dark .mobile-dropdown-item {
+    color: #a1a1aa;
+  }
+
+  .mobile-dropdown-item:hover {
+    color: #16a34a;
+    background: rgba(22, 163, 74, 0.06);
+  }
+
+  html.dark .mobile-dropdown-item:hover {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.08);
+  }
+
+  .mobile-dropdown-item-active {
+    color: #16a34a;
+    background: rgba(22, 163, 74, 0.08);
+  }
+
+  html.dark .mobile-dropdown-item-active {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.1);
+  }
+
+  /* ── Mobile Footer ── */
+  .mobile-menu-footer {
+    padding-top: 1.25rem;
+    margin-top: 0.75rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  html.dark .mobile-menu-footer {
+    border-top-color: rgba(255, 255, 255, 0.06);
+  }
+
+  .mobile-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.875rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #fff;
+    background: #16a34a;
+    transition: background 0.15s ease;
+  }
+
+  html.dark .mobile-cta {
+    background: #22c55e;
+    color: #09090b;
+  }
+
+  .mobile-cta:hover {
+    background: #15803d;
+  }
+
+  html.dark .mobile-cta:hover {
+    background: #4ade80;
+  }
+
+  /* ═══════════════════════════════════════
+     HIDE FLOATING ELEMENTS WHEN MENU OPEN
+     ═══════════════════════════════════════ */
+  [data-menu-hidden="1"] {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  /* ═══════════════════════════════════════
+     IMAGE FALLBACK
+     ═══════════════════════════════════════ */
+  .img-fallback-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: #71717a;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  html.dark .img-fallback-text {
+    color: #a1a1aa;
+  }
+</style>
+
+<script>
+  /* ═══════════════════════════════════════
+     FLOATING HEADER
+     ═══════════════════════════════════════ */
+  function initFloatingHeader() {
+    const header = document.getElementById('site-header');
+    if (!header || header.hasAttribute('data-fh-init')) return;
+    header.setAttribute('data-fh-init', '');
+
+    let isScrolled = false;
+    const THRESHOLD = 60;
+
+    function update() {
+      const scrolled = window.scrollY > THRESHOLD;
+      if (scrolled !== isScrolled) {
+        isScrolled = scrolled;
+        header.classList.toggle('scrolled', scrolled);
+      }
+    }
+
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+
+  /* ═══════════════════════════════════════
+     HIDE / SHOW FLOATING UI ELEMENTS
+     (WhatsApp, scroll-to-top, chat widgets, etc.)
+     ═══════════════════════════════════════ */
+  const hiddenEls: HTMLElement[] = [];
+  let isFloatingUIHidden = false;
+
+  function hideFloatingUI() {
+    if (isFloatingUIHidden) return;
+    isFloatingUIHidden = true;
+
+    const header = document.getElementById('site-header');
+    const menu = document.getElementById('mobile-menu');
+    const backdrop = document.getElementById('mobile-menu-backdrop');
+    const protectedEls = new Set<Element>([header, menu, backdrop].filter(Boolean));
+
+    for (const el of document.body.children) {
+      if (!(el instanceof HTMLElement)) continue;
+      if (protectedEls.has(el)) continue;
+      // Skip if this element contains any protected element
+      if ([header, menu, backdrop].filter(Boolean).some(p => el.contains(p))) continue;
+
+      const style = getComputedStyle(el);
+      if (style.position === 'fixed' || style.position === 'sticky') {
+        el.dataset.menuHidden = '1';
+        hiddenEls.push(el);
+      }
+    }
+  }
+
+  function showFloatingUI() {
+    if (!isFloatingUIHidden) return;
+    isFloatingUIHidden = false;
+
+    for (const el of hiddenEls) {
+      delete el.dataset.menuHidden;
+    }
+    hiddenEls.length = 0;
+  }
+
+  /* ═══════════════════════════════════════
+     MOBILE MENU
+     ═══════════════════════════════════════ */
+  function initMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    if (!menu || menu.hasAttribute('data-mm-init')) return;
+    menu.setAttribute('data-mm-init', '');
+
+    const toggle = document.getElementById('mobile-menu-toggle');
+    const closeBtn = document.getElementById('mobile-menu-close');
+    const backdrop = document.getElementById('mobile-menu-backdrop');
+    let isOpen = false;
+
+    function openMenu() {
+      isOpen = true;
+      toggle?.classList.add('open');
+      toggle?.setAttribute('aria-expanded', 'true');
+      menu?.classList.add('open');
+      menu?.setAttribute('aria-hidden', 'false');
+      backdrop?.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      hideFloatingUI();
+    }
+
+    function closeMenu() {
+      isOpen = false;
+      toggle?.classList.remove('open');
+      toggle?.setAttribute('aria-expanded', 'false');
+      menu?.classList.remove('open');
+      menu?.setAttribute('aria-hidden', 'true');
+      backdrop?.classList.remove('active');
+      document.body.style.overflow = '';
+      showFloatingUI();
+    }
+
+    toggle?.addEventListener('click', () => { isOpen ? closeMenu() : openMenu(); });
+    closeBtn?.addEventListener('click', closeMenu);
+    backdrop?.addEventListener('click', closeMenu);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen) closeMenu(); });
+
+    menu?.querySelectorAll('[data-mobile-link]').forEach((link) => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    const dropdownToggles = menu?.querySelectorAll('[data-mobile-dropdown-toggle]');
+    dropdownToggles?.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const parent = btn.closest('[data-mobile-dropdown]');
+        const panel = parent?.querySelector('[data-mobile-dropdown-panel]') as HTMLElement | null;
+        const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+
+        // Close all other dropdowns
+        dropdownToggles?.forEach((otherBtn) => {
+          if (otherBtn !== btn) {
+            otherBtn.setAttribute('aria-expanded', 'false');
+            const otherParent = otherBtn.closest('[data-mobile-dropdown]');
+            const otherPanel = otherParent?.querySelector('[data-mobile-dropdown-panel]') as HTMLElement | null;
+            if (otherPanel) otherPanel.style.maxHeight = '0';
+          }
+        });
+
+        if (isExpanded) {
+          btn.setAttribute('aria-expanded', 'false');
+          if (panel) panel.style.maxHeight = '0';
+        } else {
+          btn.setAttribute('aria-expanded', 'true');
+          if (panel) panel.style.maxHeight = panel.scrollHeight + 'px';
+        }
+      });
+    });
+
+    // Auto-open dropdown if it contains an active child
+    dropdownToggles?.forEach((btn) => {
+      const parent = btn.closest('[data-mobile-dropdown]');
+      const panel = parent?.querySelector('[data-mobile-dropdown-panel]') as HTMLElement | null;
+      const activeChild = parent?.querySelector('[aria-current="page"]');
+      if (activeChild && panel) {
+        btn.setAttribute('aria-expanded', 'true');
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+      }
+    });
+  }
+
+  /* ═══════════════════════════════════════
+     IMAGE FALLBACK
+     ═══════════════════════════════════════ */
+  function initImageFallback() {
+    document.querySelectorAll('img[data-fallback-text]:not([data-fb-init])').forEach((img) => {
+      img.setAttribute('data-fb-init', '');
+      const apply = () => {
+        if (img.complete && img.naturalHeight === 0) {
+          const parent = img.parentElement;
+          if (!parent || parent.dataset.fb === '1') return;
+          parent.dataset.fb = '1';
+          img.style.display = 'none';
+          const span = document.createElement('span');
+          span.className = 'img-fallback-text';
+          span.textContent = img.dataset.fallbackText || img.alt || '';
+          parent.appendChild(span);
+        }
+      };
+      img.addEventListener('error', apply);
+      apply();
+    });
+  }
+
+  /* ═══════════════════════════════════════
+     INIT
+     ═══════════════════════════════════════ */
+  initFloatingHeader();
+  initMobileMenu();
+  initImageFallback();
+
+  document.addEventListener('astro:page-load', () => {
+    initFloatingHeader();
+    initMobileMenu();
+    initImageFallback();
+  });
+</script>

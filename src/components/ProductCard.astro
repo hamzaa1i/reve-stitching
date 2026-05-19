@@ -1,0 +1,94 @@
+---
+/**
+ * src/components/ProductCard.astro
+ * REDESIGNED: Dark mode, srcset optimization, loading skeleton, no old tokens.
+ * NOW: Entire card is a link to product detail page (slug prop required).
+ */
+
+interface Props {
+  name: string;
+  image: string;
+  rating: number;
+  moq: number;
+  features: string[];
+  index?: number;
+  slug?: string;
+}
+
+const { name, image, rating, moq, features, index = 0, slug = '#' } = Astro.props;
+
+const fullStars = Math.floor(rating);
+const hasHalf = rating % 1 >= 0.5;
+const isUnsplash = image.includes('unsplash.com');
+---
+
+<a
+  href={`/products/${slug}`}
+  class="group block overflow-hidden rounded-2xl border border-zinc-200 bg-white transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-green-600/8 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:shadow-green-400/5"
+  data-tilt
+>
+  <!-- Image -->
+  <div class="relative aspect-[4/3] overflow-hidden bg-zinc-200 dark:bg-zinc-800">
+    <!-- Skeleton shimmer (hidden once image loads) -->
+    <div class="absolute inset-0 animate-pulse bg-zinc-300/50 dark:bg-zinc-700/50" data-skeleton aria-hidden="true"></div>
+
+    <img
+      src={image}
+      alt={name}
+      loading={index < 4 ? 'eager' : 'lazy'}
+      decoding="async"
+      srcset={isUnsplash ? `${image}&w=400 400w, ${image}&w=600 600w, ${image}&w=800 800w` : undefined}
+      sizes={isUnsplash ? '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw' : undefined}
+      class="relative z-[1] h-full w-full object-cover opacity-0 transition-all duration-700 ease-out group-hover:scale-105"
+      onload="this.style.opacity='1';var s=this.parentElement.querySelector('[data-skeleton]');if(s)s.style.display='none'"
+    />
+
+    <!-- MOQ Badge -->
+    <div class="absolute left-4 top-4 z-[2] rounded-full bg-white/90 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-green-600 backdrop-blur-sm dark:bg-zinc-900/90 dark:text-green-400">
+      MOQ: {moq} pcs
+    </div>
+
+    <!-- Hover Overlay -->
+    <div class="absolute inset-0 z-[3] flex items-end bg-gradient-to-t from-green-700/80 via-green-700/20 to-transparent p-6 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+      <div class="w-full rounded-lg bg-white py-3 text-center text-sm font-semibold text-green-600 dark:bg-zinc-900 dark:text-green-400">
+        View Details
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="p-6">
+    <!-- Rating -->
+    <div class="mb-3 flex items-center gap-1.5">
+      <div class="flex items-center gap-0.5">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <svg
+            class={`h-4 w-4 ${i < fullStars ? 'text-amber-400' : i === fullStars && hasHalf ? 'text-amber-400' : 'text-zinc-200 dark:text-zinc-700'}`}
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+          </svg>
+        ))}
+      </div>
+      <span class="text-sm font-semibold text-zinc-700 dark:text-zinc-300">{rating}</span>
+    </div>
+
+    <!-- Name -->
+    <h3 class="mb-3 text-lg font-bold leading-snug text-zinc-900 transition-colors duration-300 group-hover:text-green-600 dark:text-white dark:group-hover:text-green-400">
+      {name}
+    </h3>
+
+    <!-- Features -->
+    <ul class="space-y-1.5">
+      {features.map((feature) => (
+        <li class="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
+          <svg class="h-4 w-4 shrink-0 text-green-500 dark:text-green-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd"/>
+          </svg>
+          {feature}
+        </li>
+      ))}
+    </ul>
+  </div>
+</a>

@@ -1,0 +1,226 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const title = 'Case Studies — Reve Stitching';
+const description =
+  'Real projects delivered for UK & EU retailers. 50K+ hoodies for Boohoo, 75K+ ladies wear for Yours Clothing, organic tees for CLOSURE.';
+
+const studies = [
+  {
+    client: 'Boohoo',
+    logo: '/images/clients/boohoo.svg',
+    product: 'Hoodies & Sweatshirts',
+    units: '50,000+',
+    leadTime: '28 days',
+    colourways: '6',
+    reorder: '3 consecutive seasons',
+    challenge: 'Boohoo needed 50,000 premium fleece hoodies across 6 colourways delivered within 28 days for their Autumn/Winter drop. Previous supplier had inconsistent GSM across colourways, causing fit issues in-store.',
+    solution: 'We sourced a single dye-lot per colourway from our GOTS-certified dyeing partner, ensuring GSM consistency within ±5g. Dedicated production line with in-line weight checks every 2 hours. Pre-production size set approved in 7 days.',
+    results: ['Zero quality rejections across all 3 seasonal orders', 'GSM variance reduced to ±3g (industry standard: ±10g)', '28-day turnaround maintained across all 3 orders', 'Extended to sweatshirts and joggers in Season 2'],
+    tags: ['Fleece', '6 Colourways', 'Zero Rejections', '3 Seasons'],
+  },
+  {
+    client: 'Yours Clothing',
+    logo: '/images/clients/yours-clothing.svg',
+    product: "Ladies' Knitwear",
+    units: '75,000+',
+    leadTime: '35 days',
+    colourways: '12 styles',
+    reorder: '2+ year partnership',
+    challenge: "Yours Clothing required consistent fit grading from XS to 5XL across 12 styles of ladies' knitwear. Extended sizing is notoriously difficult — small measurement deviations become very visible at larger sizes.",
+    solution: 'Our pattern team developed a proprietary grading matrix calibrated specifically for the UK plus-size market. Each size was fit-tested on real body forms, not just scaled up. Pre-production samples included every size for approval.',
+    results: ['Consistent fit grading across XS–5XL, 12 styles', '0.3% defect rate (5× better than AQL 2.5)', '2+ year ongoing partnership with expanding order volumes', 'Reduced their sample approval cycle from 21 to 14 days'],
+    tags: ['Extended Sizing', 'XS–5XL', '12 Styles', '2-Year Partnership'],
+  },
+  {
+    client: 'CLOSURE',
+    logo: '/images/clients/closure.svg',
+    product: 'Premium T-Shirts',
+    units: '30,000+',
+    leadTime: '25 days',
+    colourways: '4',
+    reorder: 'Reorder placed',
+    challenge: 'CLOSURE needed organic cotton t-shirts with custom all-over prints and branded neck labels for a limited drop. The timeline was tight — 25 days from approval to delivery, with no room for reprints.',
+    solution: 'Pre-allocated organic cotton fabric from our BCI-certified stock. Digital printing set up within 48 hours of artwork approval. Branded woven labels produced in parallel. Rush production line with priority QC.',
+    results: ['Delivered 5 days ahead of schedule', 'All 30,000 units passed AQL 2.5 first time', 'Custom print colour accuracy: ΔE < 1.5', 'Reorder placed within 8 weeks of delivery'],
+    tags: ['Organic Cotton', 'Custom Print', 'Early Delivery', 'Rush Order'],
+  },
+  {
+    client: 'Pull & Bear',
+    logo: '/images/clients/pull-and-bear.svg',
+    product: 'Joggers & Trousers',
+    units: '40,000+',
+    leadTime: '30 days',
+    colourways: '5',
+    reorder: 'Seasonal reorder',
+    challenge: 'Pull & Bear required 40,000 joggers with elastic waistbands and drawcords. The critical issue was waistband elasticity consistency — previous batches from another supplier had 12% failure rate on elastic recovery.',
+    solution: 'Sourced premium Lycra-blend elastic from a certified elastane supplier. Developed a custom elastic recovery test: 1000 stretch cycles at 150% extension before production sign-off. In-line elasticity test every 100 units.',
+    results: ['Elastic recovery failure rate: 0.2% (was 12% with previous supplier)', 'All 40,000 units delivered on time', 'Waistband measurement tolerance: ±0.5cm across all sizes', 'Seasonal reorder confirmed for next 2 drops'],
+    tags: ['Joggers', 'Elastic Testing', 'Lycra Blend', 'Seasonal'],
+  },
+  {
+    client: 'Daisy Street',
+    logo: '/images/clients/daisy-street.svg',
+    product: 'Crop Tops & Bralettes',
+    units: '25,000+',
+    leadTime: '22 days',
+    colourways: '8',
+    reorder: 'Ongoing',
+    challenge: 'Daisy Street needed fast-turnaround crop tops and bralettes across 8 colourways for a trend-responsive drop. The challenge was maintaining colour consistency across 8 dye lots while hitting a 22-day deadline.',
+    solution: 'Used our in-house colour matching lab with spectrophotometer verification. All 8 dye lots matched to ΔE < 1.0 (industry standard: ΔE < 2.0). Parallel production across 3 stitching lines to compress timeline.',
+    results: ['22-day turnaround on 8 colourways', 'Colour consistency: ΔE < 1.0 across all lots', '0.4% defect rate', 'Ongoing orders now placed monthly'],
+    tags: ['Fast Fashion', '8 Colourways', 'Colour Matching', 'Monthly Orders'],
+  },
+  {
+    client: 'Threadbare',
+    logo: '/images/clients/threadbare.svg',
+    product: 'Polo Shirts',
+    units: '60,000+',
+    leadTime: '32 days',
+    colourways: '7',
+    reorder: 'Annual contract',
+    challenge: 'Threadbare required 60,000 polo shirts with collar shaping that held its structure after 50 washes. Collar roll and curl after washing is the #1 complaint in polo manufacturing.',
+    solution: 'Developed a fused collar construction with proprietary interlining. Tested collar structure through 50 industrial wash cycles (ISO 6330) before production approval. Collar shaping reinforced with hidden bar-tacks.',
+    results: ['Zero collar roll complaints after 50 wash cycles', '60,000 units delivered across 7 colourways', 'Secured annual supply contract', 'Design adopted as their new collar standard'],
+    tags: ['Polos', 'Collar Engineering', '50-Wash Test', 'Annual Contract'],
+  },
+];
+---
+
+<Layout title={title} description={description}>
+
+  <!-- Breadcrumb -->
+  <nav class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950" aria-label="Breadcrumb">
+    <div class="mx-auto max-w-[90rem] px-6 py-4 sm:px-8 lg:px-12 xl:px-16">
+      <ol class="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
+        <li><a href="/" class="transition-colors hover:text-green-600 dark:hover:text-green-400">Home</a></li>
+        <li aria-hidden="true"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></li>
+        <li class="font-medium text-zinc-900 dark:text-white">Case Studies</li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="bg-zinc-50 py-20 dark:bg-zinc-950 lg:py-28" aria-label="Case studies hero">
+    <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16">
+      <div class="mx-auto max-w-3xl text-center">
+        <div class="mb-4 flex items-center justify-center gap-3" data-animate="fade-up">
+          <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span>
+          <span class="text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400">Case Studies</span>
+          <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span>
+        </div>
+        <h1 class="font-serif text-3xl font-bold leading-tight text-zinc-900 dark:text-white sm:text-5xl lg:text-6xl" data-animate="fade-up" data-delay="0.08">
+          Real Projects. <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Real Results.</span>
+        </h1>
+        <p class="mt-6 text-base leading-relaxed text-zinc-500 dark:text-zinc-400 sm:text-lg" data-animate="fade-up" data-delay="0.16">
+          Every project below is a real order from a real retailer. Challenge, solution, results — no fluff, no vanity metrics.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Case Studies -->
+  <section class="bg-white py-20 dark:bg-zinc-950 lg:py-28" aria-label="All case studies">
+    <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16">
+      <div class="space-y-8">
+        {studies.map((cs, i) => (
+          <article
+            class="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900"
+            data-animate="fade-up"
+            data-delay={String(i * 0.06)}
+          >
+            <!-- Header -->
+            <div class="flex flex-col gap-4 border-b border-zinc-200 px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8 dark:border-zinc-800">
+              <div class="flex items-center gap-4">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white dark:bg-zinc-800">
+                  <img src={cs.logo} alt={`${cs.client} logo`} data-fallback-text={cs.client} class="h-7 w-auto object-contain" width="28" height="28" loading="lazy" />
+                </div>
+                <div>
+                  <h2 class="text-lg font-bold text-zinc-900 dark:text-white">{cs.client}</h2>
+                  <p class="text-sm text-zinc-500 dark:text-zinc-400">{cs.product}</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="inline-flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-3 py-1.5 text-xs font-semibold text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-400">
+                  {cs.units} units
+                </span>
+                <span class="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400">
+                  {cs.leadTime}
+                </span>
+              </div>
+            </div>
+
+            <!-- Body -->
+            <div class="grid gap-0 lg:grid-cols-3">
+              <!-- Challenge -->
+              <div class="border-b border-zinc-200 p-6 sm:p-8 lg:border-b-0 lg:border-r dark:border-zinc-800">
+                <h3 class="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-400">
+                  <span class="flex h-5 w-5 items-center justify-center rounded-full bg-red-500/10 text-[10px] font-bold text-red-500">C</span>
+                  Challenge
+                </h3>
+                <p class="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{cs.challenge}</p>
+              </div>
+
+              <!-- Solution -->
+              <div class="border-b border-zinc-200 p-6 sm:p-8 lg:border-b-0 lg:border-r dark:border-zinc-800">
+                <h3 class="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-400">
+                  <span class="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/10 text-[10px] font-bold text-amber-500">S</span>
+                  Solution
+                </h3>
+                <p class="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{cs.solution}</p>
+              </div>
+
+              <!-- Results -->
+              <div class="p-6 sm:p-8">
+                <h3 class="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-400">
+                  <span class="flex h-5 w-5 items-center justify-center rounded-full bg-green-500/10 text-[10px] font-bold text-green-500">R</span>
+                  Results
+                </h3>
+                <ul class="space-y-2">
+                  {cs.results.map((result: string) => (
+                    <li class="flex items-start gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                      <svg class="mt-0.5 h-4 w-4 shrink-0 text-green-500 dark:text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd"/>
+                      </svg>
+                      {result}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <!-- Tags -->
+            <div class="flex flex-wrap gap-2 border-t border-zinc-200 px-6 py-4 sm:px-8 dark:border-zinc-800">
+              {cs.tags.map((tag: string) => (
+                <span class="rounded-full border border-zinc-200 bg-white px-3 py-1 text-[11px] font-medium text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400">{tag}</span>
+              ))}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="relative bg-zinc-900 py-24 dark:bg-zinc-950 lg:py-32" aria-label="Call to action">
+    <div class="pointer-events-none absolute inset-0 opacity-[0.04]" aria-hidden="true" style="background-image:radial-gradient(circle at 1px 1px, white 1px, transparent 0);background-size:40px 40px"></div>
+    <div class="relative z-10 mx-auto max-w-[90rem] px-6 text-center sm:px-8 lg:px-12 xl:px-16">
+      <h2 class="font-serif text-2xl font-bold text-white sm:text-3xl lg:text-4xl" data-animate="fade-up">
+        Want to Be Our Next Case Study?
+      </h2>
+      <p class="mx-auto mt-4 max-w-lg text-zinc-400" data-animate="fade-up" data-delay="0.1">
+        Start with a sample order. We'll prove the quality before you commit to bulk.
+      </p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row" data-animate="fade-up" data-delay="0.15">
+        <a href="/quote/" class="inline-flex items-center gap-2 rounded-full bg-green-500 px-8 py-4 text-sm font-bold uppercase tracking-wider text-zinc-950 shadow-lg transition-all hover:bg-green-400" data-magnetic>
+          Start Your Project
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+        <a href="/samples/" class="px-5 py-4 text-sm font-medium uppercase tracking-wider text-zinc-400 transition-colors hover:text-white">
+          Request Samples →
+        </a>
+      </div>
+    </div>
+  </section>
+
+</Layout>

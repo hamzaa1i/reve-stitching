@@ -1,0 +1,152 @@
+---
+import Layout from '../layouts/Layout.astro';
+import QuoteWizard from '../components/QuoteWizard.astro';
+
+import WhatsAppWidget from '../components/WhatsAppWidget.astro';
+
+const quoteFaqs = [
+  {
+    question: "What's your minimum order quantity (MOQ)?",
+    answer: '200–500 pieces per style/color. We are flexible for new partnerships — get in touch and we will work something out.',
+  },
+  {
+    question: 'Do you provide samples before production?',
+    answer: 'Yes — paid samples with a 7–10 business day turnaround. Up to two rounds of revisions are included at no additional cost.',
+  },
+  {
+    question: "What's the typical lead time?",
+    answer: '25–50 days from order confirmation, depending on order size, complexity, and fabric availability. Rush orders can be accommodated.',
+  },
+  {
+    question: 'What certifications do you hold?',
+    answer: 'BCI, GOTS, OCS, SEDEX, Higg Index, RCS, GRS, and ISO 9001:2015 — covering quality, sustainability, and ethical production.',
+  },
+  {
+    question: 'How quickly will I receive my quote?',
+    answer: 'Within 24 hours. Our team reviews every request manually and responds with a detailed quotation or follow-up questions.',
+  },
+  {
+    question: 'What file formats do you accept for tech packs?',
+    answer: 'PDF, AI, PSD, JPG, and PNG. You can also upload reference images — our AI will analyse them for fabric and construction details.',
+  },
+];
+---
+<Layout title="Request a Quote" description="Get a free quote from Reve Stitching. 150K+ monthly capacity, 25-50 day lead times, SEDEX certified. Response within 24 hours.">
+  <!-- Trust signals header -->
+  <section class="bg-zinc-50 dark:bg-zinc-900" aria-label="Trust signals">
+    <div class="mx-auto max-w-[90rem] px-6 pt-28 sm:px-8 lg:px-12 xl:px-16 lg:pt-36">
+      <div class="mb-4 flex items-center gap-3" data-animate="fade-up">
+        <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span>
+        <span class="text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400">Request a Quote</span>
+      </div>
+      <h1 class="font-serif text-3xl font-bold leading-tight text-zinc-900 dark:text-white sm:text-5xl lg:text-6xl" data-animate="fade-up" data-delay="0.08">
+        Get Your <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Free Quote</span>
+      </h1>
+      <p class="mt-4 max-w-xl text-base leading-relaxed text-zinc-500 dark:text-zinc-400 sm:text-lg" data-animate="fade-up" data-delay="0.16">
+        Tell us about your project and receive a detailed quotation within 24 hours.
+      </p>
+
+      <div class="mt-6 space-y-2.5 pb-8" data-animate="fade-up" data-delay="0.2">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="inline-flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-3.5 py-1.5 text-xs font-semibold text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-400">
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+            9+ Brand Partners
+          </span>
+          <span class="inline-flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-3.5 py-1.5 text-xs font-semibold text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-400">
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+            SEDEX Certified
+          </span>
+          <span class="inline-flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-3.5 py-1.5 text-xs font-semibold text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-400">
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+            Response within 24hrs
+          </span>
+        </div>
+        <p class="text-[11px] font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+          BCI · GOTS · OCS · GRS · RCS · ISO 9001
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quote Wizard -->
+  <QuoteWizard />
+
+  <!-- FAQ -->
+  <section class="bg-white py-24 dark:bg-zinc-950 lg:py-32" aria-labelledby="quote-faq-heading">
+    <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16">
+      <div class="grid gap-12 lg:grid-cols-5 lg:gap-16">
+        <div class="lg:col-span-2">
+          <div class="mb-4 flex items-center gap-3" data-animate="fade-up">
+            <span class="block h-px w-8 bg-green-600 dark:bg-green-400" aria-hidden="true"></span>
+            <span class="text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400">FAQ</span>
+          </div>
+          <h2 id="quote-faq-heading" class="font-serif text-2xl font-bold text-zinc-900 dark:text-white sm:text-4xl" data-animate="fade-up" data-delay="0.08">
+            Common <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Questions</span>
+          </h2>
+          <p class="mt-4 text-base leading-relaxed text-zinc-500 dark:text-zinc-400" data-animate="fade-up" data-delay="0.16">
+            Everything you need to know before submitting your quote request.
+          </p>
+        </div>
+
+        <div class="lg:col-span-3" data-animate="fade-up" data-delay="0.1">
+          <div class="divide-y divide-zinc-200 dark:divide-zinc-800" id="quote-faq-accordion">
+            {quoteFaqs.map((faq) => (
+              <div class="faq-item" data-faq-item>
+                <button
+                  type="button"
+                  class="flex w-full items-center justify-between gap-4 py-5 text-left transition-colors"
+                  data-faq-trigger
+                  aria-expanded="false"
+                >
+                  <span class="text-sm font-semibold text-zinc-900 dark:text-white sm:text-base">{faq.question}</span>
+                  <svg class="h-5 w-5 shrink-0 text-zinc-400 transition-transform duration-300 dark:text-zinc-500" data-faq-icon viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                </button>
+                <div class="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out" data-faq-content>
+                  <div class="overflow-hidden">
+                    <p class="pb-5 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{faq.answer}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ accordion -->
+  <script is:inline>
+    document.addEventListener('astro:page-load', function() {
+      var items = document.querySelectorAll('#quote-faq-accordion [data-faq-item]');
+      items.forEach(function(item) {
+        var trigger = item.querySelector('[data-faq-trigger]');
+        var content = item.querySelector('[data-faq-content]');
+        var icon = item.querySelector('[data-faq-icon]');
+        if (!trigger || !content) return;
+        trigger.addEventListener('click', function() {
+          var isOpen = trigger.getAttribute('aria-expanded') === 'true';
+          items.forEach(function(other) {
+            var ot = other.querySelector('[data-faq-trigger]');
+            var oc = other.querySelector('[data-faq-content]');
+            var oi = other.querySelector('[data-faq-icon]');
+            if (other !== item && ot) {
+              ot.setAttribute('aria-expanded', 'false');
+              if (oc) oc.style.gridTemplateRows = '0fr';
+              if (oi) oi.style.transform = 'rotate(0deg)';
+            }
+          });
+          if (isOpen) {
+            trigger.setAttribute('aria-expanded', 'false');
+            content.style.gridTemplateRows = '0fr';
+            if (icon) icon.style.transform = 'rotate(0deg)';
+          } else {
+            trigger.setAttribute('aria-expanded', 'true');
+            content.style.gridTemplateRows = '1fr';
+            if (icon) icon.style.transform = 'rotate(45deg)';
+          }
+        });
+      });
+    });
+  </script>
+  <WhatsAppWidget />
+</Layout>

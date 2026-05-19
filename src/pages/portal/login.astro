@@ -1,0 +1,136 @@
+---
+import '../../styles/global.css';
+---
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | Reve Portal</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script is:inline>document.documentElement.classList.add('dark');</script>
+</head>
+<body class="min-h-screen bg-zinc-950 text-white font-sans antialiased flex items-center justify-center p-4">
+
+  <div class="w-full max-w-md">
+    <!-- Logo -->
+    <div class="mb-8 text-center">
+      <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-green-600">
+        <svg class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 12.75l6 6 9-13.5"/></svg>
+      </div>
+      <h1 class="text-2xl font-bold text-white">Reve Stitching</h1>
+      <p class="mt-1 text-sm text-zinc-500">Client Portal</p>
+    </div>
+
+    <!-- Login card -->
+    <div class="rounded-2xl border border-zinc-800 bg-zinc-900 p-8">
+      <form id="login-form" class="space-y-5">
+        <div>
+          <label for="email" class="mb-2 block text-sm font-medium text-zinc-300">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            autocomplete="email"
+            placeholder="you@company.com"
+            class="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-white placeholder-zinc-500 outline-none transition-all focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
+          />
+        </div>
+
+        <div>
+          <label for="password" class="mb-2 block text-sm font-medium text-zinc-300">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            autocomplete="current-password"
+            placeholder="••••••••"
+            class="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-white placeholder-zinc-500 outline-none transition-all focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
+          />
+        </div>
+
+        <div id="error-message" class="hidden rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400"></div>
+
+        <button
+          type="submit"
+          id="submit-btn"
+          class="flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-3.5 text-sm font-bold text-white transition-all hover:bg-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <span id="btn-text">Sign In</span>
+          <svg id="btn-spinner" class="hidden h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+        </button>
+      </form>
+
+      <div class="mt-6 border-t border-zinc-800 pt-5 text-center">
+        <p class="text-sm text-zinc-500">
+          Don't have an account?
+          <a href="/portal/register" class="font-medium text-green-400 transition-colors hover:text-green-300">Register here</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Back to site -->
+    <div class="mt-6 text-center">
+      <a href="/" class="text-xs text-zinc-600 transition-colors hover:text-zinc-400">← Back to reve stitching.com</a>
+    </div>
+  </div>
+
+  <script is:inline>
+    const form = document.getElementById('login-form');
+    const errorEl = document.getElementById('error-message');
+    const submitBtn = document.getElementById('submit-btn');
+    const btnText = document.getElementById('btn-text');
+    const btnSpinner = document.getElementById('btn-spinner');
+
+    function showError(msg) {
+      errorEl.textContent = msg;
+      errorEl.classList.remove('hidden');
+    }
+
+    function hideError() {
+      errorEl.classList.add('hidden');
+    }
+
+    function setLoading(loading) {
+      submitBtn.disabled = loading;
+      btnText.textContent = loading ? 'Signing in...' : 'Sign In';
+      btnSpinner.classList.toggle('hidden', !loading);
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError();
+      setLoading(true);
+
+      try {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        const res = await fetch('/api/portal/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          window.location.href = '/portal/dashboard';
+        } else {
+          showError(data.error || 'Something went wrong');
+          setLoading(false);
+        }
+      } catch (err) {
+        showError('Network error. Please check your connection.');
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>

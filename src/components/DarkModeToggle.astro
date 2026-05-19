@@ -1,0 +1,141 @@
+---
+// Dark mode toggle — premium circular reveal transition
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  class="relative inline-flex h-10 w-10 items-center justify-center rounded-lg transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 focus:outline-none focus-visible:outline-none"
+  style="-webkit-tap-highlight-color: transparent; outline: none;"
+  aria-label="Toggle dark mode"
+>
+  <!-- Sun icon (shown in dark mode) -->
+  <svg
+    class="h-5 w-5 text-zinc-400 hidden dark:block"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+  </svg>
+
+  <!-- Moon icon (shown in light mode) -->
+  <svg
+    class="h-5 w-5 text-zinc-600 block dark:hidden"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+  </svg>
+</button>
+
+<style>
+  #theme-toggle:focus,
+  #theme-toggle:active,
+  #theme-toggle:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+</style>
+
+<script>
+  let isTransitioning = false;
+
+  function initThemeToggle() {
+    // Clean up leftover overlays from Astro navigations
+    document.querySelectorAll('.dm-transition-overlay').forEach(el => el.remove());
+
+    const toggle = document.getElementById('theme-toggle');
+    if (!toggle) return;
+
+    // Clone to detach stale listeners
+    const btn = toggle.cloneNode(true) as HTMLElement;
+    toggle.parentNode?.replaceChild(btn, toggle);
+
+    btn.addEventListener('click', () => {
+      btn.blur();
+      if (isTransitioning) return;
+
+      const isDark = document.documentElement.classList.contains('dark');
+      const targetDark = !isDark;
+
+      // ── Reduced motion: instant switch ──
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.toggle('dark', targetDark);
+        localStorage.setItem('theme', targetDark ? 'dark' : 'light');
+        return;
+      }
+
+      isTransitioning = true;
+
+      // ── Origin = center of toggle button ──
+      const rect = btn.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+
+      // Radius large enough to cover the entire viewport
+      const endRadius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+      );
+
+      // ── Create the overlay ──
+      const overlay = document.createElement('div');
+      overlay.className = 'dm-transition-overlay';
+      overlay.setAttribute('aria-hidden', 'true');
+      Object.assign(overlay.style, {
+        position: 'fixed',
+        inset: '0',
+        zIndex: '99999',
+        pointerEvents: 'none',
+        background: targetDark ? '#09090b' : '#ffffff',
+        clipPath: `circle(0px at ${x}px ${y}px)`,
+        willChange: 'clip-path',
+      });
+      document.body.appendChild(overlay);
+
+      // ── Animate circle expanding ──
+      const animation = overlay.animate(
+        [
+          { clipPath: `circle(0px at ${x}px ${y}px)` },
+          { clipPath: `circle(${endRadius}px at ${x}px ${y}px)` },
+        ],
+        {
+          duration: 450,
+          easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        }
+      );
+
+      animation.onfinish = () => {
+        // 1. Freeze all CSS transitions — elements will snap, not fade
+        const noTransition = document.createElement('style');
+        noTransition.id = 'dm-no-transition';
+        noTransition.textContent =
+          '*,*::before,*::after{transition-duration:0s!important;transition-delay:0s!important}';
+        document.head.appendChild(noTransition);
+
+        // 2. Toggle the theme (under the now-opaque overlay)
+        document.documentElement.classList.toggle('dark', targetDark);
+        localStorage.setItem('theme', targetDark ? 'dark' : 'light');
+
+        // 3. Force synchronous layout — new colors apply immediately
+        void document.documentElement.offsetHeight;
+
+        // 4. Re-enable transitions (hover effects, etc.)
+        noTransition.remove();
+
+        // 5. Remove overlay after browser paints the new state
+        requestAnimationFrame(() => {
+          overlay.remove();
+          isTransitioning = false;
+        });
+      };
+    });
+  }
+
+  initThemeToggle();
+  document.addEventListener('astro:page-load', initThemeToggle);
+</script>
