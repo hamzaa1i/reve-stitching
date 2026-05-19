@@ -15,8 +15,17 @@ function getEnv(key: string, fallback?: string): string | undefined {
 
 export function getClient(): Client {
   if (!_client) {
+    const connectionUrl = getEnv("TURSO_CONNECTION_URL");
+
+    // Force an early crash with an explanation if keys are missing
+    if (!connectionUrl) {
+      throw new Error(
+        "CRITICAL: TURSO_CONNECTION_URL is missing from your environment variables!",
+      );
+    }
+
     _client = createClient({
-      url: getEnv("TURSO_CONNECTION_URL", "file:portal.db")!,
+      url: connectionUrl,
       authToken: getEnv("TURSO_AUTH_TOKEN") || undefined,
     });
   }
