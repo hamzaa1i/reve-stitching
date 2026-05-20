@@ -1,7 +1,8 @@
 import type { APIRoute } from "astro";
 import { getDb } from "../../../../../../db/index";
-import { orders, orderStages } from "../../../../../../db/schema";
+import { orders, orderStages, users } from "../../../../../../db/schema";
 import { eq } from "drizzle-orm";
+import { sendStageUpdateEmail } from "../../../../../../lib/portal-emails";
 
 export const POST: APIRoute = async ({ params, request, locals }) => {
   if (locals.user?.role !== "admin") {
@@ -24,7 +25,6 @@ export const POST: APIRoute = async ({ params, request, locals }) => {
       });
     }
 
-    // Add stage entry
     const stageId = crypto.randomUUID();
     await db.insert(orderStages).values({
       id: stageId,
@@ -35,15 +35,41 @@ export const POST: APIRoute = async ({ params, request, locals }) => {
       createdBy: locals.user!.id,
     });
 
-    // Update order status to match
     await db
       .update(orders)
       .set({
         status: stage,
-        updatedAt: new Date(),
         ...(stage === "delivered" ? { actualCompletion: new Date() } : {}),
       })
       .where(eq(orders.id, id!));
+
+    // Send email notification
+    try {
+      const order = await db
+        .select()
+        .from(orders)
+        .where(eq(orders.id, id!))
+        .get();
+      if (order) {
+        const client = await db
+          .select()
+          .from(users)
+          .where(eq(users.id, order.clientId))
+          .get();
+        if (client?.email) {
+          await sendStageUpdateEmail(
+            client.email,
+            client.name,
+            order.poNumber,
+            stage,
+            notes || null,
+            order.id,
+          );
+        }
+      }
+    } catch (emailErr) {
+      console.warn("[Portal] Stage email failed (non-critical):", emailErr);
+    }
 
     return new Response(JSON.stringify({ success: true, stageId }), {
       status: 201,

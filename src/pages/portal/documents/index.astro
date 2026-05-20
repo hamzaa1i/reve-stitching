@@ -1,61 +1,206 @@
 ---
 import PortalLayout from '../../../layouts/PortalLayout.astro';
 import { getDb } from '../../../db/index';
-import { documents } from '../../../db/schema';
-import { eq, desc } from 'drizzle-orm';
+import { messages, users } from '../../../db/schema';
+import { eq, or, desc } from 'drizzle-orm';
 
 const user = Astro.locals.user!;
 const db = getDb();
 
-let docs: typeof documents.$inferSelect[] = [];
+let userMessages: typeof messages.$inferSelect[] = [];
+let senderNames: Record<string, string> = {};
+
 try {
-  docs = await db.select().from(documents)
-    .where(eq(documents.clientId, user.id))
-    .orderBy(desc(documents.createdAt))
+  userMessages = await db.select().from(messages)
+    .where(or(eq(messages.senderId, user.id), eq(messages.recipientId, user.id)))
+    .orderBy(desc(messages.createdAt))
+    .limit(50)
     .all();
+
+  const allUsers = await db.select({ id: users.id, name: users.name }).from(users).all();
+  allUsers.forEach(u => { senderNames[u.id] = u.name; });
 } catch {}
 
-const typeIcons: Record<string, string> = {
-  invoice: 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z',
-  packing_list: 'M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z',
-  quality_report: 'M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z',
-  certificate: 'M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z',
-  tech_pack: 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z',
-  shipping: 'M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125v-1.5c0-1.036-.84-1.875-1.875-1.875H19.5m-12.75 0H5.625c-1.036 0-1.875.84-1.875 1.875v1.5c0 .621.504 1.125 1.125 1.125h1.5m12.75-8.25H5.625m12.75 0v-4.5a1.875 1.875 0 00-1.875-1.875h-9.75A1.875 1.875 0 004.125 6v4.5m14.25 0h.375a.375.375 0 01.375.375v.375a.375.375 0 01-.375.375H4.5a.375.375 0 01-.375-.375v-.375c0-.207.168-.375.375-.375h14.25',
-  other: 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z',
-};
-const typeLabels: Record<string, string> = {
-  invoice: 'Invoice', packing_list: 'Packing List', quality_report: 'Quality Report',
-  certificate: 'Certificate', tech_pack: 'Tech Pack', shipping: 'Shipping Doc', other: 'Document',
-};
+// Admin: get all clients to message
+let allClients: typeof users.$inferSelect[] = [];
+if (user.role === 'admin') {
+  try {
+    allClients = await db.select().from(users)
+      .where(eq(users.role, 'client'))
+      .all();
+  } catch {}
+}
 ---
 
-<PortalLayout title="Documents" activePage="documents">
-  <div class="mb-6">
-    <h1 class="text-xl font-bold text-white sm:text-2xl">Documents</h1>
-    <p class="mt-1 text-sm text-zinc-500">Invoices, quality reports, certificates, and shipping documents</p>
+<PortalLayout title="Messages" activePage="messages">
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <h1 class="text-xl font-bold text-white sm:text-2xl">Messages</h1>
+      <p class="mt-1 text-sm text-zinc-500">Communication with the Reve Stitching team</p>
+    </div>
+    {user.role === 'admin' && (
+      <button id="compose-btn" class="inline-flex items-center gap-2 rounded-xl bg-green-600 px-5 py-2.5 text-sm font-bold text-white transition-all hover:bg-green-500">
+        + Compose
+      </button>
+    )}
   </div>
 
-  {docs.length === 0 ? (
+  <!-- Compose Modal (admin only) -->
+  {user.role === 'admin' && (
+    <div id="compose-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      <div class="w-full max-w-lg rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+        <div class="mb-5 flex items-center justify-between">
+          <h2 class="text-lg font-bold text-white">New Message</h2>
+          <button id="compose-close" class="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-800 hover:text-white">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+        <form id="compose-form" class="space-y-4">
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-zinc-300">To *</label>
+            <select name="recipientId" required class="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-white outline-none focus:border-green-500">
+              <option value="">Select client...</option>
+              {allClients.map(c => (
+                <option value={c.id}>{c.name}{c.company ? ` — ${c.company}` : ''}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-zinc-300">Subject</label>
+            <input name="subject" placeholder="Optional subject..." class="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-white placeholder-zinc-500 outline-none focus:border-green-500" />
+          </div>
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-zinc-300">Message *</label>
+            <textarea name="body" required rows="4" placeholder="Type your message..." class="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-white placeholder-zinc-500 outline-none focus:border-green-500 resize-none"></textarea>
+          </div>
+          <div id="compose-error" class="hidden rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400"></div>
+          <button type="submit" id="compose-submit" class="w-full rounded-xl bg-green-600 py-3 text-sm font-bold text-white hover:bg-green-500 disabled:opacity-50">
+            Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+  )}
+
+  {userMessages.length === 0 ? (
     <div class="rounded-xl border border-zinc-800 bg-zinc-900 p-16 text-center">
-      <svg class="mx-auto mb-4 h-16 w-16 text-zinc-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75"><path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
-      <h3 class="text-lg font-bold text-white">No documents yet</h3>
-      <p class="mt-2 text-sm text-zinc-500">Documents will be uploaded here as your orders progress.</p>
+      <svg class="mx-auto mb-4 h-16 w-16 text-zinc-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.75"><path d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" /></svg>
+      <h3 class="text-lg font-bold text-white">No messages yet</h3>
+      <p class="mt-2 text-sm text-zinc-500">Messages about your orders will appear here.</p>
     </div>
   ) : (
-    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {docs.map((doc) => (
-        <a href={doc.fileUrl} target="_blank" class="group flex items-start gap-4 rounded-xl border border-zinc-800 bg-zinc-900 p-4 transition-all hover:border-zinc-700 hover:bg-zinc-800/50">
-          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-500/10">
-            <svg class="h-5 w-5 text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" set:html={typeIcons[doc.type || 'other'] || typeIcons.other} />
+    <div class="space-y-2">
+      {userMessages.map((msg) => {
+        const isMine = msg.senderId === user.id;
+        const otherPersonName = isMine ? senderNames[msg.recipientId] : senderNames[msg.senderId];
+        return (
+          <div
+            class={`rounded-xl border bg-zinc-900 p-4 transition-colors ${!msg.isRead && !isMine ? 'border-green-500/30 bg-green-500/5' : 'border-zinc-800'}`}
+            data-message-id={msg.id}
+            data-is-mine={String(isMine)}
+          >
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class={`text-xs font-semibold ${isMine ? 'text-blue-400' : 'text-green-400'}`}>
+                    {isMine ? 'You' : 'Reve Team'}
+                  </span>
+                  <span class="text-xs text-zinc-600">→</span>
+                  <span class="text-xs text-zinc-500">{otherPersonName || (isMine ? 'Reve Team' : 'You')}</span>
+                  {!msg.isRead && !isMine && (
+                    <span class="rounded-full bg-green-500/20 px-2 py-0.5 text-[10px] font-semibold text-green-400">New</span>
+                  )}
+                </div>
+                {msg.subject && <p class="mt-1 text-sm font-semibold text-white">{msg.subject}</p>}
+                <p class="mt-1 text-sm text-zinc-300 leading-relaxed">{msg.body}</p>
+              </div>
+              <span class="shrink-0 text-xs text-zinc-600">{msg.createdAt ? new Date(msg.createdAt).toLocaleDateString() : ''}</span>
+            </div>
           </div>
-          <div class="min-w-0 flex-1">
-            <div class="truncate text-sm font-medium text-white group-hover:text-green-400 transition-colors">{doc.filename}</div>
-            <div class="mt-0.5 text-xs text-zinc-500">{typeLabels[doc.type || 'other'] || 'Document'}</div>
-            <div class="mt-1 text-xs text-zinc-600">{doc.createdAt ? new Date(doc.createdAt).toLocaleDateString() : ''}</div>
-          </div>
-        </a>
-      ))}
+        );
+      })}
     </div>
   )}
 </PortalLayout>
+
+<script is:inline>
+  (function() {
+    // Mark messages as read
+    document.querySelectorAll('[data-message-id]').forEach(function(el) {
+      if (el.getAttribute('data-is-mine') === 'false') {
+        fetch('/api/portal/messages/read', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messageId: el.getAttribute('data-message-id') }),
+        }).catch(function() {});
+      }
+    });
+
+    // Compose modal
+    var composeBtn = document.getElementById('compose-btn');
+    var composeModal = document.getElementById('compose-modal');
+    var composeClose = document.getElementById('compose-close');
+    var composeForm = document.getElementById('compose-form');
+    var composeError = document.getElementById('compose-error');
+    var composeSubmit = document.getElementById('compose-submit');
+
+    if (composeBtn && composeModal) {
+      composeBtn.addEventListener('click', function() {
+        composeModal.classList.remove('hidden');
+        composeModal.classList.add('flex');
+      });
+    }
+    if (composeClose && composeModal) {
+      composeClose.addEventListener('click', function() {
+        composeModal.classList.add('hidden');
+        composeModal.classList.remove('flex');
+      });
+    }
+    if (composeModal) {
+      composeModal.addEventListener('click', function(e) {
+        if (e.target === composeModal) {
+          composeModal.classList.add('hidden');
+          composeModal.classList.remove('flex');
+        }
+      });
+    }
+
+    if (composeForm) {
+      composeForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (composeError) composeError.classList.add('hidden');
+        composeSubmit.disabled = true;
+        composeSubmit.textContent = 'Sending...';
+
+        var fd = new FormData(composeForm);
+        var body = Object.fromEntries(fd.entries());
+
+        fetch('/api/portal/messages/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        }).then(function(res) {
+          return res.json().then(function(data) {
+            if (res.ok) {
+              window.location.reload();
+            } else {
+              if (composeError) {
+                composeError.textContent = data.error || 'Failed to send';
+                composeError.classList.remove('hidden');
+              }
+              composeSubmit.disabled = false;
+              composeSubmit.textContent = 'Send Message';
+            }
+          });
+        }).catch(function() {
+          if (composeError) {
+            composeError.textContent = 'Network error';
+            composeError.classList.remove('hidden');
+          }
+          composeSubmit.disabled = false;
+          composeSubmit.textContent = 'Send Message';
+        });
+      });
+    }
+  })();
+</script>
