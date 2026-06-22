@@ -126,21 +126,39 @@ PUBLIC_SUPABASE_URL=
 PUBLIC_SUPABASE_ANON_KEY=
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# TURSO / LIBSQL (Client Portal Database)
+# Required for authenticated portal (users, sessions, orders, messages, documents)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TURSO_CONNECTION_URL=          # e.g. libsql://reve-stitching.turso.io (required)
+TURSO_AUTH_TOKEN=              # Turso auth token (required for cloud; omit for local file: URLs)
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # ADMIN AUTHENTICATION
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-ADMIN_JWT_SECRET=
+ADMIN_JWT_SECRET=              # Secret for admin HMAC token signing (used by /admin/*)
+ADMIN_EMAIL=                   # Admin login email (used by lib/auth.ts verifyCredentials)
+ADMIN_PASSWORD=                # Admin login password (plaintext in env; rotate regularly)
+PORTAL_ADMIN_PASSWORD=         # Initial admin password for `npm run db:seed` (required, min 12 chars)
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# PORTAL AUTHENTICATION (JWT)
+# Required for client portal session tokens
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+JWT_SECRET=                    # Generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))" (required, min 32 chars)
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # AI (GitHub Models)
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 GITHUB_TOKEN=
 GITHUB_MODEL=
+GEMINI_API_KEY=                # Optional — Gemini 2.0 Flash fallback for chatbot
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # EMAIL (RESEND)
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 RESEND_API_KEY=
-NOTIFICATION_EMAIL=
+NOTIFICATION_EMAIL=            # Destination for contact, chat, quote, sample notifications (required)
+TEAM_EMAIL=                    # Destination for admin reminder emails (required; can be same as NOTIFICATION_EMAIL)
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # DISCORD NOTIFICATIONS
@@ -148,10 +166,24 @@ NOTIFICATION_EMAIL=
 DISCORD_WEBHOOK_URL=
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# CLOUDFLARE TURNSTILE (Bot Protection)
+# Required for public form endpoints (/api/contact, /api/quote/submit, /api/samples/submit)
+# Get keys at https://dash.cloudflare.com/?to=/:account/turnstile
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TURNSTILE_SECRET_KEY=          # Server-side verification secret (required for bot protection)
+PUBLIC_TURNSTILE_SITE_KEY=     # Client-side site key (required; rendered in contact/quote/samples forms)
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # WHATSAPP
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 WHATSAPP_DISPLAY_NAME=
 PUBLIC_WHATSAPP_NUMBER=
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# ANALYTICS (Optional)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PUBLIC_UMAMI_WEBSITE_ID=       # Optional — Umami analytics website ID
+SENTRY_DSN=                    # Optional — Sentry error tracking DSN
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # SITE

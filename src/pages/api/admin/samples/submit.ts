@@ -5,6 +5,8 @@ import { createClient } from '@supabase/supabase-js';
 import { generateSampleReference } from '../../../../lib/services/sample-reference';
 import { sampleConfirmationEmail } from '../../../../lib/email-templates/sample-confirmation';
 import { Resend } from 'resend';
+import { getAdminFromCookies } from '../../../../lib/auth';
+import { checkRateLimit, getClientIp } from '../../../../lib/security';
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
