@@ -14,7 +14,25 @@ const supabase = createClient(
 
 const resend = new Resend(process.env.RESEND_API_KEY!);
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, cookies }) => {
+  // C-005 hotfix: require admin auth
+  const admin = getAdminFromCookies(cookies);
+  if (!admin) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  // C-010 hotfix (partial): rate limit even admin endpoints
+  const ip = getClientIp(request);
+  if (!checkRateLimit(ip, 10, 60_000)) {
+    return new Response(JSON.stringify({ error: 'Too many requests' }), {
+      status: 429,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   try {
     const body = await request.json();
 

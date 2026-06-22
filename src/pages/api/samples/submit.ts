@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { generateSampleReference } from '../../../lib/services/sample-reference';
 import { Resend } from 'resend';
+import { checkRateLimit, getClientIp, isHoneypotTriggered, sanitizeString, isValidEmail, truncate } from '../../../lib/security';
 
 export const prerender = false;
 
@@ -14,14 +15,33 @@ const supabase = createClient(
 const resend = new Resend(process.env.RESEND_API_KEY!);
 
 export const POST: APIRoute = async ({ request }) => {
+  // C-010 hotfix: rate limit + honeypot on public endpoint
+  const ip = getClientIp(request);
+  if (!checkRateLimit(ip, 3, 60_000)) {
+    return new Response(JSON.stringify({ error: 'Too many requests. Please wait a minute.' }), {
+      status: 429,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   try {
     const body = await request.json();
 
-    const { 
+    // Honeypot check
+    if (isHoneypotTriggered(body)) {
+      return new Response(JSON.stringify({ success: true, reference_number: 'SAMPLE-0000-XXXX' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const {
       company_name, contact_person, email, phone, country, shipping_address,
       product_type, fabric_type, gsm, color, size, quantity,
-      special_requirements, linked_quote_id 
+      special_requirements, linked_quote_id
     } = body;
+    // C-010 hotfix: sanitize all string inputs
+    const s = (v: unknown) => v ? truncate(sanitizeString(String(v)), 500) : '';
 
     // Validation
     const errors: string[] = [];
@@ -48,20 +68,20 @@ export const POST: APIRoute = async ({ request }) => {
 
     const insertData: Record<string, unknown> = {
       reference_number,
-      company_name: company_name.trim(),
-      contact_person: contact_person.trim(),
-      email: email.trim().toLowerCase(),
-      phone: phone?.trim() || null,
-      country: country.trim(),
-      shipping_address: shipping_address.trim(),
-      product_type,
-      fabric_type: fabric_type || null,
+      company_name: s(company_name),
+      contact_person: s(contact_person),
+      email: s(email).toLowerCase(),
+      phone: phone ? s(phone) : null,
+      country: s(country),
+      shipping_address: s(shipping_address),
+      product_type: s(product_type),
+      fabric_type: fabric_type ? s(fabric_type) : null,
       gsm: gsm ? parseInt(gsm, 10) : null,
-      color: color?.trim() || null,
-      size: size || null,
+      color: color ? s(color) : null,
+      size: size ? s(size) : null,
       quantity: parseInt(quantity, 10),
-      special_requirements: special_requirements?.trim() || null,
-      linked_quote_id: linked_quote_id?.trim() || null,
+      special_requirements: special_requirements ? s(special_requirements) : null,
+      linked_quote_id: linked_quote_id ? s(linked_quote_id) : null,
       status: 'new',
     };
 

@@ -47,7 +47,10 @@ interface FollowUpResult {
 // Configuration
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ADMIN_EMAIL = process.env.TEAM_EMAIL || 'hamzali.revesystems@gmail.com';
+const ADMIN_EMAIL = process.env.TEAM_EMAIL || process.env.NOTIFICATION_EMAIL || '';
+if (!ADMIN_EMAIL) {
+  console.warn('[FollowUp] TEAM_EMAIL or NOTIFICATION_EMAIL env var is not set; admin reminders will fail.');
+}
 const FROM_ADDRESS = 'Reve Stitching <notifications@revestitching.com>';
 const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL || '';
 

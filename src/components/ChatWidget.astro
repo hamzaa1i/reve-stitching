@@ -625,10 +625,20 @@ const defaultQuickReplies = [
       return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
+    function escapeHtml(s: string): string {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
     function formatMessage(text: string): string {
-      return text
+      // C-007 hotfix: escape input first, then apply markdown transforms
+      const escaped = escapeHtml(text);
+      return escaped
         .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
-        .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" class="text-green-600 dark:text-green-400 underline hover:text-green-700 dark:hover:text-green-300">$1</a>')
+        .replace(/\[(.*?)\]\((https?:[^)]+)\)/g, '<a href="$2" class="text-green-600 dark:text-green-400 underline hover:text-green-700 dark:hover:text-green-300">$1</a>')
         .replace(/\n/g, '<br/>');
     }
 

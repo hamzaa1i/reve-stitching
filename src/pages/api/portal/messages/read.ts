@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { getDb } from "../../../../db/index";
 import { messages } from "../../../../db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 export const POST: APIRoute = async ({ request, locals }) => {
   if (!locals.user) {
@@ -15,10 +15,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const db = getDb();
     const { messageId } = await request.json();
 
+    // C-011 hotfix: scope update to messages owned by the current user
     await db
       .update(messages)
       .set({ isRead: true })
-      .where(eq(messages.id, messageId));
+      .where(and(eq(messages.id, messageId), eq(messages.recipientId, locals.user.id)));
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,

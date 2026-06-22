@@ -21,7 +21,12 @@ async function seed() {
   }
 
   const id = crypto.randomUUID();
-  const passwordHash = await hashPassword("Admin@2025");
+  const adminPassword = process.env.PORTAL_ADMIN_PASSWORD;
+  if (!adminPassword || adminPassword.length < 12) {
+    console.error("❌ PORTAL_ADMIN_PASSWORD env var is required (min 12 chars).");
+    process.exit(1);
+  }
+  const passwordHash = await hashPassword(adminPassword);
 
   await db.insert(users).values({
     id,
@@ -32,7 +37,7 @@ async function seed() {
     status: "active",
   });
 
-  console.log(`✅ Admin created: ${adminEmail} / Admin@2025`);
+  console.log(`✅ Admin created: ${adminEmail} (password read from env var)`);
   process.exit(0);
 }
 

@@ -9,7 +9,12 @@ const JWT_SECRET = () => {
     typeof import.meta !== "undefined" && import.meta.env
       ? import.meta.env.JWT_SECRET
       : process.env.JWT_SECRET;
-  return new TextEncoder().encode(secret || "fallback-dev-secret-change-me");
+  if (!secret || secret.length < 32) {
+    throw new Error(
+      "JWT_SECRET environment variable is required and must be at least 32 characters long."
+    );
+  }
+  return new TextEncoder().encode(secret);
 };
 const SESSION_COOKIE = "portal_session";
 const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
