@@ -203,6 +203,19 @@ const labelClass = 'mb-2 block text-sm font-semibold text-zinc-700 dark:text-zin
         <!-- Error -->
         <div id="errorMsg" class="mb-4 hidden rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-400"></div>
 
+        {/* Cloudflare Turnstile — bot protection (Fix 2) */}
+        {import.meta.env.PUBLIC_TURNSTILE_SITE_KEY && (
+          <div class="mb-6">
+            <div id="turnstile-container-samples" data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY} data-size="normal" data-theme="auto"></div>
+          </div>
+        )}
+
+        {/* Honeypot field — hidden from real users, bots fill it */}
+        <div class="absolute -left-[9999px] top-auto h-0 w-0 overflow-hidden opacity-0" aria-hidden="true" tabindex="-1">
+          <label htmlFor="company_website">Company Website</label>
+          <input type="text" id="company_website" name="company_website" autocomplete="off" tabindex="-1" />
+        </div>
+
         <!-- Submit -->
         <div class="flex items-center justify-between border-t border-zinc-200 pt-6 dark:border-zinc-800">
           <p class="text-xs text-zinc-500 dark:text-zinc-500">* Required fields</p>
@@ -247,6 +260,12 @@ const labelClass = 'mb-2 block text-sm font-semibold text-zinc-700 dark:text-zin
           if (value) data[key] = value;
         });
 
+        // Add Turnstile response token (Fix 2)
+        const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]') as HTMLInputElement | null;
+        if (turnstileResponse) {
+          data.cf_turnstile_response = turnstileResponse.value;
+        }
+
         const res = await fetch('/api/samples/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -265,4 +284,54 @@ const labelClass = 'mb-2 block text-sm font-semibold text-zinc-700 dark:text-zin
       }
     });
   });
+</script>
+
+<!-- Turnstile explicit-render helper (Fix 2: same pattern as contact + quote) -->
+<script is:inline>
+  (function () {
+    var MAX_RETRIES = 10;
+    var renderedWidgetId = null;
+
+    function initTurnstile() {
+      var container = document.getElementById('turnstile-container-samples');
+      if (!container) return; // not on this page
+      if (renderedWidgetId !== null) return; // already rendered
+
+      var SITE_KEY = container.dataset.sitekey;
+      if (!SITE_KEY) return; // env var not configured
+
+      if (typeof window.turnstile === 'undefined' || !window.turnstile.render) {
+        if ((container.dataset.retries = (parseInt(container.dataset.retries || '0', 10) + 1)) <= MAX_RETRIES) {
+          setTimeout(initTurnstile, 100);
+        } else {
+          console.error('[Turnstile] Failed to load Cloudflare script after ' + MAX_RETRIES + ' retries — widget will not render. Check network connectivity.');
+        }
+        return;
+      }
+
+      try {
+        renderedWidgetId = window.turnstile.render('#turnstile-container-samples', {
+          sitekey: SITE_KEY,
+          size: container.dataset.size || 'normal',
+          theme: container.dataset.theme || 'auto'
+        });
+      } catch (err) {
+        console.error('[Turnstile] Render error:', err);
+      }
+    }
+
+    initTurnstile();
+
+    document.addEventListener('astro:page-load', function () {
+      renderedWidgetId = null;
+      initTurnstile();
+    });
+
+    document.addEventListener('astro:before-swap', function () {
+      if (renderedWidgetId !== null && typeof window.turnstile !== 'undefined' && window.turnstile.remove) {
+        try { window.turnstile.remove(renderedWidgetId); } catch (e) { /* ignore */ }
+        renderedWidgetId = null;
+      }
+    });
+  })();
 </script>

@@ -16,13 +16,26 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.production
+.env.local
 
 # macOS-specific files
 .DS_Store
 
 # jetbrains setting folder
 .idea/
+
+# vercel local output
 .vercel/
-.env.local
+
+# local sqlite databases
 portal.db
 *.db
+
+# debug / temp artifacts (Phase 1 cleanup)
+test-connection.txt
+auth
+auth-wal
+
+# misc temp files
+*.tmp
+*.bak
