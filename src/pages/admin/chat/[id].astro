@@ -6,6 +6,9 @@ export const prerender = false;
 
 const { id } = Astro.params;
 
+// Phase 2.3: SSR still uses service-role key server-side to fetch initial messages.
+// All subsequent writes and polls go through /api/admin/chat/[id]/* endpoints
+// which verify the admin cookie — no Supabase credentials leak to the browser.
 const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -35,9 +38,6 @@ const ssrMessageIds = (messages || []).map((m: any) => m.id);
 const lastMsgTime = messages && messages.length > 0
   ? messages[messages.length - 1].created_at
   : new Date().toISOString();
-
-const supabaseUrl = process.env.SUPABASE_URL || import.meta.env.PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 ---
 
 <AdminLayout title={`Chat — ${session.visitor_name || 'Visitor'}`}>
@@ -104,16 +104,17 @@ const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.env.
 
 </AdminLayout>
 
-<script is:inline define:vars={{ sessionId: id, supabaseUrl, supabaseKey: supabaseAnonKey, sessionStatus: session.status, ssrMessageIds, lastMsgTime }}>
-  (async () => {
-    var mod = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/+esm');
-    var supabase = mod.createClient(supabaseUrl, supabaseKey);
+<script is:inline define:vars={{ sessionId: id, sessionStatus: session.status, ssrMessageIds, lastMsgTime }}>
+  // Phase 2.3: All Supabase writes/polls now go through server-side API routes
+  // that verify the admin cookie. No Supabase credentials in the browser.
+  (function () {
     var messagesDiv = document.getElementById('admin-messages');
     var form = document.getElementById('admin-chat-form');
     var input = document.getElementById('admin-chat-input');
     var closeBtn = document.getElementById('close-session-btn');
     var renderedIds = new Set(ssrMessageIds);
     var lastCheck = lastMsgTime;
+    var pollTimer = null;
 
     function scrollToBottom() { if (messagesDiv) messagesDiv.scrollTop = messagesDiv.scrollHeight; }
     scrollToBottom();
@@ -125,13 +126,13 @@ const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.env.
       var div = document.createElement('div');
       div.className = 'flex ' + (sender === 'admin' ? 'justify-end' : 'justify-start');
       var time = new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      // Fix 3 (validation pass): build DOM via createElement to avoid innerHTML XSS via visitor message text
+      // Build DOM via createElement to avoid innerHTML XSS via visitor message text
       var wrapper = document.createElement('div');
       wrapper.className = 'max-w-[70%]';
       var bubble = document.createElement('div');
       bubble.className = 'rounded-2xl px-4 py-3 text-sm leading-relaxed ' +
         (sender === 'admin' ? 'bg-primary text-white rounded-tr-md' : 'bg-zinc-100 text-zinc-700 rounded-tl-md');
-      // Render the text safely: escape, then split on \n and join with <br> elements
+      // Render the text safely: split on \n and join with <br> elements
       var lines = String(text).split('\n');
       for (var i = 0; i < lines.length; i++) {
         if (i > 0) bubble.appendChild(document.createElement('br'));
@@ -148,6 +149,7 @@ const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.env.
       scrollToBottom();
     }
 
+    // ── Send message via server-side API ──
     if (form && input) {
       input.addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); form.dispatchEvent(new Event('submit')); } });
       input.addEventListener('input', function() { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 120) + 'px'; });
@@ -160,42 +162,77 @@ const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.env.
         input.focus();
         appendMessage(text, 'admin', new Date().toISOString());
         try {
-          var result = await supabase.from('chat_messages').insert({ session_id: sessionId, sender: 'admin', message: text }).select('id, created_at').single();
-          if (result.data) { renderedIds.add(result.data.id); if (result.data.created_at > lastCheck) lastCheck = result.data.created_at; }
+          var res = await fetch('/api/admin/chat/' + sessionId + '/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: text })
+          });
+          if (res.ok) {
+            var data = await res.json();
+            if (data.id) renderedIds.add(data.id);
+            if (data.created_at && data.created_at > lastCheck) lastCheck = data.created_at;
+          } else {
+            console.warn('Send failed:', res.status, await res.text());
+          }
         } catch (err) { console.warn('Send failed:', err); }
       });
     }
 
+    // ── Poll for new visitor messages via server-side API ──
     if (sessionStatus !== 'closed') {
-      setInterval(async function() {
+      pollTimer = setInterval(async function() {
         try {
-          var result = await supabase.from('chat_messages').select('id, sender, message, created_at').eq('session_id', sessionId).gt('created_at', lastCheck).order('created_at', { ascending: true });
-          if (result.data) {
-            for (var i = 0; i < result.data.length; i++) {
-              var msg = result.data[i];
+          var res = await fetch('/api/admin/chat/' + sessionId + '/poll?after=' + encodeURIComponent(lastCheck), {
+            headers: { 'Cache-Control': 'no-store' }
+          });
+          if (!res.ok) { console.warn('Poll failed:', res.status); return; }
+          var data = await res.json();
+          if (data.messages && data.messages.length > 0) {
+            for (var i = 0; i < data.messages.length; i++) {
+              var msg = data.messages[i];
               lastCheck = msg.created_at;
               if (renderedIds.has(msg.id)) continue;
               renderedIds.add(msg.id);
-              if (msg.sender === 'visitor') {
-                appendMessage(msg.message, msg.sender, msg.created_at);
-                if (msg.message === '(Visitor left the chat)') {
-                  var statusEl = document.getElementById('session-status');
-                  if (statusEl) { statusEl.textContent = 'closed'; statusEl.className = 'font-medium text-zinc-400'; }
-                  if (input) input.disabled = true;
-                }
+              appendMessage(msg.message, msg.sender, msg.created_at);
+              if (msg.message === '(Visitor left the chat)') {
+                var statusEl = document.getElementById('session-status');
+                if (statusEl) { statusEl.textContent = 'closed'; statusEl.className = 'font-medium text-zinc-400'; }
+                if (input) input.disabled = true;
+                if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
               }
             }
+          }
+          // If server says session is closed, stop polling
+          if (data.sessionStatus === 'closed') {
+            var statusEl2 = document.getElementById('session-status');
+            if (statusEl2) { statusEl2.textContent = 'closed'; statusEl2.className = 'font-medium text-zinc-400'; }
+            if (input) input.disabled = true;
+            if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
           }
         } catch (err) { console.warn('Poll error:', err); }
       }, 2000);
     }
 
+    // ── Close session via server-side API ──
     if (closeBtn) {
       closeBtn.addEventListener('click', async function() {
         if (!confirm('Close this chat session?')) return;
-        await supabase.from('chat_sessions').update({ status: 'closed' }).eq('id', sessionId);
-        await supabase.from('chat_messages').insert({ session_id: sessionId, sender: 'admin', message: 'This chat session has been closed. Thank you for contacting us!' });
-        window.location.reload();
+        try {
+          var res = await fetch('/api/admin/chat/' + sessionId + '/send?action=close', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({})
+          });
+          if (!res.ok) {
+            console.warn('Close failed:', res.status, await res.text());
+            alert('Failed to close session. Please try again.');
+            return;
+          }
+          window.location.reload();
+        } catch (err) {
+          console.warn('Close failed:', err);
+          alert('Network error closing session. Please try again.');
+        }
       });
     }
   })();

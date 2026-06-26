@@ -8,8 +8,22 @@ import {
   getSessionCookieName,
   getSessionDuration,
 } from "../../../../lib/portal-auth";
+import { checkRateLimit, getClientIp } from "../../../../lib/security";
 
 export const POST: APIRoute = async ({ request, cookies }) => {
+  // Phase 2.1: Rate limit — 5 attempts per IP per 15 minutes (matches admin login pattern).
+  // Prevents credential stuffing against portal user accounts.
+  const ip = getClientIp(request);
+  if (!checkRateLimit(ip, 5, 15 * 60_000)) {
+    return new Response(
+      JSON.stringify({ error: "Too many login attempts. Please try again later." }),
+      {
+        status: 429,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  }
+
   try {
     const body = await request.json();
     const { email, password } = body;
@@ -32,6 +46,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       .get();
 
     if (!user) {
+      console.warn(`[Portal] Failed login from ${ip}`);
       return new Response(
         JSON.stringify({ error: "Invalid email or password" }),
         {
@@ -43,6 +58,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     const valid = await verifyPassword(password, user.passwordHash);
     if (!valid) {
+      console.warn(`[Portal] Failed login from ${ip}`);
       return new Response(
         JSON.stringify({ error: "Invalid email or password" }),
         {
@@ -87,6 +103,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       maxAge: getSessionDuration() / 1000,
     });
 
+    console.log(`[Portal] User logged in from ${ip}: ${user.email}`);
     return new Response(
       JSON.stringify({
         user: {
