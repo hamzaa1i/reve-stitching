@@ -3,6 +3,7 @@ import { Resend } from "resend";
 const resend = new Resend(import.meta.env.RESEND_API_KEY);
 
 const FROM = "Reve Stitching <noreply@revestitching.com>";
+const REPLY_TO = "info@revestitching.com";
 
 const baseStyle = `
   font-family: Inter, -apple-system, sans-serif;
@@ -82,6 +83,7 @@ export async function sendAccountApprovedEmail(to: string, name: string) {
 
   return resend.emails.send({
     from: FROM,
+    replyTo: REPLY_TO,
     to,
     subject: "Your Reve Stitching portal account is ready",
     html: emailWrapper(content),
@@ -147,6 +149,7 @@ export async function sendStageUpdateEmail(
 
   return resend.emails.send({
     from: FROM,
+    replyTo: REPLY_TO,
     to,
     subject: `${emoji} ${label} — Order ${poNumber}`,
     html: emailWrapper(content),
@@ -181,6 +184,7 @@ export async function sendNewMessageEmail(
 
   return resend.emails.send({
     from: FROM,
+    replyTo: REPLY_TO,
     to,
     subject: subject ? `💬 ${subject}` : "💬 New message from Reve Stitching",
     html: emailWrapper(content),
@@ -220,6 +224,7 @@ export async function sendQuoteReadyEmail(
 
   return resend.emails.send({
     from: FROM,
+    replyTo: REPLY_TO,
     to,
     subject: `📋 Your quote for ${productType} is ready`,
     html: emailWrapper(content),

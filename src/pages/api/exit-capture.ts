@@ -7,6 +7,7 @@ import {
   truncate,
 } from '../../lib/security';
 import { captureException } from '../../lib/sentry';
+import { json } from '../../lib/utils';
 
 export const prerender = false;
 
@@ -43,10 +44,3 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ error: 'Failed to process request' }, 500);
   }
 };
-
-function json(data: object, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json' },
-  });
-}

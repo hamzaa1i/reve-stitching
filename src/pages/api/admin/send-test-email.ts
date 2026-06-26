@@ -5,6 +5,7 @@ import { getAdminFromCookies } from '../../../lib/auth';
 import { generateQuoteUnderReviewEmail } from '../../../lib/email-templates/quote-under-review';
 import { generateAdminReminderEmail } from '../../../lib/email-templates/admin-reminder';
 import { generateReengagementEmail } from '../../../lib/email-templates/quote-reengagement';
+import { json, isValidEmail } from '../../../lib/utils';
 
 export const prerender = false;
 
@@ -110,15 +111,4 @@ function sanitizeBrandingOverride(input: unknown): Record<string, string> | null
   }
 
   return Object.keys(cleaned).length > 0 ? cleaned : null;
-}
-
-function isValidEmail(email: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-function json(data: object, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json' },
-  });
 }

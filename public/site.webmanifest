@@ -1,21 +1,25 @@
 {
   "name": "Reve Stitching",
   "short_name": "Reve Stitching",
+  "description": "Premium 100% export-oriented knitted garment manufacturer based in Faisalabad, Pakistan.",
+  "start_url": "/",
+  "scope": "/",
   "icons": [
     {
-      "src": "/web-app-manifest-192x192.png",
-      "sizes": "192x192",
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any"
     },
     {
-      "src": "/web-app-manifest-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ],
   "theme_color": "#166534",
   "background_color": "#ffffff",
-  "display": "standalone"
+  "display": "standalone",
+  "orientation": "portrait-primary"
 }

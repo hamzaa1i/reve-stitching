@@ -21,15 +21,11 @@ import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { getAdminFromCookies } from '../../../../../lib/auth';
 import { truncate, sanitizeString } from '../../../../../lib/security';
+import { json } from '../../../../../lib/utils';
 
 export const prerender = false;
 
-function json(data: object, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json' },
-  });
-}
+
 
 function getSupabase() {
   const url = process.env.SUPABASE_URL;

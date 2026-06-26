@@ -28,6 +28,7 @@ export async function notifyNewContact(data: ContactData) {
     
     const result = await resend.emails.send({
       from: 'notifications@revestitching.com',
+      replyTo: 'info@revestitching.com',
       to: (import.meta.env.NOTIFICATION_EMAIL || 'hamzali.revesystems@gmail.com'),
       subject: `🔔 New Contact: ${data.subject}`,
       html: `
@@ -92,6 +93,7 @@ export async function notifyNewChat(data: ChatData) {
     
     const result = await resend.emails.send({
       from: 'notifications@revestitching.com',
+      replyTo: 'info@revestitching.com',
       to: (import.meta.env.NOTIFICATION_EMAIL || 'hamzali.revesystems@gmail.com'),
       subject: '💬 New Live Chat Request',
       html: `
@@ -171,6 +173,7 @@ export async function notifyNewQuote(quote: QuoteRequest) {
     
     await resend.emails.send({
       from: 'notifications@revestitching.com',
+      replyTo: 'info@revestitching.com',
       to: (import.meta.env.NOTIFICATION_EMAIL || 'hamzali.revesystems@gmail.com'),
       subject: `🎯 New Quote: ${quote.reference_number} — ${quote.company_name}`,
       html: `
@@ -276,6 +279,7 @@ export async function sendQuoteCustomerConfirmation(quote: QuoteRequest) {
     
     await resend.emails.send({
       from: 'notifications@revestitching.com',
+      replyTo: 'info@revestitching.com',
       to: quote.email,
       subject: `Quote Request Received — ${quote.reference_number}`,
       html: `

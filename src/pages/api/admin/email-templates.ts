@@ -4,6 +4,7 @@ import type { APIRoute } from 'astro';
 import { getAdminFromCookies } from '../../../lib/auth';
 import { getTemplateSettings, saveTemplateSettings, getDefaultSettings } from '../../../lib/email-templates/template-storage';
 import { clearTemplateCache } from '../../../lib/email-templates/_layout';
+import { json } from '../../../lib/utils';
 
 export const prerender = false;
 
@@ -85,10 +86,3 @@ export const DELETE: APIRoute = async ({ cookies }) => {
     return json({ error: 'Failed to reset settings' }, 500);
   }
 };
-
-function json(data: object, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json' },
-  });
-}

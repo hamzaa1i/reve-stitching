@@ -10,6 +10,7 @@ import {
   sanitizeString,
   isValidEmail,
 } from '../../../lib/security';
+import { json } from '../../../lib/utils';
 
 export const prerender = false;
 
@@ -60,10 +61,3 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     return json({ error: 'Server error. Please try again.' }, 500);
   }
 };
-
-function json(data: object, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json' },
-  });
-}

@@ -3,6 +3,7 @@ import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { checkAndSendFollowUps } from '../../../lib/services/follow-up-emails';
 import { getAdminFromCookies } from '../../../lib/auth';
+import { json } from '../../../lib/utils';
 
 export const prerender = false;
 
@@ -43,10 +44,3 @@ export const POST: APIRoute = async ({ cookies }) => {
     }, 500);
   }
 };
-
-function json(data: object, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json' },
-  });
-}

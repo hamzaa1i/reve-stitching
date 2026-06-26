@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /admin/
+Disallow: /portal/
 Disallow: /api/
 
 Sitemap: https://revestitching.com/sitemap-index.xml
