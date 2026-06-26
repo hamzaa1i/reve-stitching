@@ -71,20 +71,45 @@
 
       if (data.success) {
         resultDiv.className = 'trigger-result success';
-        resultDiv.innerHTML =
-          '<strong>Follow-ups sent successfully!</strong>' +
-          '<div class="result-stats">' +
-            '<div class="stat"><span class="stat-value">' + data.emailsSent + '</span><span class="stat-label">Emails Sent</span></div>' +
-            '<div class="stat"><span class="stat-value">' + data.quotesProcessed + '</span><span class="stat-label">Quotes Checked</span></div>' +
-            '<div class="stat"><span class="stat-value">' + data.duration + '</span><span class="stat-label">Duration</span></div>' +
-            '<div class="stat"><span class="stat-value">' + data.errors + '</span><span class="stat-label">Errors</span></div>' +
-          '</div>';
+        // Phase 3: build DOM safely instead of innerHTML — server response values
+        // are numbers but defense-in-depth says don't trust them
+        resultDiv.textContent = '';
+        var successStrong = document.createElement('strong');
+        successStrong.textContent = 'Follow-ups sent successfully!';
+        resultDiv.appendChild(successStrong);
+        var statsDiv = document.createElement('div');
+        statsDiv.className = 'result-stats';
+        var stats = [
+          { value: data.emailsSent, label: 'Emails Sent' },
+          { value: data.quotesProcessed, label: 'Quotes Checked' },
+          { value: data.duration, label: 'Duration' },
+          { value: data.errors, label: 'Errors' }
+        ];
+        for (var si = 0; si < stats.length; si++) {
+          var statDiv = document.createElement('div');
+          statDiv.className = 'stat';
+          var valSpan = document.createElement('span');
+          valSpan.className = 'stat-value';
+          valSpan.textContent = String(stats[si].value);
+          var lblSpan = document.createElement('span');
+          lblSpan.className = 'stat-label';
+          lblSpan.textContent = stats[si].label;
+          statDiv.appendChild(valSpan);
+          statDiv.appendChild(lblSpan);
+          statsDiv.appendChild(statDiv);
+        }
+        resultDiv.appendChild(statsDiv);
       } else {
         throw new Error(data.error || 'Unknown error');
       }
     } catch (error) {
       resultDiv.className = 'trigger-result error';
-      resultDiv.innerHTML = '<strong>Error:</strong> ' + (error.message || 'Failed to send follow-ups');
+      // Phase 3: build DOM safely — error.message may contain server-controlled text
+      resultDiv.textContent = '';
+      var errStrong = document.createElement('strong');
+      errStrong.textContent = 'Error:';
+      resultDiv.appendChild(errStrong);
+      resultDiv.appendChild(document.createTextNode(' ' + (error.message || 'Failed to send follow-ups')));
     } finally {
       btn.disabled = false;
       btnText.style.display = 'block';

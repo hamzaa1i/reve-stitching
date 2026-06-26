@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { escapeHtml } from './security';
 
 interface ContactData {
   name: string;
@@ -12,16 +13,6 @@ interface ChatData {
   sessionId: string;
   visitorName?: string;
   visitorEmail?: string;
-}
-
-// C-008 hotfix: HTML-escape user input before interpolating into email HTML
-function escapeHtml(s: unknown): string {
-  return String(s ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
 }
 
 export async function notifyNewContact(data: ContactData) {

@@ -400,8 +400,14 @@ const settings = await getTemplateSettings();
     preview.company.textContent = inputs.company_name.value || 'Company Name';
     preview.tagline.textContent = inputs.tagline.value || 'Tagline';
     
-    // Update footer
-    preview.footer.innerHTML = (inputs.footer_text.value || '').replace(/\n/g, '<br>');
+    // Update footer — Phase 3: use textContent + <br> elements to prevent HTML injection
+    // via admin-edited footer text. Previous code used innerHTML with raw input.
+    preview.footer.textContent = '';
+    var footerLines = (inputs.footer_text.value || '').split('\n');
+    for (var fi = 0; fi < footerLines.length; fi++) {
+      if (fi > 0) preview.footer.appendChild(document.createElement('br'));
+      preview.footer.appendChild(document.createTextNode(footerLines[fi]));
+    }
   }
 
   // Sync color picker with hex input
@@ -453,13 +459,23 @@ const settings = await getTemplateSettings();
 
       if (result.success) {
         resultDiv.className = 'rounded-lg p-3 text-sm bg-green-50 text-green-800 border border-green-200';
-        resultDiv.innerHTML = '<strong>✓ Saved!</strong> Changes will apply to all future emails.';
+        // Phase 3: build DOM safely instead of innerHTML
+        resultDiv.textContent = '';
+        var successStrong = document.createElement('strong');
+        successStrong.textContent = '✓ Saved!';
+        resultDiv.appendChild(successStrong);
+        resultDiv.appendChild(document.createTextNode(' Changes will apply to all future emails.'));
       } else {
         throw new Error(result.error || 'Save failed');
       }
     } catch (err) {
       resultDiv.className = 'rounded-lg p-3 text-sm bg-red-50 text-red-800 border border-red-200';
-      resultDiv.innerHTML = '<strong>✗ Error:</strong> ' + err.message;
+      // Phase 3: build DOM safely — err.message may contain server-controlled text
+      resultDiv.textContent = '';
+      var errorStrong = document.createElement('strong');
+      errorStrong.textContent = '✗ Error:';
+      resultDiv.appendChild(errorStrong);
+      resultDiv.appendChild(document.createTextNode(' ' + (err.message || 'Unknown error')));
     }
 
     resultDiv.style.display = 'block';

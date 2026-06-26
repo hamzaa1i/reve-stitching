@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { generateSampleReference } from '../../../lib/services/sample-reference';
 import { Resend } from 'resend';
-import { checkRateLimit, getClientIp, isHoneypotTriggered, sanitizeString, isValidEmail, truncate, verifyTurnstile } from '../../../lib/security';
+import { checkRateLimit, getClientIp, isHoneypotTriggered, sanitizeString, isValidEmail, truncate, verifyTurnstile, escapeHtml } from '../../../lib/security';
 
 export const prerender = false;
 
@@ -13,16 +13,6 @@ const supabase = createClient(
 );
 
 const resend = new Resend(process.env.RESEND_API_KEY!);
-
-// C-008 hotfix (extension): HTML-escape user input before interpolating into email HTML
-function escapeHtml(s: unknown): string {
-  return String(s ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
 
 export const POST: APIRoute = async ({ request }) => {
   // C-010 hotfix: rate limit + honeypot on public endpoint
