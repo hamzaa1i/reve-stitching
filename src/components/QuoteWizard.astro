@@ -461,9 +461,9 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
               <input type="text" id="company_website" name="company_website" autocomplete="off" />
             </div>
 
-            <!-- Cloudflare Turnstile -->
+            <!-- Cloudflare Turnstile — explicit render target (no cf-turnstile class to avoid auto-init reliance) -->
             {import.meta.env.PUBLIC_TURNSTILE_SITE_KEY && (
-              <div class="cf-turnstile" data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY} data-size="normal" data-theme="auto"></div>
+              <div id="turnstile-container-quote" data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY} data-size="normal" data-theme="auto"></div>
             )}
           </div>
         </div>
@@ -1574,4 +1574,58 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
 
   // Works on initial load AND Astro view transitions
   document.addEventListener('astro:page-load', initQuoteWizard);
+</script>
+
+<!-- Turnstile explicit-render helper (Fix 1: timing + view transitions) -->
+<script is:inline>
+  (function () {
+    var MAX_RETRIES = 10;
+    var renderedWidgetId = null;
+
+    function initTurnstile() {
+      var container = document.getElementById('turnstile-container-quote');
+      if (!container) return; // wizard not on this page
+      if (renderedWidgetId !== null) return; // already rendered
+
+      var SITE_KEY = container.dataset.sitekey;
+      if (!SITE_KEY) return; // env var not configured
+
+      if (typeof window.turnstile === 'undefined' || !window.turnstile.render) {
+        // Script not ready yet — retry with backoff
+        if ((container.dataset.retries = (parseInt(container.dataset.retries || '0', 10) + 1)) <= MAX_RETRIES) {
+          setTimeout(initTurnstile, 100);
+        } else {
+          console.error('[Turnstile] Failed to load Cloudflare script after ' + MAX_RETRIES + ' retries — widget will not render. Check network connectivity.');
+        }
+        return;
+      }
+
+      try {
+        renderedWidgetId = window.turnstile.render('#turnstile-container-quote', {
+          sitekey: SITE_KEY,
+          size: container.dataset.size || 'normal',
+          theme: container.dataset.theme || 'auto'
+        });
+      } catch (err) {
+        console.error('[Turnstile] Render error:', err);
+      }
+    }
+
+    // Initial render attempt
+    initTurnstile();
+
+    // Reinitialize after Astro view transitions
+    document.addEventListener('astro:page-load', function () {
+      renderedWidgetId = null; // reset so initTurnstile will re-render
+      initTurnstile();
+    });
+
+    // Reset widget before Astro swaps the DOM (clean up Cloudflare's iframe)
+    document.addEventListener('astro:before-swap', function () {
+      if (renderedWidgetId !== null && typeof window.turnstile !== 'undefined' && window.turnstile.remove) {
+        try { window.turnstile.remove(renderedWidgetId); } catch (e) { /* ignore */ }
+        renderedWidgetId = null;
+      }
+    });
+  })();
 </script>

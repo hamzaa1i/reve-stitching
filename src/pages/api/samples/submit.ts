@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { generateSampleReference } from '../../../lib/services/sample-reference';
 import { Resend } from 'resend';
-import { checkRateLimit, getClientIp, isHoneypotTriggered, sanitizeString, isValidEmail, truncate } from '../../../lib/security';
+import { checkRateLimit, getClientIp, isHoneypotTriggered, sanitizeString, isValidEmail, truncate, verifyTurnstile } from '../../../lib/security';
 
 export const prerender = false;
 
@@ -43,6 +43,14 @@ export const POST: APIRoute = async ({ request }) => {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
       });
+    }
+
+    // Turnstile check (Fix 2 — matches pattern in /api/contact.ts and /api/quote/submit.ts)
+    if (!await verifyTurnstile(body.cf_turnstile_response)) {
+      return new Response(
+        JSON.stringify({ error: 'Spam verification failed. Please try again.' }),
+        { status: 403, headers: { 'Content-Type': 'application/json' } }
+      );
     }
 
     const {
