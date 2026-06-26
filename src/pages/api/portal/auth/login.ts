@@ -11,10 +11,12 @@ import {
 import { checkRateLimit, getClientIp } from "../../../../lib/security";
 
 export const POST: APIRoute = async ({ request, cookies }) => {
-  // Phase 2.1: Rate limit — 5 attempts per IP per 15 minutes (matches admin login pattern).
-  // Prevents credential stuffing against portal user accounts.
+  // Phase 3 (adjusted): Rate limit — 10 attempts per IP per 15 minutes.
+  // Original Phase 2 limit of 5 was too strict for legitimate users who log
+  // in and out multiple times during the workday. 10 still blocks brute force
+  // while allowing normal usage patterns.
   const ip = getClientIp(request);
-  if (!checkRateLimit(ip, 5, 15 * 60_000)) {
+  if (!checkRateLimit(ip, 10, 15 * 60_000)) {
     return new Response(
       JSON.stringify({ error: "Too many login attempts. Please try again later." }),
       {

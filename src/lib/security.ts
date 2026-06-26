@@ -47,6 +47,23 @@ export function sanitizeString(input: string): string {
   return input.replace(HTML_TAG_REGEX, '').trim();
 }
 
+// ── HTML Output Encoding (Phase 3: canonical escapeHtml) ──
+// Use this when interpolating user-controlled data into HTML strings (email
+// templates, admin notifications, etc.). Prevents stored/reflected XSS by
+// escaping the 5 characters that matter for HTML parsing.
+//
+// For DOM manipulation in browser scripts, prefer element.textContent = value
+// over escapeHtml + innerHTML. This helper is for server-side string building
+// where textContent isn't available.
+export function escapeHtml(s: unknown): string {
+  return String(s ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // ── Email Validation ──
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

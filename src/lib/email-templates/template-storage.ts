@@ -309,16 +309,9 @@ export function clearContentCache(): void {
 
 /**
  * Replace {variable} placeholders in a template string.
+ * Phase 3: escapeHtml now imported from src/lib/security.ts (canonical source).
  */
-// C-009 hotfix: HTML-escape values before substitution into templates
-function escapeHtml(s: unknown): string {
-  return String(s ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
+import { escapeHtml } from '../security';
 
 export function replaceVars(template: string, vars: Record<string, string>): string {
   let result = template;
