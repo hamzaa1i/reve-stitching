@@ -75,19 +75,38 @@ export function isHoneypotTriggered(body: Record<string, unknown>): boolean {
 // ═══════════════════════════════════════════════════
 // CLOUDFLARE TURNSTILE VERIFICATION
 // ═══════════════════════════════════════════════════
+//
+// Fail-mode policy (post-fix June 2026):
+//
+//   Condition                                   | Return | Rationale
+//   --------------------------------------------+--------+-----------------------------
+//   secret missing (TURNSTILE_SECRET_KEY unset) | true   | dev/local skips bot check
+//   token missing (client didn't send)          | false  | legitimate block (real bot)
+//   Cloudflare explicitly rejected (success=false) | false | real bot protection
+//   Network error / timeout / DNS / 5xx / parse | true   | don't block legit users on infra hiccup
+//
+// All return paths log via console.error so Vercel's log viewer captures them
+// (Vercel appears to drop console.warn output by default — only info + error
+// are surfaced in the dashboard).
+// ═══════════════════════════════════════════════════
 
 export async function verifyTurnstile(
   token: string | undefined
 ): Promise<boolean> {
   const secret = import.meta.env.TURNSTILE_SECRET_KEY;
 
-  // C-023 hotfix: fail CLOSED. If Turnstile is required (secret set), reject on missing token or API failure.
-  // If Turnstile is not configured, skip verification (allows dev environments without Turnstile).
+  // Path 1: Turnstile not configured — skip verification (dev/local).
   if (!secret) {
-    console.warn('[Turnstile] TURNSTILE_SECRET_KEY not set — bot protection disabled.');
+    console.error('[Turnstile] FAIL-OPEN: TURNSTILE_SECRET_KEY not set — bot protection disabled.');
     return true;
   }
-  if (!token) return false;
+
+  // Path 2: No token provided by the client — fail CLOSED.
+  // This is the legitimate "blocked" path: real bots don't render the widget.
+  if (!token) {
+    console.error('[Turnstile] FAIL-CLOSED: no cf_turnstile_response token in request body — rejecting.');
+    return false;
+  }
 
   try {
     const response = await fetch(
@@ -100,15 +119,38 @@ export async function verifyTurnstile(
       }
     );
 
-    const data = await response.json();
+    // Path 3: Non-2xx HTTP status from Cloudflare — treat as their infra problem.
+    // Fail OPEN so we don't block legit users when Cloudflare is having an outage.
+    if (!response.ok) {
+      console.error(`[Turnstile] FAIL-OPEN: Cloudflare returned HTTP ${response.status} ${response.statusText}. Treating as infra outage — letting request through.`);
+      return true;
+    }
+
+    let data: { success?: boolean; 'error-codes'?: string[] };
+    try {
+      data = await response.json();
+    } catch (parseErr) {
+      // Path 4: Response body isn't valid JSON — fail OPEN (treat as infra issue).
+      console.error('[Turnstile] FAIL-OPEN: Cloudflare response was not valid JSON. Treating as infra outage — letting request through. Parse error:', parseErr instanceof Error ? parseErr.message : String(parseErr));
+      return true;
+    }
+
+    // Path 5: Cloudflare explicitly rejected the token — fail CLOSED.
+    // This is real bot protection: a token that Cloudflare verifies as invalid is blocked.
     if (data.success !== true) {
-      console.warn('[Turnstile] Verification rejected:', data['error-codes'] || 'unknown');
+      console.error('[Turnstile] FAIL-CLOSED: Cloudflare rejected token. Error codes:', data['error-codes'] || 'unknown');
       return false;
     }
+
+    // Path 6: Cloudflare verified the token — pass.
     return true;
   } catch (err) {
-    console.error('[Turnstile] Verification failed (fail-closed):', err);
-    // C-023 hotfix: fail CLOSED when API is unreachable
-    return false;
+    // Path 7: Network error / timeout / DNS — fail OPEN with loud logging.
+    // The previous C-023 behavior was fail-closed here, which blocked legit users
+    // whenever Vercel serverless couldn't reach challenges.cloudflare.com.
+    // We now fail OPEN on transport errors but fail CLOSED on explicit rejection.
+    const errStr = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
+    console.error(`[Turnstile] FAIL-OPEN: network/transport error contacting Cloudflare — letting request through to avoid blocking legit users. Error: ${errStr}`);
+    return true;
   }
 }
