@@ -125,11 +125,25 @@ const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY || import.meta.env.
       var div = document.createElement('div');
       div.className = 'flex ' + (sender === 'admin' ? 'justify-end' : 'justify-start');
       var time = new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      div.innerHTML = '<div class="max-w-[70%]"><div class="rounded-2xl px-4 py-3 text-sm leading-relaxed ' +
-        (sender === 'admin' ? 'bg-primary text-white rounded-tr-md' : 'bg-zinc-100 text-zinc-700 rounded-tl-md') +
-        '">' + text.replace(/\n/g, '<br>') + '</div><span class="text-[10px] text-zinc-400 mt-1 block ' +
-        (sender === 'admin' ? 'text-right pr-1' : 'pl-1') + '">' +
-        (sender === 'admin' ? 'You' : 'Visitor') + ' \u2022 ' + time + '</span></div>';
+      // Fix 3 (validation pass): build DOM via createElement to avoid innerHTML XSS via visitor message text
+      var wrapper = document.createElement('div');
+      wrapper.className = 'max-w-[70%]';
+      var bubble = document.createElement('div');
+      bubble.className = 'rounded-2xl px-4 py-3 text-sm leading-relaxed ' +
+        (sender === 'admin' ? 'bg-primary text-white rounded-tr-md' : 'bg-zinc-100 text-zinc-700 rounded-tl-md');
+      // Render the text safely: escape, then split on \n and join with <br> elements
+      var lines = String(text).split('\n');
+      for (var i = 0; i < lines.length; i++) {
+        if (i > 0) bubble.appendChild(document.createElement('br'));
+        bubble.appendChild(document.createTextNode(lines[i]));
+      }
+      wrapper.appendChild(bubble);
+      var meta = document.createElement('span');
+      meta.className = 'text-[10px] text-zinc-400 mt-1 block ' +
+        (sender === 'admin' ? 'text-right pr-1' : 'pl-1');
+      meta.textContent = (sender === 'admin' ? 'You' : 'Visitor') + ' \u2022 ' + time;
+      wrapper.appendChild(meta);
+      div.appendChild(wrapper);
       messagesDiv.appendChild(div);
       scrollToBottom();
     }

@@ -141,7 +141,12 @@ async function main() {
 
   const adminEmail =
     process.env.PORTAL_ADMIN_EMAIL || "admin@revestitching.com";
-  const adminPassword = "ReveSt1tch!2025";
+  const adminPassword = process.env.PORTAL_ADMIN_PASSWORD;
+  if (!adminPassword || adminPassword.length < 12) {
+    console.error("❌ PORTAL_ADMIN_PASSWORD env var is required (min 12 chars).");
+    console.error("   Set it in your .env file before running this script.");
+    process.exit(1);
+  }
   const passwordHash = await bcrypt.hash(adminPassword, 12);
   const adminId = crypto.randomUUID();
 
@@ -166,8 +171,8 @@ async function main() {
 
   console.log("\n🎉 Setup complete!");
   console.log("   Email:", adminEmail);
-  console.log("   Password:", adminPassword);
-  console.log("\nChange the password after first login.");
+  console.log("   Password: (read from PORTAL_ADMIN_PASSWORD env var — not logged for security)");
+  console.log("\nRotate the password after first login.");
 
   process.exit(0);
 }

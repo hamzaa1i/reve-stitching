@@ -81,8 +81,12 @@ export async function verifyTurnstile(
 ): Promise<boolean> {
   const secret = import.meta.env.TURNSTILE_SECRET_KEY;
 
-  // If Turnstile is not configured, skip verification
-  if (!secret) return true;
+  // C-023 hotfix: fail CLOSED. If Turnstile is required (secret set), reject on missing token or API failure.
+  // If Turnstile is not configured, skip verification (allows dev environments without Turnstile).
+  if (!secret) {
+    console.warn('[Turnstile] TURNSTILE_SECRET_KEY not set — bot protection disabled.');
+    return true;
+  }
   if (!token) return false;
 
   try {
@@ -92,14 +96,19 @@ export async function verifyTurnstile(
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `secret=${encodeURIComponent(secret)}&response=${encodeURIComponent(token)}`,
+        signal: AbortSignal.timeout(5_000),
       }
     );
 
     const data = await response.json();
-    return data.success === true;
-  } catch (err) {
-    console.error('[Turnstile] Verification failed:', err);
-    // Fail open — don't block real users if Turnstile API is down
+    if (data.success !== true) {
+      console.warn('[Turnstile] Verification rejected:', data['error-codes'] || 'unknown');
+      return false;
+    }
     return true;
+  } catch (err) {
+    console.error('[Turnstile] Verification failed (fail-closed):', err);
+    // C-023 hotfix: fail CLOSED when API is unreachable
+    return false;
   }
 }

@@ -14,6 +14,16 @@ interface ChatData {
   visitorEmail?: string;
 }
 
+// C-008 hotfix: HTML-escape user input before interpolating into email HTML
+function escapeHtml(s: unknown): string {
+  return String(s ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 export async function notifyNewContact(data: ContactData) {
   // Email
   try {
@@ -27,15 +37,15 @@ export async function notifyNewContact(data: ContactData) {
     
     const result = await resend.emails.send({
       from: 'notifications@revestitching.com',
-      to: 'hamzali.revesystems@gmail.com',
+      to: (import.meta.env.NOTIFICATION_EMAIL || 'hamzali.revesystems@gmail.com'),
       subject: `🔔 New Contact: ${data.subject}`,
       html: `
         <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${data.name}</p>
-        <p><strong>Email:</strong> ${data.email}</p>
-        ${data.company ? `<p><strong>Company:</strong> ${data.company}</p>` : ''}
-        <p><strong>Subject:</strong> ${data.subject}</p>
-        <p><strong>Message:</strong><br>${data.message.replace(/\n/g, '<br>')}</p>
+        <p><strong>Name:</strong> ${escapeHtml(data.name)}</p>
+        <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
+        ${data.company ? `<p><strong>Company:</strong> ${escapeHtml(data.company)}</p>` : ''}
+        <p><strong>Subject:</strong> ${escapeHtml(data.subject)}</p>
+        <p><strong>Message:</strong><br>${escapeHtml(data.message).replace(/\n/g, '<br>')}</p>
         <a href="https://revestitching.com/admin">View in Admin Panel</a>
       `,
     });
@@ -91,13 +101,13 @@ export async function notifyNewChat(data: ChatData) {
     
     const result = await resend.emails.send({
       from: 'notifications@revestitching.com',
-      to: 'hamzali.revesystems@gmail.com',
+      to: (import.meta.env.NOTIFICATION_EMAIL || 'hamzali.revesystems@gmail.com'),
       subject: '💬 New Live Chat Request',
       html: `
         <h2>Someone Requested Live Chat</h2>
-        <p><strong>Name:</strong> ${data.visitorName || 'Anonymous'}</p>
-        <p><strong>Email:</strong> ${data.visitorEmail || 'Not provided'}</p>
-        <a href="https://revestitching.com/admin/chat/${data.sessionId}">Open Chat</a>
+        <p><strong>Name:</strong> ${escapeHtml(data.visitorName || 'Anonymous')}</p>
+        <p><strong>Email:</strong> ${escapeHtml(data.visitorEmail || 'Not provided')}</p>
+        <a href="https://revestitching.com/admin/chat/${escapeHtml(data.sessionId)}">Open Chat</a>
       `,
     });
 
@@ -170,7 +180,7 @@ export async function notifyNewQuote(quote: QuoteRequest) {
     
     await resend.emails.send({
       from: 'notifications@revestitching.com',
-      to: 'hamzali.revesystems@gmail.com',
+      to: (import.meta.env.NOTIFICATION_EMAIL || 'hamzali.revesystems@gmail.com'),
       subject: `🎯 New Quote: ${quote.reference_number} — ${quote.company_name}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
@@ -180,24 +190,24 @@ export async function notifyNewQuote(quote: QuoteRequest) {
           </div>
           <div style="background: white; padding: 24px; border: 1px solid #e5e7eb; border-top: none;">
             <h2 style="color: #166534; font-size: 16px; margin: 0 0 16px;">Contact</h2>
-            <p><strong>Company:</strong> ${quote.company_name}</p>
-            <p><strong>Contact:</strong> ${quote.contact_person}</p>
-            <p><strong>Email:</strong> ${quote.email}</p>
-            ${quote.phone ? `<p><strong>Phone:</strong> ${quote.phone}</p>` : ''}
+            <p><strong>Company:</strong> ${escapeHtml(quote.company_name)}</p>
+            <p><strong>Contact:</strong> ${escapeHtml(quote.contact_person)}</p>
+            <p><strong>Email:</strong> ${escapeHtml(quote.email)}</p>
+            ${quote.phone ? `<p><strong>Phone:</strong> ${escapeHtml(quote.phone)}</p>` : ''}
             
             <h2 style="color: #166534; font-size: 16px; margin: 24px 0 16px;">Order Details</h2>
-            <p><strong>Product:</strong> ${productLabel}</p>
+            <p><strong>Product:</strong> ${escapeHtml(productLabel)}</p>
             <p><strong>Quantity:</strong> ${quote.quantity.toLocaleString()} pcs</p>
-            <p><strong>Fabric:</strong> ${quote.fabric_type} — ${quote.gsm} GSM</p>
-            <p><strong>Destination:</strong> ${quote.destination}</p>
-            <p><strong>Delivery:</strong> ${quote.target_date}</p>
+            <p><strong>Fabric:</strong> ${escapeHtml(quote.fabric_type)} — ${escapeHtml(quote.gsm)} GSM</p>
+            <p><strong>Destination:</strong> ${escapeHtml(quote.destination)}</p>
+            <p><strong>Delivery:</strong> ${escapeHtml(quote.target_date)}</p>
             ${quote.is_rush ? '<p style="color: #d97706;"><strong>⚡ RUSH ORDER</strong></p>' : ''}
             
             ${quote.ai_summary ? `
             <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; margin: 24px 0;">
               <h3 style="color: #166534; font-size: 14px; margin: 0 0 8px;">🤖 AI Analysis</h3>
-              <p style="margin: 0; font-size: 14px;">${quote.ai_summary}</p>
-              ${quote.estimated_price_range ? `<p style="margin: 8px 0 0; color: #166534;"><strong>Est. Price:</strong> ${quote.estimated_price_range}</p>` : ''}
+              <p style="margin: 0; font-size: 14px;">${escapeHtml(quote.ai_summary)}</p>
+              ${quote.estimated_price_range ? `<p style="margin: 8px 0 0; color: #166534;"><strong>Est. Price:</strong> ${escapeHtml(quote.estimated_price_range)}</p>` : ''}
             </div>
             ` : ''}
             
@@ -237,12 +247,12 @@ export async function notifyNewQuote(quote: QuoteRequest) {
             url: adminUrl,
             color: 0x166534,
             fields: [
-              { name: '🏢 Company', value: quote.company_name, inline: true },
-              { name: '👤 Contact', value: `${quote.contact_person}\n${quote.email}`, inline: true },
-              { name: '📦 Product', value: productLabel, inline: true },
+              { name: '🏢 Company', value: String(quote.company_name).slice(0, 1000), inline: true },
+              { name: '👤 Contact', value: `${String(quote.contact_person).slice(0, 500)}\n${String(quote.email).slice(0, 500)}`, inline: true },
+              { name: '📦 Product', value: String(productLabel).slice(0, 1000), inline: true },
               { name: '🔢 Quantity', value: `${quote.quantity.toLocaleString()} pcs`, inline: true },
-              { name: '🧵 Fabric', value: `${quote.fabric_type} ${quote.gsm}gsm`, inline: true },
-              { name: '🌍 Destination', value: quote.destination.toUpperCase(), inline: true },
+              { name: '🧵 Fabric', value: `${String(quote.fabric_type).slice(0, 500)} ${quote.gsm}gsm`, inline: true },
+              { name: '🌍 Destination', value: String(quote.destination).toUpperCase().slice(0, 500), inline: true },
               ...(quote.estimated_price_range
                 ? [{ name: '💰 Est. Price', value: quote.estimated_price_range, inline: true }]
                 : []),
@@ -284,13 +294,13 @@ export async function sendQuoteCustomerConfirmation(quote: QuoteRequest) {
             <p style="color: #bbf7d0; margin: 6px 0 0; font-size: 12px;">Premium Knitted Garments Manufacturer</p>
           </div>
           <div style="background: white; padding: 32px; border: 1px solid #e5e7eb; border-top: none;">
-            <h2 style="margin: 0 0 12px; font-size: 18px; color: #111;">Thank you, ${quote.contact_person}!</h2>
+            <h2 style="margin: 0 0 12px; font-size: 18px; color: #111;">Thank you, ${escapeHtml(quote.contact_person)}!</h2>
             <p style="margin: 0 0 20px; font-size: 14px; color: #4b5563; line-height: 1.6;">
               We've received your quote request and our team is reviewing it. You'll hear back from us within <strong>24 hours</strong> with a detailed quotation.
             </p>
             <div style="background: #f0fdf4; border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 20px;">
               <p style="margin: 0 0 4px; font-size: 12px; color: #6b7280;">Your Reference Number</p>
-              <p style="margin: 0; font-size: 24px; font-weight: 700; color: #166534; letter-spacing: 1px;">${quote.reference_number}</p>
+              <p style="margin: 0; font-size: 24px; font-weight: 700; color: #166534; letter-spacing: 1px;">${escapeHtml(quote.reference_number)}</p>
             </div>
             <p style="margin: 0; font-size: 13px; color: #6b7280;">
               Please keep this reference number for your records. If you have any urgent queries, reply to this email or contact us directly.

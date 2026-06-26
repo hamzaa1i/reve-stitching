@@ -14,13 +14,22 @@ export async function uploadFile(
 ): Promise<string | null> {
   const supabase = getSupabase();
 
-  // sanitize filename
+  // C-014 hotfix: validate referenceNumber against allow-list (prevent path traversal)
+  if (!/^[A-Z]+-\d{4,8}-\w{3,6}$/.test(referenceNumber)) {
+    console.error(`[Storage] Invalid referenceNumber format: ${referenceNumber}`);
+    return null;
+  }
+  // C-014 hotfix: sanitize folder name too
+  const safeFolder = String(folder).replace(/[^a-zA-Z0-9_-]/g, '_');
+
+  // sanitize filename — also strip ".." sequences
   const safeName = file.name
+    .replace(/\.\./g, '')
     .replace(/[^a-zA-Z0-9._-]/g, '_')
     .replace(/_{2,}/g, '_');
 
   const timestamp = Date.now();
-  const path = `${referenceNumber}/${folder}/${timestamp}_${safeName}`;
+  const path = `${referenceNumber}/${safeFolder}/${timestamp}_${safeName}`;
 
   try {
     const buffer = await file.arrayBuffer();

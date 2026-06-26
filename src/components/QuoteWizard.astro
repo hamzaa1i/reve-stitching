@@ -1274,10 +1274,22 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
           const li = document.createElement("li");
           li.className = "file-item";
           const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
-          li.innerHTML = `
-            <span class="truncate text-gray-700">📎 ${file.name} <span class="text-gray-400">(${sizeMB} MB)</span></span>
-            <button type="button" class="ml-2 shrink-0 text-red-500 hover:text-red-700 focus:outline-none" data-remove="${idx}" aria-label="Remove ${file.name}">&times;</button>
-          `;
+          // C-015 hotfix: build DOM via createElement to avoid innerHTML XSS via file.name
+          const nameSpan = document.createElement('span');
+          nameSpan.className = 'truncate text-gray-700';
+          nameSpan.textContent = `📎 ${file.name} `;
+          const sizeSpan = document.createElement('span');
+          sizeSpan.className = 'text-gray-400';
+          sizeSpan.textContent = `(${sizeMB} MB)`;
+          nameSpan.appendChild(sizeSpan);
+          const removeBtn = document.createElement('button');
+          removeBtn.type = 'button';
+          removeBtn.className = 'ml-2 shrink-0 text-red-500 hover:text-red-700 focus:outline-none';
+          removeBtn.dataset.remove = String(idx);
+          removeBtn.setAttribute('aria-label', `Remove ${file.name}`);
+          removeBtn.innerHTML = '&times;';
+          li.appendChild(nameSpan);
+          li.appendChild(removeBtn);
           li.querySelector("[data-remove]")!.addEventListener("click", () => {
             (formData as any)[stateKey].splice(idx, 1);
             renderFileList();
@@ -1354,7 +1366,15 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
       rows.forEach(([label, value]) => {
         const div = document.createElement("div");
         div.className = "flex justify-between gap-4 py-2.5";
-        div.innerHTML = `<dt class="font-medium text-gray-500">${label}</dt><dd class="text-right font-semibold text-gray-900">${value}</dd>`;
+        // C-015 hotfix: build DOM via createElement to avoid innerHTML XSS via form values
+        const dt = document.createElement('dt');
+        dt.className = 'font-medium text-gray-500';
+        dt.textContent = label;
+        const dd = document.createElement('dd');
+        dd.className = 'text-right font-semibold text-gray-900';
+        dd.textContent = value;
+        div.appendChild(dt);
+        div.appendChild(dd);
         dl.appendChild(div);
       });
     }

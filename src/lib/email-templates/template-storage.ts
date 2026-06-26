@@ -310,10 +310,20 @@ export function clearContentCache(): void {
 /**
  * Replace {variable} placeholders in a template string.
  */
+// C-009 hotfix: HTML-escape values before substitution into templates
+function escapeHtml(s: unknown): string {
+  return String(s ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 export function replaceVars(template: string, vars: Record<string, string>): string {
   let result = template;
   for (const [key, value] of Object.entries(vars)) {
-    result = result.replace(new RegExp(`\\{${key}\\}`, 'g'), value);
+    result = result.replace(new RegExp(`\\{${key}\\}`, 'g'), escapeHtml(value));
   }
   return result;
 }
