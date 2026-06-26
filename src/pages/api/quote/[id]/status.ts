@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { getAdminFromCookies } from '../../../../lib/auth';
+import { json } from '../../../../lib/utils';
 import type { QuoteStatus } from '../../../../lib/types/quote';
 
 export const prerender = false;
@@ -63,9 +64,3 @@ export const PATCH: APIRoute = async ({ params, request, cookies }) => {
     return json({ error: 'Server error' }, 500);
   }
 };
-
-function json(data: object, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status, headers: { 'Content-Type': 'application/json' },
-  });
-}

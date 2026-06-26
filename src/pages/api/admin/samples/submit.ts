@@ -100,7 +100,8 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     // Send confirmation email
     try {
-      const emailContent = sampleConfirmationEmail({
+      // Phase 4: sampleConfirmationEmail is async — must await
+      const emailContent = await sampleConfirmationEmail({
         reference_number,
         contact_person: contact_person.trim(),
         company_name: company_name.trim(),

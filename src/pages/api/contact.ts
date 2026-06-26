@@ -11,6 +11,7 @@ import {
   verifyTurnstile,
 } from '../../lib/security';
 import { initSentry, captureException } from '../../lib/sentry';
+import { json } from '../../lib/utils';
 
 export const prerender = false;
 
@@ -94,10 +95,3 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ error: 'Failed to submit. Please try again.' }, 500);
   }
 };
-
-function json(data: object, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json' },
-  });
-}
