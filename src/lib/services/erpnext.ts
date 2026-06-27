@@ -81,11 +81,17 @@ function isERPNextConfigured(): boolean {
  * failing the quote submission.
  */
 export async function createERPNextLead(data: ERPNextLeadData): Promise<ERPNextLeadResult> {
+  // DEBUG: unconditional log at function entry — confirms the function is called.
+  // Uses console.error so Vercel's log viewer captures it (console.log is dropped).
+  console.error(`[ERPNext] createERPNextLead() CALLED for quote ${data.referenceNumber} (${data.companyName})`);
+
   const { url, apiKey, apiSecret } = getERPNextConfig();
 
+  // DEBUG: log what env vars are actually visible to the function
+  console.error(`[ERPNext] Config: url=${url ? 'SET' : 'EMPTY'}, apiKey=${apiKey ? 'SET' : 'EMPTY'}, apiSecret=${apiSecret ? 'SET' : 'EMPTY'}`);
+
   if (!isERPNextConfigured()) {
-    // Not configured — skip silently (dev/local environments)
-    console.log('[ERPNext] Not configured — skipping lead creation');
+    console.error(`[ERPNext] Not configured — skipping lead creation. ERPNEXT_URL=${url || '(empty)'}`);
     return { success: false, leadId: null, error: 'Not configured' };
   }
 
