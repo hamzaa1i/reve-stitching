@@ -16,6 +16,7 @@ import {
   verifyTurnstile,
 } from '../../../lib/security';
 import { initSentry, captureException } from '../../../lib/sentry';
+import { createERPNextLead } from '../../../lib/services/erpnext';
 import type { QuoteRequest } from '../../../lib/types/quote';
 
 export const prerender = false;
@@ -327,6 +328,42 @@ export const POST: APIRoute = async ({ request }) => {
     console.log(
       `[Quote] Saved ${reference_number} with id ${(inserted as any).id}`
     );
+
+    // ── ERPNext Integration ──
+    // Create a Lead in ERPNext (non-blocking — if it fails, the quote still succeeds).
+    // The ERPNext lead ID is stored back in the Supabase quote record for reference.
+    try {
+      const erpResult = await createERPNextLead({
+        referenceNumber: reference_number,
+        companyName: company_name,
+        contactPerson: contact_person,
+        email,
+        phone,
+        productType: product_type,
+        quantity,
+        fabricType: fabric_type,
+        gsm,
+        destination,
+        targetDate: target_date,
+        isRush: is_rush,
+        hasSample: has_sample,
+        notes,
+        aiSummary,
+        estimatedPriceRange: estimated_price_range,
+      });
+
+      if (erpResult.success && erpResult.leadId) {
+        // Store the ERPNext lead ID back in the Supabase quote record
+        await supabase
+          .from('quote_requests')
+          .update({ erpnext_lead_id: erpResult.leadId })
+          .eq('id', (inserted as any).id);
+        console.log(`[Quote] ERPNext lead linked: ${erpResult.leadId}`);
+      }
+    } catch (erpErr) {
+      // Log but never fail the quote submission
+      console.error('[Quote] ERPNext integration error (non-fatal):', erpErr);
+    }
 
     // Send notifications
     const quoteRecord = inserted as unknown as QuoteRequest;

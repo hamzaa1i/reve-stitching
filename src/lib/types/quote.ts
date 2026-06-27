@@ -50,6 +50,9 @@ export interface QuoteRequest {
 
   automation_paused?: boolean;
   last_admin_action_at?: string | null;
+
+  // ERPNext integration
+  erpnext_lead_id?: string | null;
 }
 
 // ─── Insert (omit auto-generated fields) ───

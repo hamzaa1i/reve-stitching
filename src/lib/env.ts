@@ -104,6 +104,21 @@ const envSchema = z.object({
   CRON_SECRET: z
     .string()
     .min(16, "CRON_SECRET must be at least 16 chars — generate with: node -e \"console.log(require('crypto').randomBytes(24).toString('hex'))\""),
+
+  // ── ERPNext Integration (optional — leave blank to disable) ──
+  ERPNEXT_URL: z
+    .string()
+    .url("ERPNEXT_URL must be a valid URL (e.g. https://erp.revestitching.com)")
+    .optional()
+    .or(z.literal("")),
+  ERPNEXT_API_KEY: z
+    .string()
+    .optional()
+    .or(z.literal("")),
+  ERPNEXT_API_SECRET: z
+    .string()
+    .optional()
+    .or(z.literal("")),
 });
 
 export type Env = z.infer<typeof envSchema>;
