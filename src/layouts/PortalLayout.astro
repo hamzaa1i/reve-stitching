@@ -28,6 +28,7 @@ const isAdmin = user?.role === 'admin';
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content={description} />
+  <meta name="robots" content="noindex, nofollow" />
   <title>{title} | Reve Portal</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -115,7 +116,7 @@ const isAdmin = user?.role === 'admin';
         <div class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 leading-tight">Portal</div>
       </div>
       <!-- Close button — only visible when expanded -->
-      <button id="sidebar-close" class="close-btn flex shrink-0 items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-700 hover:text-white transition-colors" title="Collapse sidebar">
+      <button id="sidebar-close" type="button" aria-label="Collapse sidebar" class="close-btn flex shrink-0 items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-700 hover:text-white transition-colors" title="Collapse sidebar">
         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
       </button>
     </div>
@@ -128,6 +129,7 @@ const isAdmin = user?.role === 'admin';
           <a
             href={item.href}
             title={item.label}
+            aria-current={isActive ? 'page' : undefined}
             class={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
               isActive
                 ? 'bg-green-600/10 text-green-400'
@@ -169,6 +171,8 @@ const isAdmin = user?.role === 'admin';
         </div>
         <button
           id="logout-btn"
+          type="button"
+          aria-label="Logout"
           class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-white"
           title="Logout"
         >
@@ -183,11 +187,11 @@ const isAdmin = user?.role === 'admin';
     <!-- Top bar -->
     <header class="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-zinc-800 bg-zinc-950/80 px-4 backdrop-blur-xl sm:px-6">
       <!-- Mobile: hamburger -->
-      <button id="sidebar-mobile-toggle" class="mobile-only flex h-9 w-9 items-center justify-center rounded-lg text-zinc-400 hover:bg-zinc-800 hover:text-white">
+      <button id="sidebar-mobile-toggle" type="button" aria-label="Open navigation" class="mobile-only flex h-9 w-9 items-center justify-center rounded-lg text-zinc-400 hover:bg-zinc-800 hover:text-white">
         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
       </button>
 
-      <div class="flex-1"></div>navItems
+      <div class="flex-1"></div>
 
       <a href="/" class="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-white">
         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" /></svg>
