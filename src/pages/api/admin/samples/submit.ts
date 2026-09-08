@@ -7,6 +7,32 @@ import { sampleConfirmationEmail } from '../../../../lib/email-templates/sample-
 import { Resend } from 'resend';
 import { getAdminFromCookies } from '../../../../lib/auth';
 import { checkRateLimit, getClientIp } from '../../../../lib/security';
+import { isSameOriginRequest } from '../../../../lib/admin-operations';
+import { z } from 'zod';
+
+const optionalText = (max: number) => z.preprocess(
+  (value) => value === '' ? null : value,
+  z.string().trim().max(max).optional().nullable(),
+);
+const sampleSchema = z.object({
+  company_name: z.string().trim().min(1).max(200),
+  contact_person: z.string().trim().min(1).max(200),
+  email: z.string().trim().email().max(254),
+  phone: optionalText(50),
+  country: z.string().trim().min(1).max(120),
+  shipping_address: z.string().trim().min(1).max(2_000),
+  product_type: z.string().trim().min(1).max(200),
+  fabric_type: optionalText(200),
+  gsm: z.preprocess(
+    (value) => value === '' ? null : value,
+    z.coerce.number().int().min(50).max(1_000).optional().nullable(),
+  ),
+  color: optionalText(200),
+  size: optionalText(100),
+  quantity: z.coerce.number().int().min(1).max(5),
+  special_requirements: optionalText(5_000),
+  linked_quote_id: optionalText(128),
+}).strict();
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
@@ -25,6 +51,9 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       headers: { 'Content-Type': 'application/json' },
     });
   }
+  if (!isSameOriginRequest(request)) {
+    return new Response(JSON.stringify({ error: 'Cross-site request rejected' }), { status: 403, headers: { 'Content-Type': 'application/json' } });
+  }
 
   // C-010 hotfix (partial): rate limit even admin endpoints
   const ip = getClientIp(request);
@@ -36,32 +65,17 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   }
 
   try {
-    const body = await request.json();
-
-    const { company_name, contact_person, email, phone, country, shipping_address,
-            product_type, fabric_type, gsm, color, size, quantity,
-            special_requirements, linked_quote_id } = body;
-
-    // Validation
-    const errors: string[] = [];
-    if (!company_name?.trim()) errors.push('Company name is required');
-    if (!contact_person?.trim()) errors.push('Contact person is required');
-    if (!email?.trim()) errors.push('Email is required');
-    if (!country?.trim()) errors.push('Country is required');
-    if (!shipping_address?.trim()) errors.push('Shipping address is required');
-    if (!product_type?.trim()) errors.push('Product type is required');
-    if (!quantity || quantity < 1 || quantity > 5) errors.push('Quantity must be between 1 and 5');
-
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      errors.push('Invalid email address');
-    }
-
-    if (errors.length > 0) {
-      return new Response(JSON.stringify({ error: errors.join(', ') }), {
+    const parsed = sampleSchema.safeParse(await request.json());
+    if (!parsed.success) {
+      return new Response(JSON.stringify({ error: 'Invalid sample request details' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
     }
+
+    const { company_name, contact_person, email, phone, country, shipping_address,
+            product_type, fabric_type, gsm, color, size, quantity,
+            special_requirements, linked_quote_id } = parsed.data;
 
     const reference_number = generateSampleReference();
 
@@ -70,17 +84,17 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       company_name: company_name.trim(),
       contact_person: contact_person.trim(),
       email: email.trim().toLowerCase(),
-      phone: phone?.trim() || null,
+      phone: phone || null,
       country: country.trim(),
       shipping_address: shipping_address.trim(),
       product_type,
       fabric_type: fabric_type || null,
-      gsm: gsm ? parseInt(gsm, 10) : null,
-      color: color?.trim() || null,
+      gsm: gsm || null,
+      color: color || null,
       size: size || null,
-      quantity: parseInt(quantity, 10),
-      special_requirements: special_requirements?.trim() || null,
-      linked_quote_id: linked_quote_id?.trim() || null,
+      quantity,
+      special_requirements: special_requirements || null,
+      linked_quote_id: linked_quote_id || null,
       status: 'new',
     };
 
@@ -106,10 +120,10 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         contact_person: contact_person.trim(),
         company_name: company_name.trim(),
         product_type,
-        fabric_type,
-        quantity: parseInt(quantity, 10),
-        color,
-        size,
+        fabric_type: fabric_type || undefined,
+        quantity,
+        color: color || undefined,
+        size: size || undefined,
       });
 
       await resend.emails.send({

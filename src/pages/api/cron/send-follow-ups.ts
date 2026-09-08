@@ -12,17 +12,14 @@ export const prerender = false;
  * Security: Requires Bearer token matching CRON_SECRET.
  * Vercel Cron automatically includes this header.
  *
- * Schedule: Every 6 hours (configured in vercel.json)
+ * Schedule: Daily at 09:00 UTC (configured in vercel.json)
  * Max duration: ~60s on Vercel Hobby, ~300s on Pro
  */
 export const GET: APIRoute = async ({ request }) => {
   const startTime = Date.now();
 
   // ── 1. Authenticate ──
-  // Support both header auth (Vercel cron) and query param (manual testing)
   const authHeader = request.headers.get('authorization');
-  const url = new URL(request.url);
-  const querySecret = url.searchParams.get('secret');
   const cronSecret = process.env.CRON_SECRET;
 
   if (!cronSecret) {
@@ -33,9 +30,7 @@ export const GET: APIRoute = async ({ request }) => {
     );
   }
 
-  const isAuthorized =
-    authHeader === `Bearer ${cronSecret}` ||
-    querySecret === cronSecret;
+  const isAuthorized = authHeader === `Bearer ${cronSecret}`;
 
   if (!isAuthorized) {
     console.warn('[Cron] ⚠️ Unauthorized attempt');
@@ -45,7 +40,7 @@ export const GET: APIRoute = async ({ request }) => {
     );
   }
 
-  console.log('[Cron] ✅ Authenticated via', authHeader ? 'header' : 'query param');
+  console.log('[Cron] Authenticated');
   
   // ── 2. Initialize Supabase with service role (bypasses RLS) ──
   const supabaseUrl = process.env.SUPABASE_URL;
@@ -111,7 +106,7 @@ export const GET: APIRoute = async ({ request }) => {
     }
 
     return new Response(
-      JSON.stringify({ success: false, error: message }),
+      JSON.stringify({ success: false, error: 'Follow-up processing failed' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }

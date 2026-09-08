@@ -6,6 +6,7 @@ import { generateQuoteUnderReviewEmail } from '../../../lib/email-templates/quot
 import { generateAdminReminderEmail } from '../../../lib/email-templates/admin-reminder';
 import { generateReengagementEmail } from '../../../lib/email-templates/quote-reengagement';
 import { json, isValidEmail } from '../../../lib/utils';
+import { isSameOriginRequest } from '../../../lib/admin-operations';
 
 export const prerender = false;
 
@@ -24,6 +25,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   if (!admin) {
     return json({ success: false, error: 'Unauthorized' }, 401);
   }
+  if (!isSameOriginRequest(request)) return json({ success: false, error: 'Cross-site request rejected' }, 403);
 
   let body: any;
   try {
@@ -78,10 +80,10 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
   if (error) {
     console.error('[Test Email] Resend error:', error);
-    return json({ success: false, error: error.message }, 500);
+    return json({ success: false, error: 'Test email could not be sent' }, 500);
   }
 
-  console.log(`[Test Email] Sent to ${email} (template: ${template_id}, Resend ID: ${data?.id})`);
+  console.log(`[Test Email] Sent (template: ${template_id}, Resend ID: ${data?.id})`);
   return json({ success: true, id: data?.id });
 };
 

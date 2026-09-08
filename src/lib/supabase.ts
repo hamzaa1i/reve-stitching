@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
@@ -30,7 +30,7 @@ export const supabaseConfig = {
 // QUOTE SYSTEM CLIENT (singleton with caching)
 // ═══════════════════════════════════════════════════
 
-let _supabase: ReturnType<typeof createClient> | null = null;
+let _supabase: SupabaseClient<any, 'public', any> | null = null;
 
 /**
  * Singleton Supabase client for quote system
@@ -43,7 +43,7 @@ export function getSupabase() {
     throw new Error('Missing Supabase credentials');
   }
   
-  _supabase = createClient(supabaseUrl, supabaseServiceKey, {
+  _supabase = createClient<any>(supabaseUrl, supabaseServiceKey, {
     auth: { 
       autoRefreshToken: false, 
       persistSession: false 

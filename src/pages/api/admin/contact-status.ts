@@ -1,18 +1,32 @@
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import { z } from 'zod';
 import { getAdminFromCookies } from '../../../lib/auth';
+import { isSameOriginRequest } from '../../../lib/admin-operations';
+import { json } from '../../../lib/utils';
 
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   const admin = getAdminFromCookies(cookies);
   if (!admin) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401, headers: { 'Content-Type': 'application/json' },
-    });
+    return json({ error: 'Unauthorized' }, 401);
   }
 
-  const { id, status } = await request.json();
+  if (!isSameOriginRequest(request)) return json({ error: 'Cross-site request rejected' }, 403);
+
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: 'Invalid JSON body' }, 400);
+  }
+
+  const parsed = z.object({
+    id: z.string().trim().min(1).max(128),
+    status: z.enum(['new', 'read']),
+  }).strict().safeParse(body);
+  if (!parsed.success) return json({ error: 'Invalid contact status update' }, 400);
 
   const supabase = createClient(
     process.env.SUPABASE_URL!,
@@ -20,18 +34,18 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     { auth: { autoRefreshToken: false, persistSession: false } }
   );
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('contact_submissions')
-    .update({ status })
-    .eq('id', id);
+    .update({ status: parsed.data.status })
+    .eq('id', parsed.data.id)
+    .select('id')
+    .maybeSingle();
 
   if (error) {
-    return new Response(JSON.stringify({ error: 'Update failed' }), {
-      status: 500, headers: { 'Content-Type': 'application/json' },
-    });
+    console.error('[Admin Contacts] Status update failed');
+    return json({ error: 'Contact status could not be updated' }, 500);
   }
+  if (!data) return json({ error: 'Contact submission not found' }, 404);
 
-  return new Response(JSON.stringify({ success: true }), {
-    status: 200, headers: { 'Content-Type': 'application/json' },
-  });
+  return json({ success: true, status: parsed.data.status });
 };

@@ -778,8 +778,12 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
     };
 
     // ───────────────── DOM REFS ─────────────────
-    const $  = (s: string) => document.querySelector(s) as HTMLElement | null;
-    const $$ = (s: string) => document.querySelectorAll(s);
+    function $<T extends HTMLElement = HTMLElement>(selector: string): T | null {
+      return document.querySelector<T>(selector);
+    }
+    function $$<T extends Element = Element>(selector: string): NodeListOf<T> {
+      return document.querySelectorAll<T>(selector);
+    }
 
     const btnBack    = $<HTMLButtonElement>("#btn-back")!;
     const btnNext    = $<HTMLButtonElement>("#btn-next")!;
@@ -1246,6 +1250,10 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
 
       function addFiles(files: FileList | null) {
         if (!files) return;
+        if (multiple && ((formData as any)[stateKey].length + files.length > 5)) {
+          alert('Upload no more than 5 reference images.');
+          return;
+        }
         Array.from(files).forEach((file) => {
           // validate extension
           const ext = "." + file.name.split(".").pop()!.toLowerCase();
@@ -1325,7 +1333,7 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
     }
 
     setupFileUpload("techpack-drop", "techpack-input", "techpack-list", "techPackFiles", false, 10);
-    setupFileUpload("refimg-drop", "refimg-input", "refimg-list", "referenceImages", true, 10);
+    setupFileUpload("refimg-drop", "refimg-input", "refimg-list", "referenceImages", true, 5);
 
     // ───────────────── SUBMISSION ─────────────────
     function generateRefNumber(): string {
@@ -1407,7 +1415,7 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
         btnNext.textContent = 'Submitting…';
 
         // Get Turnstile token
-        var turnstileEl = document.querySelector('[name="cf-turnstile-response"]');
+        var turnstileEl = document.querySelector<HTMLInputElement>('[name="cf-turnstile-response"]');
         var turnstileToken = turnstileEl ? turnstileEl.value : undefined;
 
         // Get honeypot value
@@ -1522,10 +1530,10 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
       $$(".product-card").forEach((c) => c.setAttribute("aria-pressed", "false"));
       $$(".size-btn").forEach((b) => b.setAttribute("aria-pressed", "false"));
       $$<HTMLInputElement>('input[name="customizations"]').forEach((c) => (c.checked = false));
-      $$<HTMLInputElement>("input, textarea, select").forEach((el) => {
-        if (el.type === "checkbox") el.checked = false;
-        else if (el.tagName === "SELECT") (el as HTMLSelectElement).selectedIndex = 0;
-        else if (el.type === "range") (el as HTMLInputElement).value = "180";
+      $$<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>("input, textarea, select").forEach((el) => {
+        if (el instanceof HTMLInputElement && el.type === "checkbox") el.checked = false;
+        else if (el instanceof HTMLSelectElement) el.selectedIndex = 0;
+        else if (el instanceof HTMLInputElement && el.type === "range") el.value = "180";
         else el.value = "";
       });
       ($("#gsm-value")!).textContent = "180";

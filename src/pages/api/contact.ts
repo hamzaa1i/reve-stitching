@@ -73,7 +73,7 @@ export const POST: APIRoute = async ({ request }) => {
     const { error } = await supabase.from('contact_submissions').insert({
       name: cleanName,
       email: cleanEmail,
-      company: cleanCompany,
+      company: cleanCompany || undefined,
       phone: cleanPhone,
       subject: cleanSubject,
       message: cleanMessage,
@@ -84,7 +84,7 @@ export const POST: APIRoute = async ({ request }) => {
     await notifyNewContact({
       name: cleanName,
       email: cleanEmail,
-      company: cleanCompany,
+      company: cleanCompany || undefined,
       subject: cleanSubject,
       message: cleanMessage,
     });
