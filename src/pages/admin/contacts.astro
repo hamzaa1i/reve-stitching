@@ -1,0 +1,168 @@
+---
+import { createClient } from '@supabase/supabase-js';
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import Pagination from '../../components/admin/Pagination.astro';
+import StatusBadge from '../../components/admin/StatusBadge.astro';
+import {
+  CONTACT_STATUSES,
+  formatAdminDateTime,
+  formatAge,
+  parsePositiveInt,
+  sanitizePostgrestSearch,
+  urgencyClass,
+} from '../../lib/admin-operations';
+
+export const prerender = false;
+
+const params = Astro.url.searchParams;
+const requestedStatus = params.get('status') || 'all';
+const status = requestedStatus === 'all' || CONTACT_STATUSES.includes(requestedStatus as any) ? requestedStatus : 'all';
+const rawSearch = (params.get('q') || '').trim().slice(0, 120);
+const search = sanitizePostgrestSearch(rawSearch);
+const sort = params.get('sort') === 'oldest' ? 'oldest' : 'newest';
+const from = /^\d{4}-\d{2}-\d{2}$/.test(params.get('from') || '') ? params.get('from')! : '';
+const to = /^\d{4}-\d{2}-\d{2}$/.test(params.get('to') || '') ? params.get('to')! : '';
+const page = parsePositiveInt(params.get('page'), 1);
+const perPage = 25;
+
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
+  auth: { autoRefreshToken: false, persistSession: false },
+});
+
+let query = supabase
+  .from('contact_submissions')
+  .select('id,name,email,company,phone,subject,message,status,created_at', { count: 'exact' })
+  .order('created_at', { ascending: sort === 'oldest' })
+  .range((page - 1) * perPage, page * perPage - 1);
+
+if (status !== 'all') query = query.eq('status', status);
+if (search) {
+  query = query.or(`name.ilike.%${search}%,email.ilike.%${search}%,company.ilike.%${search}%,subject.ilike.%${search}%,message.ilike.%${search}%`);
+}
+if (from) query = query.gte('created_at', `${from}T00:00:00.000Z`);
+if (to) query = query.lte('created_at', `${to}T23:59:59.999Z`);
+
+const [{ data: contacts, count, error }, { count: unreadCount }] = await Promise.all([
+  query,
+  supabase.from('contact_submissions').select('id', { count: 'exact', head: true }).eq('status', 'new'),
+]);
+
+const total = count || 0;
+const totalPages = Math.max(1, Math.ceil(total / perPage));
+if (page > totalPages && total > 0) {
+  const next = new URL(Astro.url);
+  next.searchParams.set('page', String(totalPages));
+  return Astro.redirect(`${next.pathname}${next.search}`);
+}
+
+const filterParams = { status, q: rawSearch, sort, from, to };
+const returnQuery = new URLSearchParams(filterParams);
+for (const [key, value] of [...returnQuery.entries()]) if (!value || value === 'all' || (key === 'sort' && value === 'newest')) returnQuery.delete(key);
+if (page > 1) returnQuery.set('page', String(page));
+const returnPath = `/admin/contacts${returnQuery.size ? `?${returnQuery}` : ''}`;
+const contactHref = (id: string) => `/admin/contact/${encodeURIComponent(id)}?return=${encodeURIComponent(returnPath)}`;
+---
+
+<AdminLayout title="Contact Submissions">
+  <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-[0.16em] text-green-700">Inquiry inbox</p>
+      <h1 class="mt-1 text-2xl font-bold text-slate-950">Contact submissions</h1>
+      <p class="mt-1 text-sm text-slate-500">Website contact and exit-intent inquiries. This is not the company email mailbox.</p>
+    </div>
+    <a href="/admin/contacts?status=new" class="inline-flex items-center gap-2 self-start rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-100">
+      <span class="h-2 w-2 rounded-full bg-blue-500"></span>{unreadCount || 0} unread
+    </a>
+  </div>
+
+  <form method="get" class="mb-4 grid gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-2 xl:grid-cols-[minmax(14rem,2fr)_repeat(4,minmax(0,1fr))_auto]">
+    <div>
+      <label for="q" class="mb-1 block text-xs font-semibold text-slate-600">Search</label>
+      <input id="q" name="q" value={rawSearch} maxlength="120" placeholder="Name, email, company, subject…" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600/20" />
+    </div>
+    <div>
+      <label for="status" class="mb-1 block text-xs font-semibold text-slate-600">Status</label>
+      <select id="status" name="status" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600/20">
+        <option value="all" selected={status === 'all'}>All</option>
+        <option value="new" selected={status === 'new'}>Unread</option>
+        <option value="read" selected={status === 'read'}>Read</option>
+      </select>
+    </div>
+    <div>
+      <label for="from" class="mb-1 block text-xs font-semibold text-slate-600">From</label>
+      <input id="from" type="date" name="from" value={from} class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600/20" />
+    </div>
+    <div>
+      <label for="to" class="mb-1 block text-xs font-semibold text-slate-600">To</label>
+      <input id="to" type="date" name="to" value={to} class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600/20" />
+    </div>
+    <div>
+      <label for="sort" class="mb-1 block text-xs font-semibold text-slate-600">Sort</label>
+      <select id="sort" name="sort" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600/20">
+        <option value="newest" selected={sort === 'newest'}>Newest first</option>
+        <option value="oldest" selected={sort === 'oldest'}>Oldest first</option>
+      </select>
+    </div>
+    <div class="flex items-end gap-2">
+      <button class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-600">Apply</button>
+      <a href="/admin/contacts" class="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100">Reset</a>
+    </div>
+  </form>
+
+  {error ? (
+    <div role="alert" class="rounded-xl border border-red-200 bg-red-50 p-5 text-sm text-red-800">
+      Contact submissions could not be loaded. Please retry; if the problem persists, check the Supabase connection.
+    </div>
+  ) : !contacts?.length ? (
+    <div class="rounded-xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm">
+      <h2 class="font-semibold text-slate-900">No submissions found</h2>
+      <p class="mt-1 text-sm text-slate-500">Try removing a filter or broadening the date range.</p>
+    </div>
+  ) : (
+    <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+      <div class="hidden overflow-x-auto md:block">
+        <table class="w-full table-fixed text-left text-sm">
+          <thead class="border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <tr><th class="w-[28%] px-4 py-3">Sender</th><th class="w-[36%] px-4 py-3">Inquiry</th><th class="w-[12%] px-4 py-3">Status</th><th class="w-[14%] px-4 py-3">Received</th><th class="w-[10%] px-4 py-3 text-right"><span class="sr-only">Open</span></th></tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {contacts.map((contact) => (
+              <tr tabindex="0" role="link" data-href={contactHref(contact.id)} class:list={['cursor-pointer transition-colors hover:bg-slate-50 focus:bg-slate-50 focus:outline-none', contact.status === 'new' && 'bg-blue-50/30']}>
+                <td class="px-4 py-4 align-top"><p class:list={['truncate text-slate-900', contact.status === 'new' ? 'font-bold' : 'font-semibold']}>{contact.name || 'Unknown visitor'}</p><p class="truncate text-xs text-slate-500">{contact.email}</p>{contact.company && <p class="mt-1 truncate text-xs text-slate-500">{contact.company}</p>}</td>
+                <td class="px-4 py-4 align-top"><p class="truncate font-medium text-slate-800">{contact.subject || 'Website inquiry'}</p><p class="mt-1 line-clamp-2 text-xs leading-5 text-slate-500">{contact.message}</p></td>
+                <td class="px-4 py-4 align-top"><StatusBadge status={contact.status || 'new'} /></td>
+                <td class="px-4 py-4 align-top"><p class="whitespace-nowrap text-xs font-medium text-slate-700">{formatAdminDateTime(contact.created_at)}</p><p class:list={['mt-1 text-xs font-semibold', urgencyClass(contact.created_at)]}>{formatAge(contact.created_at)} ago</p></td>
+                <td class="px-4 py-4 text-right align-middle"><a href={contactHref(contact.id)} class="rounded-md px-2 py-1 text-xs font-semibold text-green-700 hover:bg-green-50">Open</a></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="divide-y divide-slate-200 md:hidden">
+        {contacts.map((contact) => (
+          <a href={contactHref(contact.id)} class:list={['block p-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-green-600', contact.status === 'new' && 'bg-blue-50/40']}>
+            <div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class:list={['truncate text-sm text-slate-900', contact.status === 'new' ? 'font-bold' : 'font-semibold']}>{contact.name || 'Unknown visitor'}</p><p class="truncate text-xs text-slate-500">{contact.email}</p></div><StatusBadge status={contact.status || 'new'} /></div>
+            <p class="mt-3 truncate text-sm font-medium text-slate-800">{contact.subject || 'Website inquiry'}</p>
+            <p class="mt-1 line-clamp-2 text-xs leading-5 text-slate-500">{contact.message}</p>
+            <div class="mt-3 flex items-center justify-between text-xs"><span class="text-slate-500">{formatAdminDateTime(contact.created_at)}</span><span class:list={['font-semibold', urgencyClass(contact.created_at)]}>{formatAge(contact.created_at)} ago</span></div>
+          </a>
+        ))}
+      </div>
+
+      <Pagination page={page} totalPages={totalPages} total={total} perPage={perPage} basePath="/admin/contacts" params={filterParams} />
+    </div>
+  )}
+
+  <script is:inline>
+    document.querySelectorAll('[data-href]').forEach(function(row) {
+      row.addEventListener('click', function(event) {
+        if (event.target.closest('a,button,input,select')) return;
+        window.location.href = row.dataset.href;
+      });
+      row.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') window.location.href = row.dataset.href;
+      });
+    });
+  </script>
+</AdminLayout>

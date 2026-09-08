@@ -1,0 +1,41 @@
+---
+interface Props {
+  page: number;
+  totalPages: number;
+  total: number;
+  perPage: number;
+  basePath: string;
+  params?: Record<string, string>;
+}
+
+const { page, totalPages, total, perPage, basePath, params = {} } = Astro.props;
+const linkFor = (target: number) => {
+  const query = new URLSearchParams({ ...params, page: String(target) });
+  for (const [key, value] of [...query.entries()]) {
+    if (!value || value === 'all') query.delete(key);
+  }
+  const encoded = query.toString();
+  return encoded ? `${basePath}?${encoded}` : basePath;
+};
+const first = total === 0 ? 0 : (page - 1) * perPage + 1;
+const last = Math.min(page * perPage, total);
+---
+
+{totalPages > 1 && (
+  <nav aria-label="Pagination" class="flex flex-col gap-3 border-t border-slate-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+    <p class="text-xs text-slate-500">Showing {first}–{last} of {total}</p>
+    <div class="flex items-center gap-2">
+      <a
+        href={page > 1 ? linkFor(page - 1) : undefined}
+        aria-disabled={page <= 1 ? 'true' : undefined}
+        class:list={['rounded-md border px-3 py-1.5 text-sm font-medium', page > 1 ? 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50' : 'pointer-events-none border-slate-200 bg-slate-50 text-slate-300']}
+      >Previous</a>
+      <span class="px-1 text-xs text-slate-500">Page {page} of {totalPages}</span>
+      <a
+        href={page < totalPages ? linkFor(page + 1) : undefined}
+        aria-disabled={page >= totalPages ? 'true' : undefined}
+        class:list={['rounded-md border px-3 py-1.5 text-sm font-medium', page < totalPages ? 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50' : 'pointer-events-none border-slate-200 bg-slate-50 text-slate-300']}
+      >Next</a>
+    </div>
+  </nav>
+)}

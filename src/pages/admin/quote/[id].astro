@@ -9,6 +9,7 @@ import {
   DESTINATION_NAMES, STATUS_META,
   type QuoteRequest, type QuoteStatus,
 } from '../../../lib/types/quote';
+import { isSameOriginRequest } from '../../../lib/admin-operations';
 
 export const prerender = false;
 
@@ -25,33 +26,31 @@ const supabase = createClient(
 let flash = '';
 
 if (Astro.request.method === 'POST') {
-  const formData = await Astro.request.formData();
-  const action = formData.get('_action') as string;
+  if (!isSameOriginRequest(Astro.request)) {
+    Astro.response.status = 403;
+    flash = 'Error: Cross-site request rejected.';
+  } else {
+    const formData = await Astro.request.formData();
+    const action = formData.get('_action');
 
-  if (action === 'update-status') {
-  const newStatus = formData.get('status') as string;
-  const { error } = await supabase
-    .from('quote_requests')
-    .update({ 
-      status: newStatus, 
-      last_admin_action_at: new Date().toISOString() 
-    })
-    .eq('id', id);
-  flash = error ? `Error: ${error.message}` : `Status updated to "${newStatus}".`;
-}
+    if (action === 'update-status') {
+      const newStatus = String(formData.get('status') || '');
+      const validStatuses: QuoteStatus[] = ['new', 'reviewed', 'quoted', 'converted', 'rejected'];
+      if (!validStatuses.includes(newStatus as QuoteStatus)) {
+        Astro.response.status = 422;
+        flash = 'Error: Unsupported quote status.';
+      } else {
+        const { error } = await supabase.from('quote_requests').update({ status: newStatus, last_admin_action_at: new Date().toISOString() }).eq('id', id);
+        flash = error ? 'Error: The quote status could not be updated.' : `Status updated to "${newStatus}".`;
+      }
+    }
 
-  if (action === 'update-notes') {
-    const notes = formData.get('admin_notes') as string;
-    const assignedTo = formData.get('assigned_to') as string;
-    const { error } = await supabase
-      .from('quote_requests')
-      .update({
-      admin_notes: notes || null,
-      assigned_to: assignedTo || null,
-      last_admin_action_at: new Date().toISOString(),
-    })
-      .eq('id', id);
-    flash = error ? `Error: ${error.message}` : 'Notes saved.';
+    if (action === 'update-notes') {
+      const notes = String(formData.get('admin_notes') || '').trim().slice(0, 10_000);
+      const assignedTo = String(formData.get('assigned_to') || '').trim().slice(0, 200);
+      const { error } = await supabase.from('quote_requests').update({ admin_notes: notes || null, assigned_to: assignedTo || null, last_admin_action_at: new Date().toISOString() }).eq('id', id);
+      flash = error ? 'Error: Notes could not be saved.' : 'Notes saved.';
+    }
   }
 }
 
@@ -73,11 +72,7 @@ if (q.tech_pack_url) {
   techPackSignedUrl = await getSignedUrl(q.tech_pack_url);
 }
 
-const imageSignedUrls: { path: string; url: string }[] = [];
-for (const imgPath of (q.reference_images || [])) {
-  const signedUrl = await getSignedUrl(imgPath);
-  if (signedUrl) imageSignedUrls.push({ path: imgPath, url: signedUrl });
-}
+const imageSignedUrls = (await Promise.all((q.reference_images || []).map(async (path: string) => ({ path, url: await getSignedUrl(path) })))).filter((item): item is { path: string; url: string } => Boolean(item.url));
 
 // ── Helpers ──
 function formatDate(iso: string): string {
@@ -204,7 +199,7 @@ const allStatuses: QuoteStatus[] = ['new', 'reviewed', 'quoted', 'converted', 'r
               <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
               Tech Pack Analysis
             </h2>
-            {q.ai_confidence_score !== null && (
+            {q.ai_confidence_score != null && (
               <div class="flex items-center gap-2">
                 <div class="h-2 w-32 overflow-hidden rounded-full bg-slate-200">
                   <div class="h-full rounded-full bg-gradient-to-r from-green-600 to-green-400 transition-all" style={`width: ${(q.ai_confidence_score * 100).toFixed(0)}%`}></div>

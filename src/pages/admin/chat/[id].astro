@@ -17,7 +17,7 @@ const supabase = createClient(
 
 const { data: session } = await supabase
   .from('chat_sessions')
-  .select('*')
+  .select('id,visitor_name,visitor_email,status,created_at,updated_at')
   .eq('id', id)
   .single();
 
@@ -25,14 +25,10 @@ if (!session) return Astro.redirect('/admin');
 
 const { data: messages } = await supabase
   .from('chat_messages')
-  .select('*')
+  .select('id,sender,message,created_at')
   .eq('session_id', id)
-  .order('created_at', { ascending: true });
-
-if (session.status === 'waiting') {
-  await supabase.from('chat_sessions').update({ status: 'active' }).eq('id', id);
-  session.status = 'active';
-}
+  .order('created_at', { ascending: true })
+  .limit(500);
 
 const ssrMessageIds = (messages || []).map((m: any) => m.id);
 const lastMsgTime = messages && messages.length > 0
@@ -44,7 +40,7 @@ const lastMsgTime = messages && messages.length > 0
 
   <div class="flex items-center justify-between mb-6">
     <div class="flex items-center gap-4">
-      <a href="/admin" class="p-2 rounded-lg hover:bg-zinc-100 transition-colors">
+      <a href="/admin/chats" aria-label="Back to live chat" class="p-2 rounded-lg hover:bg-zinc-100 transition-colors">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
       </a>
       <div>
@@ -62,7 +58,7 @@ const lastMsgTime = messages && messages.length > 0
     )}
   </div>
 
-  <div class="bg-white rounded-2xl border border-zinc-200 overflow-hidden flex flex-col" style="height: calc(100vh - 260px);">
+  <div class="bg-white rounded-xl border border-zinc-200 overflow-hidden flex flex-col min-h-[32rem]" style="height: min(44rem, calc(100vh - 220px));">
     <div id="admin-messages" class="flex-1 overflow-y-auto px-6 py-4 space-y-4">
       {(!messages || messages.length === 0) && (
         <p id="no-messages-placeholder" class="text-center text-zinc-400 text-sm py-8">No messages yet.</p>
@@ -92,7 +88,7 @@ const lastMsgTime = messages && messages.length > 0
           <textarea id="admin-chat-input" placeholder="Type your reply..." autocomplete="off" rows="1"
             class="flex-1 px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm placeholder-zinc-400 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all resize-none overflow-hidden"
             style="max-height: 120px;"></textarea>
-          <button type="submit" class="px-6 py-3 bg-primary text-white rounded-xl font-medium text-sm hover:bg-primary-light transition-colors shrink-0">Send</button>
+          <button type="submit" class="px-6 py-3 bg-primary text-white rounded-xl font-medium text-sm hover:bg-primary-light transition-colors shrink-0 disabled:opacity-60">Send</button>
         </form>
       </div>
     ) : (
@@ -112,6 +108,7 @@ const lastMsgTime = messages && messages.length > 0
     var form = document.getElementById('admin-chat-form');
     var input = document.getElementById('admin-chat-input');
     var closeBtn = document.getElementById('close-session-btn');
+    var sendBtn = form?.querySelector('button[type="submit"]');
     var renderedIds = new Set(ssrMessageIds);
     var lastCheck = lastMsgTime;
     var pollTimer = null;
@@ -157,10 +154,8 @@ const lastMsgTime = messages && messages.length > 0
         e.preventDefault();
         var text = input.value.trim();
         if (!text) return;
-        input.value = '';
-        input.style.height = 'auto';
-        input.focus();
-        appendMessage(text, 'admin', new Date().toISOString());
+        input.disabled = true;
+        if (sendBtn) { sendBtn.disabled = true; sendBtn.textContent = 'Sending…'; }
         try {
           var res = await fetch('/api/admin/chat/' + sessionId + '/send', {
             method: 'POST',
@@ -169,12 +164,24 @@ const lastMsgTime = messages && messages.length > 0
           });
           if (res.ok) {
             var data = await res.json();
+            appendMessage(text, 'admin', data.created_at || new Date().toISOString());
             if (data.id) renderedIds.add(data.id);
             if (data.created_at && data.created_at > lastCheck) lastCheck = data.created_at;
+            input.value = '';
+            input.style.height = 'auto';
+            var statusEl = document.getElementById('session-status');
+            if (statusEl && statusEl.textContent?.trim() === 'waiting') { statusEl.textContent = 'active'; statusEl.className = 'font-medium text-green-600'; }
           } else {
-            console.warn('Send failed:', res.status, await res.text());
+            var failure = await res.json().catch(function() { return {}; });
+            alert(failure.error || 'Message could not be sent. Your draft has been kept.');
           }
-        } catch (err) { console.warn('Send failed:', err); }
+        } catch (err) {
+          alert('Network error. Your draft has been kept so you can try again.');
+        } finally {
+          input.disabled = false;
+          if (sendBtn) { sendBtn.disabled = false; sendBtn.textContent = 'Send'; }
+          input.focus();
+        }
       });
     }
 

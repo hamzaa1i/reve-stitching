@@ -5,13 +5,14 @@ import {
   saveTemplateContent,
   deleteTemplateContent,
   TEMPLATE_DEFAULTS,
-  replaceVars,
   buildVars,
   type TemplateContent,
 } from '../../../lib/email-templates/template-storage';
 import { generateQuoteUnderReviewEmail } from '../../../lib/email-templates/quote-under-review';
 import { generateAdminReminderEmail } from '../../../lib/email-templates/admin-reminder';
 import { generateReengagementEmail } from '../../../lib/email-templates/quote-reengagement';
+import { isSameOriginRequest } from '../../../lib/admin-operations';
+import { z } from 'zod';
 
 export const prerender = false;
 
@@ -41,31 +42,59 @@ const sampleQuote = {
 // Handle POST requests
 let formValues: Omit<TemplateContent, 'template_id' | 'updated_at'> | null = null;
 
+const templateContentSchema = z.object({
+  subject: z.string().trim().min(1, 'Subject is required').max(300),
+  greeting: z.string().trim().min(1, 'Greeting is required').max(1_000),
+  main_body: z.string().trim().min(1, 'Main body is required').max(10_000),
+  cta_text: z.string().trim().min(1, 'Button text is required').max(120),
+  footer_note: z.string().trim().max(1_000),
+}).strict();
+
 if (Astro.request.method === 'POST') {
-  const formData = await Astro.request.formData();
-  const action = formData.get('_action') as string;
+  if (!isSameOriginRequest(Astro.request)) {
+    Astro.response.status = 403;
+    flash = 'Error: This request could not be verified. Refresh the page and try again.';
+  } else {
+    const formData = await Astro.request.formData();
+    const action = formData.get('_action');
 
-  formValues = {
-    subject: (formData.get('subject') as string) || '',
-    greeting: (formData.get('greeting') as string) || '',
-    main_body: (formData.get('main_body') as string) || '',
-    cta_text: (formData.get('cta_text') as string) || '',
-    footer_note: (formData.get('footer_note') as string) || '',
-  };
+    if (action === 'save') {
+      const parsed = templateContentSchema.safeParse({
+        subject: formData.get('subject'),
+        greeting: formData.get('greeting'),
+        main_body: formData.get('main_body'),
+        cta_text: formData.get('cta_text'),
+        footer_note: formData.get('footer_note'),
+      });
 
-  if (action === 'save') {
-    const result = await saveTemplateContent(id, formValues);
-    if (result.success) {
-      flash = 'Content saved successfully! Future emails will use your custom text.';
-      saved = { template_id: id, ...formValues };
+      if (!parsed.success) {
+        Astro.response.status = 400;
+        flash = `Error: ${parsed.error.issues[0]?.message || 'Check the template fields and try again.'}`;
+      } else {
+        formValues = parsed.data;
+        const result = await saveTemplateContent(id, formValues);
+        if (result.success) {
+          flash = 'Content saved successfully. Future emails will use your custom text.';
+          saved = { template_id: id, ...formValues };
+        } else {
+          Astro.response.status = 500;
+          flash = 'Error: The template could not be saved. Please try again.';
+        }
+      }
+    } else if (action === 'reset') {
+      const result = await deleteTemplateContent(id);
+      if (result.success) {
+        saved = null;
+        formValues = null;
+        flash = 'Template reset to defaults.';
+      } else {
+        Astro.response.status = 500;
+        flash = 'Error: The template could not be reset. Please try again.';
+      }
     } else {
-      flash = `Error: ${result.error}`;
+      Astro.response.status = 400;
+      flash = 'Error: Unsupported template action.';
     }
-  } else if (action === 'reset') {
-    await deleteTemplateContent(id);
-    saved = null;
-    formValues = null;
-    flash = 'Template reset to defaults.';
   }
 }
 
@@ -85,14 +114,14 @@ const contentForPreview: TemplateContent = {
 };
 
 // Generate preview
-type GeneratorFn = (quote: any, content?: TemplateContent | null) => Promise<{ subject: string; html: string }>;
+type GeneratorFn = (quote: any, branding?: Record<string, string> | null, content?: TemplateContent | null) => Promise<{ subject: string; html: string }>;
 const generators: Record<string, GeneratorFn> = {
   '24h': generateQuoteUnderReviewEmail,
   '48h': generateAdminReminderEmail,
   '7d': generateReengagementEmail,
 };
 
-const previewResult = await generators[id](sampleQuote as any, contentForPreview);
+const previewResult = await generators[id](sampleQuote as any, null, contentForPreview);
 const previewHtml = previewResult.html;
 const previewSubject = previewResult.subject;
 
@@ -153,6 +182,8 @@ const variableHints = [
                 id="subject"
                 name="subject"
                 type="text"
+                required
+                maxlength="300"
                 value={current.subject}
                 class="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
@@ -163,6 +194,8 @@ const variableHints = [
                 id="greeting"
                 name="greeting"
                 rows="3"
+                required
+                maxlength="1000"
                 class="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
               >{current.greeting}</textarea>
               <p class="text-[10px] text-zinc-400 mt-1">Shown after "Hi {`{first_name}`},"</p>
@@ -173,6 +206,8 @@ const variableHints = [
                 id="main_body"
                 name="main_body"
                 rows="3"
+                required
+                maxlength="10000"
                 class="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
               >{current.main_body}</textarea>
             </div>
@@ -182,6 +217,8 @@ const variableHints = [
                 id="cta_text"
                 name="cta_text"
                 type="text"
+                required
+                maxlength="120"
                 value={current.cta_text}
                 class="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
@@ -192,6 +229,7 @@ const variableHints = [
                 id="footer_note"
                 name="footer_note"
                 type="text"
+                maxlength="1000"
                 value={current.footer_note}
                 class="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
               />

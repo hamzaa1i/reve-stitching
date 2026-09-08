@@ -1,183 +1,62 @@
 ---
-import AdminLayout from '../../../layouts/AdminLayout.astro';
 import { createClient } from '@supabase/supabase-js';
-import { SAMPLE_STATUS_CONFIG } from '../../../lib/types/sample';
-import type { SampleRequest } from '../../../lib/types/sample';
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import Pagination from '../../../components/admin/Pagination.astro';
+import StatusBadge from '../../../components/admin/StatusBadge.astro';
+import { formatAdminDateTime, formatAge, parsePositiveInt, sanitizePostgrestSearch, urgencyClass } from '../../../lib/admin-operations';
+import type { SampleRequest, SampleStatus } from '../../../lib/types/sample';
 
 export const prerender = false;
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { autoRefreshToken: false, persistSession: false } }
-);
+const validStatuses: SampleStatus[] = ['new', 'approved', 'production', 'shipped', 'delivered', 'converted', 'rejected'];
+const requestedStatus = Astro.url.searchParams.get('status') || 'all';
+const status = requestedStatus === 'all' || validStatuses.includes(requestedStatus as SampleStatus) ? requestedStatus : 'all';
+const rawSearch = (Astro.url.searchParams.get('q') || Astro.url.searchParams.get('search') || '').trim().slice(0, 120);
+const search = sanitizePostgrestSearch(rawSearch);
+const page = parsePositiveInt(Astro.url.searchParams.get('page'), 1);
+const perPage = 20;
 
-const statusFilter = Astro.url.searchParams.get('status') || 'all';
-const searchQuery = Astro.url.searchParams.get('search') || '';
-
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, { auth: { autoRefreshToken: false, persistSession: false } });
 let query = supabase
   .from('sample_requests')
-  .select('*', { count: 'exact' })
-  .order('created_at', { ascending: false });
+  .select('id,reference_number,company_name,contact_person,email,product_type,fabric_type,quantity,status,created_at', { count: 'exact' })
+  .order('created_at', { ascending: false })
+  .range((page - 1) * perPage, page * perPage - 1);
+if (status !== 'all') query = query.eq('status', status);
+if (search) query = query.or(`company_name.ilike.%${search}%,email.ilike.%${search}%,reference_number.ilike.%${search}%,contact_person.ilike.%${search}%`);
 
-if (statusFilter !== 'all') {
-  query = query.eq('status', statusFilter);
-}
-
-if (searchQuery) {
-  query = query.or(`company_name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%,reference_number.ilike.%${searchQuery}%`);
-}
-
-const { data: samples, error, count } = await query;
-
-const samplesList = (samples || []) as SampleRequest[];
-
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-GB', { 
-    day: 'numeric', 
-    month: 'short', 
-    year: 'numeric' 
-  });
-}
+const { data, count, error } = await query;
+const samples = (data || []) as SampleRequest[];
+const total = count || 0;
+const totalPages = Math.max(1, Math.ceil(total / perPage));
 ---
 
 <AdminLayout title="Sample Requests">
-  
-  <!-- Header -->
-  <div class="mb-6 flex items-center justify-between">
-    <div>
-      <h1 class="text-2xl font-bold text-zinc-900">Sample Requests</h1>
-      <p class="text-sm text-zinc-500 mt-1">Manage physical sample requests from buyers</p>
-    </div>
-    <a href="/samples" target="_blank" 
-      class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2">
-      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-      </svg>
-      View Public Form
-    </a>
+  <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <div><p class="text-xs font-semibold uppercase tracking-[0.16em] text-green-700">Sales</p><h1 class="mt-1 text-2xl font-bold text-slate-950">Sample requests</h1><p class="mt-1 text-sm text-slate-500">Manage physical sample requests from buyers.</p></div>
+    <a href="/samples" target="_blank" rel="noreferrer" class="self-start rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">View public form <span aria-hidden="true">↗</span></a>
   </div>
 
-  <!-- Filters -->
-  <div class="mb-6 flex flex-col sm:flex-row gap-4">
-    <!-- Status Filter -->
-    <div class="flex-1">
-      <select id="statusFilter" 
-        class="w-full px-4 py-2 rounded-lg border border-zinc-300 focus:border-primary focus:ring-2 focus:ring-primary/20">
-        <option value="all" selected={statusFilter === 'all'}>All Statuses</option>
-        <option value="new" selected={statusFilter === 'new'}>New</option>
-        <option value="approved" selected={statusFilter === 'approved'}>Approved</option>
-        <option value="production" selected={statusFilter === 'production'}>In Production</option>
-        <option value="shipped" selected={statusFilter === 'shipped'}>Shipped</option>
-        <option value="delivered" selected={statusFilter === 'delivered'}>Delivered</option>
-        <option value="converted" selected={statusFilter === 'converted'}>Converted</option>
-        <option value="rejected" selected={statusFilter === 'rejected'}>Rejected</option>
-      </select>
-    </div>
+  <form method="get" class="mb-4 grid gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-[12rem_minmax(0,1fr)_auto]">
+    <div><label for="sample-status" class="mb-1 block text-xs font-semibold text-slate-600">Status</label><select id="sample-status" name="status" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600/20"><option value="all" selected={status === 'all'}>All statuses</option>{validStatuses.map((value) => <option value={value} selected={status === value}>{value === 'production' ? 'In production' : value.charAt(0).toUpperCase() + value.slice(1)}</option>)}</select></div>
+    <div><label for="sample-search" class="mb-1 block text-xs font-semibold text-slate-600">Search</label><input id="sample-search" name="q" value={rawSearch} maxlength="120" placeholder="Company, contact, email, or reference…" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600/20" /></div>
+    <div class="flex items-end gap-2"><button class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white">Apply</button><a href="/admin/samples" class="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100">Reset</a></div>
+  </form>
 
-    <!-- Search -->
-    <div class="flex-1">
-      <input type="text" id="searchInput" value={searchQuery}
-        placeholder="Search by company, email, or reference..."
-        class="w-full px-4 py-2 rounded-lg border border-zinc-300 focus:border-primary focus:ring-2 focus:ring-primary/20">
-    </div>
-  </div>
-
-  <!-- Results Count -->
-  <div class="mb-4 text-sm text-zinc-600">
-    Found {count || 0} sample{(count || 0) !== 1 ? 's' : ''}
-  </div>
-
-  <!-- Table -->
   {error ? (
-    <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
-      Error loading samples: {error.message}
-    </div>
-  ) : samplesList.length === 0 ? (
-    <div class="bg-white rounded-xl border border-zinc-200 p-12 text-center">
-      <svg class="h-12 w-12 text-zinc-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-      </svg>
-      <p class="text-zinc-500">No sample requests found</p>
-    </div>
+    <div role="alert" class="rounded-xl border border-red-200 bg-red-50 p-5 text-sm text-red-800">Sample requests could not be loaded. Please retry.</div>
+  ) : samples.length === 0 ? (
+    <div class="rounded-xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm"><h2 class="font-semibold text-slate-900">No sample requests found</h2><p class="mt-1 text-sm text-slate-500">Try changing the search or status filter.</p></div>
   ) : (
-    <div class="bg-white rounded-xl border border-zinc-200 shadow-sm overflow-hidden">
-      <table class="w-full">
-        <thead class="bg-zinc-50 border-b border-zinc-200">
-          <tr>
-            <th class="px-4 py-3 text-left text-xs font-semibold text-zinc-600 uppercase">Reference</th>
-            <th class="px-4 py-3 text-left text-xs font-semibold text-zinc-600 uppercase">Company</th>
-            <th class="px-4 py-3 text-left text-xs font-semibold text-zinc-600 uppercase">Product</th>
-            <th class="px-4 py-3 text-left text-xs font-semibold text-zinc-600 uppercase">Qty</th>
-            <th class="px-4 py-3 text-left text-xs font-semibold text-zinc-600 uppercase">Status</th>
-            <th class="px-4 py-3 text-left text-xs font-semibold text-zinc-600 uppercase">Submitted</th>
-            <th class="px-4 py-3 text-right text-xs font-semibold text-zinc-600 uppercase">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-zinc-100">
-          {samplesList.map((sample) => {
-            const statusConfig = SAMPLE_STATUS_CONFIG[sample.status];
-            return (
-              <tr class="hover:bg-zinc-50 transition-colors">
-                <td class="px-4 py-3">
-                  <span class="font-mono text-sm text-zinc-900">{sample.reference_number}</span>
-                </td>
-                <td class="px-4 py-3">
-                  <div class="text-sm font-medium text-zinc-900">{sample.company_name}</div>
-                  <div class="text-xs text-zinc-500">{sample.contact_person}</div>
-                </td>
-                <td class="px-4 py-3">
-                  <span class="text-sm text-zinc-700 capitalize">{sample.product_type}</span>
-                  {sample.fabric_type && (
-                    <div class="text-xs text-zinc-500 capitalize">{sample.fabric_type}</div>
-                  )}
-                </td>
-                <td class="px-4 py-3">
-                  <span class="text-sm text-zinc-700">{sample.quantity}</span>
-                </td>
-                <td class="px-4 py-3">
-                  <span class={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${statusConfig.bg} ${statusConfig.color}`}>
-                    {statusConfig.label}
-                  </span>
-                </td>
-                <td class="px-4 py-3">
-                  <span class="text-sm text-zinc-600">{formatDate(sample.created_at)}</span>
-                </td>
-                <td class="px-4 py-3 text-right">
-                  <a href={`/admin/samples/${sample.id}`}
-                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/5 rounded-lg transition-colors">
-                    <span>View</span>
-                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </a>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+    <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+      <div class="hidden overflow-x-auto md:block">
+        <table class="w-full text-left text-sm">
+          <thead class="border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500"><tr><th class="px-4 py-3">Reference</th><th class="px-4 py-3">Buyer</th><th class="px-4 py-3">Product</th><th class="px-4 py-3 text-right">Qty</th><th class="px-4 py-3">Status</th><th class="px-4 py-3">Received</th><th class="px-4 py-3 text-right"><span class="sr-only">Open</span></th></tr></thead>
+          <tbody class="divide-y divide-slate-100">{samples.map((sample) => <tr class:list={['hover:bg-slate-50', sample.status === 'new' && 'bg-blue-50/30']}><td class="px-4 py-4 font-mono text-xs font-semibold text-slate-800">{sample.reference_number}</td><td class="px-4 py-4"><p class="font-semibold text-slate-900">{sample.company_name}</p><p class="text-xs text-slate-500">{sample.contact_person}</p></td><td class="px-4 py-4 capitalize text-slate-700">{sample.product_type}<p class="text-xs text-slate-500">{sample.fabric_type || 'Fabric not specified'}</p></td><td class="px-4 py-4 text-right font-semibold text-slate-900">{sample.quantity}</td><td class="px-4 py-4"><StatusBadge status={sample.status} /></td><td class="whitespace-nowrap px-4 py-4"><p class="text-xs text-slate-600">{formatAdminDateTime(sample.created_at)}</p><p class:list={['mt-1 text-xs font-semibold', sample.status === 'new' ? urgencyClass(sample.created_at) : 'text-slate-500']}>{formatAge(sample.created_at)} ago</p></td><td class="px-4 py-4 text-right"><a href={`/admin/samples/${sample.id}`} class="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:border-green-600 hover:bg-green-50 hover:text-green-700">Open</a></td></tr>)}</tbody>
+        </table>
+      </div>
+      <div class="divide-y divide-slate-200 md:hidden">{samples.map((sample) => <a href={`/admin/samples/${sample.id}`} class:list={['block p-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-green-600', sample.status === 'new' && 'bg-blue-50/30']}><div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="truncate font-semibold text-slate-900">{sample.company_name}</p><p class="truncate font-mono text-xs text-slate-500">{sample.reference_number}</p></div><StatusBadge status={sample.status} /></div><p class="mt-3 text-sm capitalize text-slate-700">{sample.product_type} · {sample.quantity} pcs</p><p class="mt-2 text-xs text-slate-500">Received {formatAdminDateTime(sample.created_at)}</p></a>)}</div>
+      <Pagination page={page} totalPages={totalPages} total={total} perPage={perPage} basePath="/admin/samples" params={{ status, q: rawSearch }} />
     </div>
   )}
-
-  <script>
-    const statusFilter = document.getElementById('statusFilter') as HTMLSelectElement;
-    const searchInput = document.getElementById('searchInput') as HTMLInputElement;
-
-    function updateURL() {
-      const params = new URLSearchParams();
-      if (statusFilter.value !== 'all') params.set('status', statusFilter.value);
-      if (searchInput.value) params.set('search', searchInput.value);
-      window.location.href = `/admin/samples${params.toString() ? '?' + params.toString() : ''}`;
-    }
-
-    statusFilter?.addEventListener('change', updateURL);
-    
-    let searchTimeout: ReturnType<typeof setTimeout>;
-    searchInput?.addEventListener('input', () => {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(updateURL, 500);
-    });
-  </script>
-
 </AdminLayout>
