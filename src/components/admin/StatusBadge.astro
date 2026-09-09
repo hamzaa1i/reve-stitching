@@ -1,9 +1,10 @@
 ---
 interface Props {
   status: string;
+  label?: string;
 }
 
-const { status } = Astro.props;
+const { status, label } = Astro.props;
 const normalized = status.toLowerCase();
 const styles: Record<string, string> = {
   new: 'bg-blue-50 text-blue-700 ring-blue-600/20',
@@ -21,9 +22,12 @@ const styles: Record<string, string> = {
   active: 'bg-green-50 text-green-700 ring-green-600/20',
   closed: 'bg-slate-100 text-slate-600 ring-slate-500/20',
 };
-const label = normalized === 'new' ? 'Unread' : normalized.charAt(0).toUpperCase() + normalized.slice(1);
+const defaultLabels: Record<string, string> = {
+  production: 'In Production',
+};
+const displayLabel = label ?? defaultLabels[normalized] ?? normalized.charAt(0).toUpperCase() + normalized.slice(1);
 ---
 
 <span class:list={['inline-flex items-center rounded-md px-2 py-1 text-xs font-semibold ring-1 ring-inset', styles[normalized] || styles.closed]}>
-  {label}
+  {displayLabel}
 </span>

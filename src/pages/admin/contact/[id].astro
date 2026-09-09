@@ -39,7 +39,7 @@ const replyHref = contact ? `mailto:${contact.email}?subject=${encodeURIComponen
           <a href={returnPath} class="inline-flex items-center gap-1 text-sm font-semibold text-slate-600 hover:text-slate-950"><span aria-hidden="true">←</span> Back to submissions</a>
           <div class="mt-3 flex flex-wrap items-center gap-3">
             <h1 class="text-2xl font-bold text-slate-950">{contact.subject || 'Website inquiry'}</h1>
-            <StatusBadge status={contact.status || 'new'} />
+            <StatusBadge status={contact.status || 'new'} label={(contact.status || 'new') === 'new' ? 'Unread' : 'Read'} />
           </div>
           <p class="mt-1 text-sm text-slate-500">Received {formatAdminDateTime(contact.created_at)} · <span class:list={['font-semibold', urgencyClass(contact.created_at)]}>{formatAge(contact.created_at)} ago</span></p>
         </div>
