@@ -75,4 +75,3 @@ export function isSameOriginRequest(request: Request): boolean {
 
   return true;
 }
-

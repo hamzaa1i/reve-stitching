@@ -11,8 +11,6 @@ export function initSentry() {
     dsn,
     environment: import.meta.env.PROD ? 'production' : 'development',
     tracesSampleRate: 0,
-    replaysSessionSampleRate: 0,
-    replaysOnErrorSampleRate: 0,
   });
 
   initialized = true;

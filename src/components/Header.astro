@@ -1024,7 +1024,8 @@ function isDropdownActive(children: { href: string }[]): boolean {
   function initFloatingHeader() {
     const header = document.getElementById('site-header');
     if (!header || header.hasAttribute('data-fh-init')) return;
-    header.setAttribute('data-fh-init', '');
+    const currentHeader = header;
+    currentHeader.setAttribute('data-fh-init', '');
 
     let isScrolled = false;
     const THRESHOLD = 60;
@@ -1033,7 +1034,7 @@ function isDropdownActive(children: { href: string }[]): boolean {
       const scrolled = window.scrollY > THRESHOLD;
       if (scrolled !== isScrolled) {
         isScrolled = scrolled;
-        header.classList.toggle('scrolled', scrolled);
+        currentHeader.classList.toggle('scrolled', scrolled);
       }
     }
 
@@ -1055,13 +1056,13 @@ function isDropdownActive(children: { href: string }[]): boolean {
     const header = document.getElementById('site-header');
     const menu = document.getElementById('mobile-menu');
     const backdrop = document.getElementById('mobile-menu-backdrop');
-    const protectedEls = new Set<Element>([header, menu, backdrop].filter(Boolean));
+    const protectedEls = new Set<Element>([header, menu, backdrop].filter((element): element is HTMLElement => element !== null));
 
     for (const el of document.body.children) {
       if (!(el instanceof HTMLElement)) continue;
       if (protectedEls.has(el)) continue;
       // Skip if this element contains any protected element
-      if ([header, menu, backdrop].filter(Boolean).some(p => el.contains(p))) continue;
+      if ([header, menu, backdrop].filter((element): element is HTMLElement => element !== null).some(p => el.contains(p))) continue;
 
       const style = getComputedStyle(el);
       if (style.position === 'fixed' || style.position === 'sticky') {
@@ -1168,7 +1169,7 @@ function isDropdownActive(children: { href: string }[]): boolean {
      IMAGE FALLBACK
      ═══════════════════════════════════════ */
   function initImageFallback() {
-    document.querySelectorAll('img[data-fallback-text]:not([data-fb-init])').forEach((img) => {
+    document.querySelectorAll<HTMLImageElement>('img[data-fallback-text]:not([data-fb-init])').forEach((img) => {
       img.setAttribute('data-fb-init', '');
       const apply = () => {
         if (img.complete && img.naturalHeight === 0) {

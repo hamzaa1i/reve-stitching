@@ -18,10 +18,11 @@ interface Props {
 const {
   title,
   description = 'Reve Stitching — Leading 100% export-oriented knitted garment manufacturer in Faisalabad, Pakistan. 300K+ monthly capacity, SEDEX compliant, AQL 1.5-4.0.',
-  ogImage = '/images/og-default.jpg',
+  ogImage = '/images/hero/about.webp',
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = new URL(ogImage, Astro.site);
 ---
 
 <!doctype html>
@@ -69,13 +70,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={`${title} | Reve Stitching`} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={ogImage} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:image:alt" content="Reve Stitching garment manufacturing facility" />
     <meta property="og:site_name" content="Reve Stitching" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={`${title} | Reve Stitching`} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image" content={ogImageURL} />
 
     <!-- Google Search Console verification -->
     <meta name="google-site-verification" content="d7pKd3JajXzyYEP7irRUAlasvSdclLyxrA82W5KnUcQ" />
@@ -132,6 +134,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   </head>
 
   <body class="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-300">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[10000] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-zinc-950 focus:shadow-lg">Skip to main content</a>
     <Header />
 
     <main class="flex-1 relative z-[1] overflow-x-hidden" id="main-content">
@@ -486,7 +489,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     </script>
 
     <!-- Exit-Intent Popup (desktop only, once per session) -->
-    <div id="exit-intent-popup" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/50 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Capability deck offer">
+    <div id="exit-intent-popup" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/50 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="exit-intent-title">
       <div class="exit-content relative mx-4 w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl dark:bg-zinc-900 sm:p-10">
         <button id="exit-intent-close" type="button" class="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300" aria-label="Close">
           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -496,13 +499,16 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           <svg class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
         </div>
 
-        <h3 class="mb-2 text-xl font-bold text-zinc-900 dark:text-white">Before You Go</h3>
+        <h3 id="exit-intent-title" class="mb-2 text-xl font-bold text-zinc-900 dark:text-white">Request Our Capability Deck</h3>
         <p class="mb-6 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-          Get our free capability deck — fabric options, MOQs, lead times, certifications, and factory details at a glance.
+          Leave your work email and our team will follow up with the current manufacturing capability information.
         </p>
 
         <form id="exit-intent-form" class="space-y-3">
+          <label for="exit-intent-email" class="sr-only">Work email</label>
           <input
+            id="exit-intent-email"
+            name="email"
             type="email"
             placeholder="your@email.com"
             required
@@ -512,11 +518,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
             type="submit"
             class="w-full rounded-xl bg-green-600 px-6 py-3 text-sm font-bold uppercase tracking-wider text-white transition-all hover:bg-green-700 dark:bg-green-500 dark:text-zinc-950 dark:hover:bg-green-400"
           >
-            Send Me the Deck
+            Request the Deck
           </button>
         </form>
 
-        <p class="mt-4 text-center text-[11px] text-zinc-400 dark:text-zinc-500">No spam. Just one email with our deck.</p>
+        <p class="mt-4 text-center text-[11px] text-zinc-400 dark:text-zinc-500">Your request is recorded as a website inquiry for our team to review.</p>
       </div>
     </div>
 
@@ -524,7 +530,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       (function() {
         var popup = document.getElementById('exit-intent-popup');
         if (!popup) return;
-        if (window.location.pathname.startsWith('/admin')) return;
+        if (window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/portal')) return;
         if (sessionStorage.getItem('exit_shown')) return;
         if (window.innerWidth < 1024) return;
 
@@ -612,8 +618,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
                     '<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-500/10">' +
                       '<svg class="h-8 w-8 text-green-600 dark:text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>' +
                     '</div>' +
-                    '<h3 class="mb-2 text-lg font-bold text-zinc-900 dark:text-white">Check Your Inbox!</h3>' +
-                    '<p class="text-sm text-zinc-500 dark:text-zinc-400">We\'ll send the deck to <strong id="exit-email-display"></strong> shortly.</p>' +
+                    '<h3 class="mb-2 text-lg font-bold text-zinc-900 dark:text-white">Request Received</h3>' +
+                    '<p class="text-sm text-zinc-500 dark:text-zinc-400">Our team will follow up at <strong id="exit-email-display"></strong>.</p>' +
                   '</div>';
                 // C-016 hotfix: set email via textContent to prevent HTML injection
                 const emailDisplay = exitContent.querySelector('#exit-email-display');
