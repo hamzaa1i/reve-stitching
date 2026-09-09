@@ -1,30 +1,49 @@
 import type { APIRoute } from "astro";
 import { getUserByEmail, createUser } from "../../../../lib/portal-auth";
+import { checkRateLimit, getClientIp } from "../../../../lib/security";
+import { isSameOriginRequest } from "../../../../lib/admin-operations";
+import { z } from "zod";
+
+const optionalText = (max: number) => z.preprocess(
+  (value) => value === "" ? undefined : value,
+  z.string().trim().max(max).optional(),
+);
+const registerSchema = z.object({
+  name: z.string().trim().min(2).max(200),
+  email: z.string().trim().email().max(254),
+  password: z.string().min(8).max(128),
+  company: optionalText(200),
+  phone: optionalText(50),
+}).strict();
 
 export const POST: APIRoute = async ({ request }) => {
+  if (!isSameOriginRequest(request)) {
+    return new Response(JSON.stringify({ error: "Forbidden" }), {
+      status: 403,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const ip = getClientIp(request);
+  if (!checkRateLimit(ip, 5, 60 * 60_000)) {
+    return new Response(JSON.stringify({ error: "Too many registration attempts. Try again later." }), {
+      status: 429,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   try {
-    const body = await request.json();
-    const { name, email, password, company, phone } = body;
-
-    if (!name || !email || !password) {
+    const parsed = registerSchema.safeParse(await request.json());
+    if (!parsed.success) {
       return new Response(
-        JSON.stringify({ error: "Name, email, and password are required" }),
+        JSON.stringify({ error: "Invalid registration details" }),
         {
           status: 400,
           headers: { "Content-Type": "application/json" },
         },
       );
     }
-
-    if (password.length < 8) {
-      return new Response(
-        JSON.stringify({ error: "Password must be at least 8 characters" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        },
-      );
-    }
+    const { name, email, password, company, phone } = parsed.data;
 
     const existing = await getUserByEmail(email.toLowerCase().trim());
     if (existing) {
@@ -38,11 +57,11 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     await createUser({
-      name: name.trim(),
+      name,
       email: email.toLowerCase().trim(),
       password,
-      company: company?.trim() || undefined,
-      phone: phone?.trim() || undefined,
+      company,
+      phone,
       role: "client",
       status: "pending",
     });

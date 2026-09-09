@@ -11,10 +11,15 @@ import {
   isValidEmail,
 } from '../../../lib/security';
 import { json } from '../../../lib/utils';
+import { isSameOriginRequest } from '../../../lib/admin-operations';
 
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request, cookies }) => {
+  if (!isSameOriginRequest(request)) {
+    return json({ error: 'Cross-site request rejected' }, 403);
+  }
+
   try {
     const ip = getClientIp(request);
 

@@ -3,8 +3,15 @@ import {
   deleteSession,
   getSessionCookieName,
 } from "../../../../lib/portal-auth";
+import { isSameOriginRequest } from "../../../../lib/admin-operations";
 
-export const POST: APIRoute = async ({ cookies }) => {
+export const POST: APIRoute = async ({ cookies, request }) => {
+  if (!isSameOriginRequest(request)) {
+    return new Response(JSON.stringify({ error: "Forbidden" }), {
+      status: 403,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
   const token = cookies.get(getSessionCookieName())?.value;
 
   if (token) {

@@ -54,6 +54,7 @@ The modernization therefore withholds financial pipeline value and response-time
 - Several mutation endpoints accepted arbitrary status strings or coerced arbitrary values.
 - Portal messaging allowed any authenticated portal user to address an arbitrary user and attach an arbitrary order ID.
 - Portal order mutation endpoints accepted arbitrary update values and did not enforce sequential production-stage transitions.
+- Portal account and remaining admin mutations lacked consistent strict payload validation and same-origin protection.
 - Portal email HTML interpolated stored user content without output encoding.
 - Quote Base64 uploads had no server-side decoded-size or file-count limits.
 - The ERPNext quote integration referenced an undefined `aiSummary` variable, silently preventing intended lead data from being sent.
@@ -121,6 +122,7 @@ Recommended inbound-email architecture: use a verified provider’s inbound webh
 - Portal recipient/order authorization and portal email output encoding.
 - Quote request upload limits and ERPNext AI-summary bug fix.
 - Portal order mutation schemas, same-origin checks, client validation, and sequential stage-transition enforcement.
+- Strict validation, role/ownership checks, and same-origin protection for remaining portal account, client, quote, and message mutations.
 - Valid Open Graph fallback, unique page titles, skip link, and zero-byte asset cleanup.
 - Truthful capability-deck capture copy: the current endpoint records a request for staff follow-up; it does not claim automatic delivery.
 
