@@ -66,10 +66,10 @@ const envSchema = z.object({
     .string()
     .min(12, "PORTAL_ADMIN_PASSWORD must be at least 12 chars (used by src/db/seed.ts)"),
 
-  // ── AI (GitHub Models for quote analysis + chatbot) ──
-  GITHUB_TOKEN: z
+  // ── AI (Gemini Developer API Free Tier) ──
+  GEMINI_API_KEY: z
     .string()
-    .min(20, "GITHUB_TOKEN must be a valid GitHub Personal Access Token (min 20 chars)"),
+    .min(20, "GEMINI_API_KEY must be a valid Google AI Studio API key (min 20 chars)"),
 
   // ── Email (Resend) ──
   RESEND_API_KEY: z
