@@ -22,7 +22,7 @@
 | Animation | [GSAP 3](https://greensock.com/gsap/) + [Lenis](https://lenis.darkroom.engineering/) |
 | Database | [Supabase PostgreSQL](https://supabase.com/) |
 | Email | [Resend](https://resend.com/) |
-| AI | GitHub Models (GPT-4o) |
+| AI | Gemini Developer API Free Tier (`gemini-3.7-flash`) |
 | Hosting | [Vercel](https://vercel.com/) |
 | Notifications | Discord Webhooks |
 
@@ -91,7 +91,7 @@
 - npm
 - Supabase account
 - Resend account
-- GitHub account (AI features)
+- Google AI Studio Free Tier project and API key (AI features; billing disabled)
 
 ---
 
@@ -147,11 +147,9 @@ PORTAL_ADMIN_PASSWORD=         # Initial admin password for `npm run db:seed` (r
 JWT_SECRET=                    # Generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))" (required, min 32 chars)
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# AI (GitHub Models)
+# AI (Gemini Developer API Free Tier)
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-GITHUB_TOKEN=
-GITHUB_MODEL=
-GEMINI_API_KEY=                # Optional — Gemini 2.0 Flash fallback for chatbot
+GEMINI_API_KEY=                # Required server-only key from a Free Tier project
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # EMAIL (RESEND)
@@ -333,6 +331,11 @@ to send automated follow-up emails for pending quotes.
 | Performance-adaptive animations | Hardware detection assigns `full`, `mid`, or `lite` animation tier based on CPU/memory capabilities. |
 | Reduced-motion bail-out | If `prefers-reduced-motion: reduce` is active, GSAP and Lenis never initialize. |
 | In-memory rate limiting | Best-effort per-instance protection only. A shared durable limiter is recommended before treating limits as globally enforced on serverless deployments. |
+| Zero-cost AI | All AI features use `gemini-3.7-flash` through the standard Gemini Developer API Free Tier. No grounding, retries, paid tier, or fallback provider is configured. Quota/provider failures degrade to deterministic fallback behavior and chat keeps human handoff available. |
+
+`GITHUB_TOKEN` and `GITHUB_MODEL` are no longer used. After deploying this version, they may be removed from Vercel if no external deployment process depends on them.
+
+Model and cost status were verified against Google's official [Gemini 3.7 Flash model page](https://ai.google.dev/gemini-api/docs/models/gemini-3.7-flash), [Gemini Developer API pricing](https://ai.google.dev/gemini-api/docs/pricing), and [billing guide](https://ai.google.dev/gemini-api/docs/billing) on 2026-09-10. Production must use an API key from a Free Tier project with billing disabled; there is no code-level paid fallback.
 
 ---
 
