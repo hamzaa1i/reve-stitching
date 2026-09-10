@@ -9,8 +9,22 @@ import {
   getSessionDuration,
 } from "../../../../lib/portal-auth";
 import { checkRateLimit, getClientIp } from "../../../../lib/security";
+import { isSameOriginRequest } from "../../../../lib/admin-operations";
+import { z } from "zod";
+
+const loginSchema = z.object({
+  email: z.string().trim().email().max(254),
+  password: z.string().min(1).max(1_000),
+}).strict();
 
 export const POST: APIRoute = async ({ request, cookies }) => {
+  if (!isSameOriginRequest(request)) {
+    return new Response(JSON.stringify({ error: "Forbidden" }), {
+      status: 403,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   // Phase 3 (adjusted): Rate limit — 10 attempts per IP per 15 minutes.
   // Original Phase 2 limit of 5 was too strict for legitimate users who log
   // in and out multiple times during the workday. 10 still blocks brute force
@@ -27,18 +41,17 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   }
 
   try {
-    const body = await request.json();
-    const { email, password } = body;
-
-    if (!email || !password) {
+    const parsed = loginSchema.safeParse(await request.json());
+    if (!parsed.success) {
       return new Response(
-        JSON.stringify({ error: "Email and password are required" }),
+        JSON.stringify({ error: "Invalid email or password" }),
         {
           status: 400,
           headers: { "Content-Type": "application/json" },
         },
       );
     }
+    const { email, password } = parsed.data;
 
     const db = getDb();
     const user = await db
@@ -105,7 +118,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       maxAge: getSessionDuration() / 1000,
     });
 
-    console.log(`[Portal] User logged in from ${ip}: ${user.email}`);
+    console.log(`[Portal] User logged in from ${ip}`);
     return new Response(
       JSON.stringify({
         user: {

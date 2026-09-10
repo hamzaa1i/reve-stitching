@@ -22,31 +22,20 @@ export const GET: APIRoute = async ({ cookies }) => {
       { auth: { autoRefreshToken: false, persistSession: false } }
     );
 
-    const { count: totalContacts } = await supabase
-      .from('contact_submissions')
-      .select('*', { count: 'exact', head: true });
-
-    const { count: newContacts } = await supabase
-      .from('contact_submissions')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'new');
-
-    const { count: waitingChats } = await supabase
-      .from('chat_sessions')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'waiting');
-
-    const { count: activeChats } = await supabase
-      .from('chat_sessions')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'active');
+    const [totalResult, newResult, waitingResult, activeResult] = await Promise.all([
+      supabase.from('contact_submissions').select('id', { count: 'exact', head: true }),
+      supabase.from('contact_submissions').select('id', { count: 'exact', head: true }).eq('status', 'new'),
+      supabase.from('chat_sessions').select('id', { count: 'exact', head: true }).eq('status', 'waiting'),
+      supabase.from('chat_sessions').select('id', { count: 'exact', head: true }).eq('status', 'active'),
+    ]);
+    if ([totalResult, newResult, waitingResult, activeResult].some((result) => result.error)) throw new Error('Count query failed');
 
     return new Response(
       JSON.stringify({
-        totalContacts: totalContacts || 0,
-        newContacts: newContacts || 0,
-        waitingChats: waitingChats || 0,
-        activeChats: activeChats || 0,
+        totalContacts: totalResult.count || 0,
+        newContacts: newResult.count || 0,
+        waitingChats: waitingResult.count || 0,
+        activeChats: activeResult.count || 0,
       }),
       {
         status: 200,

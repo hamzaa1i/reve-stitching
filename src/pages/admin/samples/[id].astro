@@ -461,8 +461,9 @@ const whatsappUrl = whatsappNumber ? `https://wa.me/${whatsappNumber}?text=${enc
         const result = await res.json();
 
         if (res.ok) {
-          statusMessage.className = 'mt-3 p-3 rounded-lg text-sm bg-green-50 text-green-700 border border-green-200';
-          statusMessage.textContent = 'Status updated successfully!';
+          const notificationFailed = result.notificationStatus === 'failed';
+          statusMessage.className = 'mt-3 p-3 rounded-lg text-sm ' + (notificationFailed ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-green-50 text-green-700 border border-green-200');
+          statusMessage.textContent = notificationFailed ? 'Status updated, but the notification email could not be sent.' : 'Status updated successfully.';
           statusMessage.classList.remove('hidden');
           setTimeout(() => window.location.reload(), 1500);
         } else {

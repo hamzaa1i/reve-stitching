@@ -21,6 +21,17 @@ import type { QuoteRequest } from '../../../lib/types/quote';
 
 export const prerender = false;
 
+const MAX_REQUEST_BYTES = 35 * 1024 * 1024;
+const MAX_TECH_PACK_BYTES = 10 * 1024 * 1024;
+const MAX_REFERENCE_IMAGE_BYTES = 5 * 1024 * 1024;
+const MAX_REFERENCE_IMAGES = 5;
+
+function estimatedBase64Bytes(value: unknown): number {
+  if (typeof value !== 'string') return 0;
+  const payload = value.includes(',') ? value.slice(value.indexOf(',') + 1) : value;
+  return Math.floor((payload.length * 3) / 4);
+}
+
 function getContentType(filename: string): string {
   const ext = filename.toLowerCase().split('.').pop();
   const types: Record<string, string> = {
@@ -39,6 +50,10 @@ function getContentType(filename: string): string {
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    const contentLength = Number(request.headers.get('content-length') || 0);
+    if (contentLength > MAX_REQUEST_BYTES) {
+      return new Response(JSON.stringify({ success: false, error: 'The upload is too large. Reduce file sizes and try again.' }), { status: 413, headers: { 'Content-Type': 'application/json' } });
+    }
     const ip = getClientIp(request);
     initSentry(); // Initialize Sentry early
     if (!checkRateLimit(ip, 3, 60_000)) {
@@ -49,6 +64,9 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const body = await request.json();
+    if (!body || typeof body !== 'object' || Array.isArray(body)) {
+      return new Response(JSON.stringify({ success: false, error: 'Invalid request body.' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+    }
 
     // Honeypot check
     if (isHoneypotTriggered(body)) {
@@ -105,6 +123,7 @@ export const POST: APIRoute = async ({ request }) => {
     if (!gsm || gsm < 100 || gsm > 500)
       errors.push('GSM must be between 100 and 500.');
     if (!quantity || quantity < 1) errors.push('Quantity is required.');
+    if (quantity > 10_000_000) errors.push('Quantity exceeds the supported maximum.');
     if (!sizes || sizes.length === 0)
       errors.push('At least one size is required.');
     if (!target_date) errors.push('Target delivery date is required.');
@@ -114,6 +133,13 @@ export const POST: APIRoute = async ({ request }) => {
     if (!email) errors.push('Email is required.');
     if (email && !isValidEmail(email))
       errors.push('Please provide a valid email address.');
+    if (body.techPackBase64 && estimatedBase64Bytes(body.techPackBase64) > MAX_TECH_PACK_BYTES) errors.push('Tech pack must be 10 MB or smaller.');
+    if (body.referenceImagesBase64 && !Array.isArray(body.referenceImagesBase64)) errors.push('Reference images are invalid.');
+    if (Array.isArray(body.referenceImagesBase64)) {
+      if (body.referenceImagesBase64.length > MAX_REFERENCE_IMAGES) errors.push(`Upload no more than ${MAX_REFERENCE_IMAGES} reference images.`);
+      if (body.referenceImagesBase64.some((image: unknown) => estimatedBase64Bytes(image) > MAX_REFERENCE_IMAGE_BYTES)) errors.push('Each reference image must be 5 MB or smaller.');
+      if (!Array.isArray(body.referenceImageNames) || body.referenceImageNames.length !== body.referenceImagesBase64.length) errors.push('Reference image metadata is invalid.');
+    }
 
     if (errors.length > 0) {
       return new Response(
@@ -348,7 +374,7 @@ export const POST: APIRoute = async ({ request }) => {
         isRush: is_rush,
         hasSample: has_sample,
         notes,
-        aiSummary,
+        aiSummary: ai_summary,
         estimatedPriceRange: estimated_price_range,
       });
 

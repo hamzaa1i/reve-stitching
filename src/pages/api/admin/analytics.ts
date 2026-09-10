@@ -29,16 +29,16 @@ export const GET: APIRoute = async ({ cookies }) => {
     // Fetch contacts
     const { data: contacts } = await supabase
       .from('contact_submissions')
-      .select('*')
+      .select('id,name,email,company,subject,status,created_at')
       .order('created_at', { ascending: false })
-      .limit(50);
+      .limit(25);
 
     // Fetch sessions
     const { data: sessions } = await supabase
       .from('chat_sessions')
-      .select('*')
+      .select('id,visitor_name,visitor_email,status,created_at,updated_at')
       .order('created_at', { ascending: false })
-      .limit(50);
+      .limit(25);
 
     return new Response(
       JSON.stringify({
@@ -50,14 +50,14 @@ export const GET: APIRoute = async ({ cookies }) => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'Cache-Control': 'private, max-age=60',
+        'Cache-Control': 'private, no-store',
         },
       }
     );
   } catch (error: any) {
     console.error('❌ Analytics API error:', error);
     return new Response(
-      JSON.stringify({ error: error.message || 'Failed to fetch analytics' }),
+      JSON.stringify({ error: 'Failed to fetch analytics' }),
       {
         status: 500,
         headers: { 'Content-Type': 'application/json' },

@@ -14,7 +14,12 @@ export default defineConfig({
   output: 'server',
   adapter: vercel(),
   site: 'https://revestitching.com',
-  integrations: [sitemap()],
+  integrations: [sitemap({
+    filter: (page) => {
+      const path = new URL(page).pathname;
+      return !path.startsWith('/admin') && !path.startsWith('/portal');
+    },
+  })],
   build: {
     inlineStylesheets: 'auto',
   },

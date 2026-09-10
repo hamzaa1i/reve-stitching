@@ -1,7 +1,8 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
 import { createClient } from '@supabase/supabase-js';
-import { PRODUCT_NAMES, STATUS_META, type QuoteStatus, type QuoteRequest, type QuoteStats } from '../../lib/types/quote';
+import { PRODUCT_NAMES, STATUS_META, type QuoteStatus, type QuoteStats } from '../../lib/types/quote';
+import { formatAge, parsePositiveInt, sanitizePostgrestSearch, urgencyClass } from '../../lib/admin-operations';
 
 export const prerender = false;
 
@@ -13,9 +14,13 @@ const supabase = createClient(
 
 // ── URL Params ──
 const url = Astro.url;
-const statusFilter = (url.searchParams.get('status') || 'all') as string;
-const searchQuery  = (url.searchParams.get('q') || '').trim();
-const page         = Math.max(1, Number(url.searchParams.get('page')) || 1);
+const validStatuses = ['new', 'reviewed', 'quoted', 'converted', 'rejected'] as const;
+const requestedStatus = url.searchParams.get('status') || 'all';
+const statusFilter = requestedStatus === 'all' || validStatuses.includes(requestedStatus as QuoteStatus) ? requestedStatus : 'all';
+const rawSearch = (url.searchParams.get('q') || '').trim().slice(0, 120);
+const searchQuery = sanitizePostgrestSearch(rawSearch);
+const page = parsePositiveInt(url.searchParams.get('page'), 1);
+const sort = url.searchParams.get('sort') === 'oldest' ? 'oldest' : 'newest';
 const perPage      = 20;
 
 // ── Fetch Stats ──
@@ -28,8 +33,8 @@ const stats: QuoteStats = statsRow || {
 // ── Build Query ──
 let query = supabase
   .from('quote_requests')
-  .select('*', { count: 'exact' })
-  .order('created_at', { ascending: false })
+  .select('id,reference_number,created_at,status,product_type,quantity,company_name,contact_person,is_rush', { count: 'exact' })
+  .order('created_at', { ascending: sort === 'oldest' })
   .range((page - 1) * perPage, page * perPage - 1);
 
 if (statusFilter !== 'all') {
@@ -42,7 +47,7 @@ if (searchQuery) {
   );
 }
 
-const { data: quotes, count } = await query;
+const { data: quotes, count, error: quotesError } = await query;
 const totalPages = Math.ceil((count || 0) / perPage);
 
 // ── Helpers ──
@@ -50,16 +55,6 @@ function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-GB', {
     day: 'numeric', month: 'short', year: 'numeric',
   });
-}
-
-function timeAgo(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime();
-  const hours = Math.floor(diff / 3600000);
-  if (hours < 1) return 'Just now';
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  if (days === 1) return 'Yesterday';
-  return `${days}d ago`;
 }
 
 const statusTabs: { key: string; label: string; count: number }[] = [
@@ -87,7 +82,7 @@ const statusTabs: { key: string; label: string; count: number }[] = [
       <input
         type="text"
         name="q"
-        value={searchQuery}
+        value={rawSearch}
         placeholder="Search company, ref, email…"
         class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm shadow-sm transition focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600/20 sm:w-72"
       />
@@ -141,7 +136,9 @@ const statusTabs: { key: string; label: string; count: number }[] = [
   </div>
 
   <!-- Table -->
-  <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+  {quotesError ? (
+    <div role="alert" class="rounded-xl border border-red-200 bg-red-50 p-5 text-sm text-red-800">Quote requests could not be loaded. Please retry.</div>
+  ) : <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
     <div class="overflow-x-auto">
       <table class="w-full text-sm">
         <thead>
@@ -165,7 +162,7 @@ const statusTabs: { key: string; label: string; count: number }[] = [
               </td>
             </tr>
           ) : (
-            quotes.map((q: QuoteRequest) => {
+            quotes.map((q) => {
               const sm = STATUS_META[q.status as QuoteStatus] || STATUS_META.new;
               return (
                 <tr class="transition hover:bg-slate-50">
@@ -191,7 +188,7 @@ const statusTabs: { key: string; label: string; count: number }[] = [
                     </span>
                   </td>
                   <td class="whitespace-nowrap px-5 py-4 text-slate-500" title={formatDate(q.created_at)}>
-                    {timeAgo(q.created_at)}
+                    <span class:list={['font-semibold', q.status === 'new' ? urgencyClass(q.created_at) : 'text-slate-600']}>{formatAge(q.created_at)} ago</span>
                   </td>
                   <td class="whitespace-nowrap px-5 py-4 text-right">
                     <a
@@ -218,7 +215,7 @@ const statusTabs: { key: string; label: string; count: number }[] = [
         <div class="flex gap-1">
           {page > 1 && (
             <a
-              href={`/admin/quotes?status=${statusFilter}&page=${page - 1}${searchQuery ? `&q=${encodeURIComponent(searchQuery)}` : ''}`}
+              href={`/admin/quotes?status=${statusFilter}&page=${page - 1}${rawSearch ? `&q=${encodeURIComponent(rawSearch)}` : ''}${sort === 'oldest' ? '&sort=oldest' : ''}`}
               class="inline-flex items-center gap-1 rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
             >
               <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
@@ -227,7 +224,7 @@ const statusTabs: { key: string; label: string; count: number }[] = [
           )}
           {page < totalPages && (
             <a
-              href={`/admin/quotes?status=${statusFilter}&page=${page + 1}${searchQuery ? `&q=${encodeURIComponent(searchQuery)}` : ''}`}
+              href={`/admin/quotes?status=${statusFilter}&page=${page + 1}${rawSearch ? `&q=${encodeURIComponent(rawSearch)}` : ''}${sort === 'oldest' ? '&sort=oldest' : ''}`}
               class="inline-flex items-center gap-1 rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
             >
               Next
@@ -237,6 +234,6 @@ const statusTabs: { key: string; label: string; count: number }[] = [
         </div>
       </div>
     )}
-  </div>
+  </div>}
 
 </AdminLayout>

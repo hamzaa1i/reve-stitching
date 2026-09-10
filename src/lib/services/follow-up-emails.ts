@@ -144,7 +144,7 @@ async function send24HourFollowUp(
   supabase: SupabaseClient
 ): Promise<{ success: boolean; error?: string }> {
   const tag = `[FollowUp][24h][${quote.reference_number}]`;
-  console.log(`${tag} Sending to ${quote.email}...`);
+  console.log(`${tag} Sending buyer follow-up...`);
 
   try {
     // ⚠️ AWAIT the async generator
@@ -250,7 +250,7 @@ async function send7DayReengagement(
   supabase: SupabaseClient
 ): Promise<{ success: boolean; error?: string }> {
   const tag = `[FollowUp][7d][${quote.reference_number}]`;
-  console.log(`${tag} Sending re-engagement to ${quote.email}...`);
+  console.log(`${tag} Sending buyer re-engagement...`);
 
   try {
     // ⚠️ AWAIT the async generator
@@ -390,7 +390,8 @@ export async function checkAndSendFollowUps(
       `(${hours.toFixed(1)}h old, status: ${quote.status})`
     );
 
-    // ── 24-hour follow-up ──
+    // Send at most one stage per quote in a run. Old records with multiple
+    // missing flags must not receive a burst of three emails at once.
     if (hours >= THRESHOLD_24H && !quote.follow_up_24h_sent) {
       const res = await send24HourFollowUp(quote, resend, supabase);
       result.details.push({
@@ -406,10 +407,7 @@ export async function checkAndSendFollowUps(
         result.errors++;
       }
       await delay(500); // Small pause between sends
-    }
-
-    // ── 48-hour admin reminder ──
-    if (hours >= THRESHOLD_48H && !quote.admin_reminder_sent) {
+    } else if (hours >= THRESHOLD_48H && !quote.admin_reminder_sent) {
       const res = await send48HourAdminReminder(quote, resend, supabase);
       result.details.push({
         reference: quote.reference_number,
@@ -424,10 +422,7 @@ export async function checkAndSendFollowUps(
         result.errors++;
       }
       await delay(500);
-    }
-
-    // ── 7-day re-engagement ──
-    if (hours >= THRESHOLD_7D && !quote.reengagement_sent) {
+    } else if (hours >= THRESHOLD_7D && !quote.reengagement_sent) {
       const res = await send7DayReengagement(quote, resend, supabase);
       result.details.push({
         reference: quote.reference_number,

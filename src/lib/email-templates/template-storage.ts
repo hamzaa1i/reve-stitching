@@ -1,6 +1,6 @@
 // src/lib/email-templates/template-storage.ts
 
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -280,13 +280,18 @@ export async function saveTemplateContent(
   }
 }
 
-export async function deleteTemplateContent(templateId: string): Promise<{ success: boolean }> {
+export async function deleteTemplateContent(templateId: string): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = getSupabase();
-    await supabase
+    const { error } = await supabase
       .from('email_template_content')
       .delete()
       .eq('template_id', templateId);
+
+    if (error) {
+      console.error('[TemplateStorage] Delete content error:', error);
+      return { success: false, error: error.message };
+    }
 
     // Clear cache
     contentCache.clear();
@@ -294,7 +299,7 @@ export async function deleteTemplateContent(templateId: string): Promise<{ succe
     return { success: true };
   } catch (err) {
     console.error('[TemplateStorage] Delete content error:', err);
-    return { success: true }; // Return success anyway — if it doesn't exist, that's fine
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
   }
 }
 

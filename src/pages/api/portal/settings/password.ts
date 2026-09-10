@@ -3,6 +3,13 @@ import { getDb } from "../../../../db/index";
 import { users } from "../../../../db/schema";
 import { eq } from "drizzle-orm";
 import { verifyPassword, hashPassword } from "../../../../lib/portal-auth";
+import { z } from "zod";
+import { isSameOriginRequest } from "../../../../lib/admin-operations";
+
+const passwordSchema = z.object({
+  currentPassword: z.string().min(1).max(1_000),
+  newPassword: z.string().min(8).max(128),
+}).strict();
 
 export const POST: APIRoute = async ({ request, locals }) => {
   if (!locals.user) {
@@ -11,29 +18,25 @@ export const POST: APIRoute = async ({ request, locals }) => {
       headers: { "Content-Type": "application/json" },
     });
   }
+  if (!isSameOriginRequest(request)) {
+    return new Response(JSON.stringify({ error: "Forbidden" }), {
+      status: 403,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 
   try {
-    const { currentPassword, newPassword } = await request.json();
-
-    if (!currentPassword || !newPassword) {
+    const parsed = passwordSchema.safeParse(await request.json());
+    if (!parsed.success) {
       return new Response(
-        JSON.stringify({ error: "Both fields are required" }),
+        JSON.stringify({ error: "New password must be 8 to 128 characters" }),
         {
           status: 400,
           headers: { "Content-Type": "application/json" },
         },
       );
     }
-
-    if (newPassword.length < 8) {
-      return new Response(
-        JSON.stringify({ error: "Password must be at least 8 characters" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        },
-      );
-    }
+    const { currentPassword, newPassword } = parsed.data;
 
     const db = getDb();
     const user = await db

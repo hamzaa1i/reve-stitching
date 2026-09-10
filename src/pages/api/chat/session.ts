@@ -88,8 +88,8 @@ export const POST: APIRoute = async ({ request }) => {
 
     await notifyNewChat({
       sessionId: data.id,
-      visitorName: cleanName,
-      visitorEmail: cleanEmail,
+      visitorName: cleanName || undefined,
+      visitorEmail: cleanEmail || undefined,
     });
 
     return new Response(JSON.stringify({ sessionId: data.id }), {

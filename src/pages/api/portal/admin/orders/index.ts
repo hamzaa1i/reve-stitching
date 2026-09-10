@@ -1,7 +1,36 @@
 import type { APIRoute } from "astro";
 import { getDb } from "../../../../../db/index";
-import { orders } from "../../../../../db/schema";
-import { desc } from "drizzle-orm";
+import { orders, users } from "../../../../../db/schema";
+import { and, desc, eq } from "drizzle-orm";
+import { z } from "zod";
+import { isSameOriginRequest } from "../../../../../lib/admin-operations";
+
+const optionalText = (max: number) => z.preprocess(
+  (value) => value === "" ? null : value,
+  z.string().trim().max(max).optional().nullable(),
+);
+const optionalPrice = (decimalPlaces: number) => z.preprocess(
+  (value) => value === "" ? null : value,
+  z.string().trim().regex(new RegExp(`^\\d+(?:\\.\\d{1,${decimalPlaces}})?$`)).max(30).optional().nullable(),
+);
+const optionalDate = z.preprocess(
+  (value) => value === "" ? null : value,
+  z.string().datetime().optional().nullable(),
+);
+const createOrderSchema = z.object({
+  clientId: z.string().uuid(),
+  poNumber: z.string().trim().min(1).max(100),
+  productType: z.string().trim().min(1).max(200),
+  quantity: z.number().int().positive().max(10_000_000),
+  unitPrice: optionalPrice(4),
+  totalPrice: optionalPrice(2),
+  currency: z.string().trim().regex(/^[A-Z]{3}$/).default("USD"),
+  fabricDetails: optionalText(2_000),
+  color: optionalText(200),
+  sizeRange: optionalText(200),
+  notes: optionalText(5_000),
+  estimatedCompletion: optionalDate,
+}).strict();
 
 export const GET: APIRoute = async ({ locals }) => {
   if (locals.user?.role !== "admin") {
@@ -39,9 +68,23 @@ export const POST: APIRoute = async ({ request, locals }) => {
     });
   }
 
+  if (!isSameOriginRequest(request)) {
+    return new Response(JSON.stringify({ error: "Forbidden" }), {
+      status: 403,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   try {
     const db = getDb();
-    const body = await request.json();
+    const parsed = createOrderSchema.safeParse(await request.json());
+    if (!parsed.success) {
+      return new Response(JSON.stringify({ error: "Invalid order details" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     const {
       clientId,
       poNumber,
@@ -55,15 +98,19 @@ export const POST: APIRoute = async ({ request, locals }) => {
       sizeRange,
       notes,
       estimatedCompletion,
-    } = body;
+    } = parsed.data;
 
-    if (!clientId || !poNumber || !productType || !quantity) {
-      return new Response(
-        JSON.stringify({
-          error: "Client, PO number, product type, and quantity are required",
-        }),
-        { status: 400, headers: { "Content-Type": "application/json" } },
-      );
+    const client = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(and(eq(users.id, clientId), eq(users.role, "client")))
+      .get();
+
+    if (!client) {
+      return new Response(JSON.stringify({ error: "Client not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     const id = crypto.randomUUID();
@@ -75,7 +122,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       quantity,
       unitPrice: unitPrice || null,
       totalPrice: totalPrice || null,
-      currency: currency || "USD",
+      currency,
       status: "confirmed",
       fabricDetails: fabricDetails || null,
       color: color || null,

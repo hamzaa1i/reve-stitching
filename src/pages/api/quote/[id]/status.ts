@@ -3,6 +3,8 @@ import { createClient } from '@supabase/supabase-js';
 import { getAdminFromCookies } from '../../../../lib/auth';
 import { json } from '../../../../lib/utils';
 import type { QuoteStatus } from '../../../../lib/types/quote';
+import { isSameOriginRequest } from '../../../../lib/admin-operations';
+import { z } from 'zod';
 
 export const prerender = false;
 
@@ -13,6 +15,7 @@ export const PATCH: APIRoute = async ({ params, request, cookies }) => {
   if (!admin) {
     return json({ error: 'Unauthorized' }, 401);
   }
+  if (!isSameOriginRequest(request)) return json({ error: 'Cross-site request rejected' }, 403);
 
   const { id } = params;
   if (!id) {
@@ -21,17 +24,13 @@ export const PATCH: APIRoute = async ({ params, request, cookies }) => {
 
   try {
     const body = await request.json();
-    const updates: Record<string, any> = {};
-
-    if (body.status) {
-      if (!VALID_STATUSES.includes(body.status)) {
-        return json({ error: `Invalid status. Must be one of: ${VALID_STATUSES.join(', ')}` }, 422);
-      }
-      updates.status = body.status;
-    }
-
-    if (typeof body.admin_notes === 'string') updates.admin_notes = body.admin_notes;
-    if (typeof body.assigned_to === 'string') updates.assigned_to = body.assigned_to;
+    const parsed = z.object({
+      status: z.enum(VALID_STATUSES as [QuoteStatus, ...QuoteStatus[]]).optional(),
+      admin_notes: z.string().trim().max(10_000).nullable().optional(),
+      assigned_to: z.string().trim().max(200).nullable().optional(),
+    }).strict().safeParse(body);
+    if (!parsed.success) return json({ error: 'Invalid quote update' }, 422);
+    const updates: Record<string, unknown> = { ...parsed.data };
 
     if (Object.keys(updates).length === 0) {
       return json({ error: 'No fields to update' }, 422);

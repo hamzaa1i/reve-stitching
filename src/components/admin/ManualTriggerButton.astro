@@ -80,10 +80,9 @@
         var statsDiv = document.createElement('div');
         statsDiv.className = 'result-stats';
         var stats = [
-          { value: data.emailsSent, label: 'Emails Sent' },
-          { value: data.quotesProcessed, label: 'Quotes Checked' },
-          { value: data.duration, label: 'Duration' },
-          { value: data.errors, label: 'Errors' }
+          { value: data.stats?.emailsSent ?? 0, label: 'Emails Sent' },
+          { value: data.stats?.quotesProcessed ?? 0, label: 'Quotes Checked' },
+          { value: data.stats?.errors ?? 0, label: 'Errors' }
         ];
         for (var si = 0; si < stats.length; si++) {
           var statDiv = document.createElement('div');

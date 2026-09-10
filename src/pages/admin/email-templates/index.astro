@@ -4,6 +4,7 @@ import { getTemplateSettings, TEMPLATE_DEFAULTS } from '../../../lib/email-templ
 import { generateQuoteUnderReviewEmail } from '../../../lib/email-templates/quote-under-review';
 import { generateAdminReminderEmail } from '../../../lib/email-templates/admin-reminder';
 import { generateReengagementEmail } from '../../../lib/email-templates/quote-reengagement';
+import ManualTriggerButton from '../../../components/admin/ManualTriggerButton.astro';
 
 export const prerender = false;
 
@@ -224,6 +225,12 @@ const templates = [
     </ul>
   </div>
 
+  <section class="mt-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <h2 class="text-sm font-bold text-slate-900">Follow-up operations</h2>
+    <p class="mt-1 max-w-2xl text-sm text-slate-500">The scheduled job runs daily at 09:00 UTC. A manual run checks eligible new quotes using the same duplicate-suppression flags.</p>
+    <ManualTriggerButton />
+  </section>
+
 </AdminLayout>
 
 <script is:inline>
@@ -241,7 +248,7 @@ const templates = [
       var response = await fetch('/api/admin/send-test-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ templateId: templateId, email: email }),
+        body: JSON.stringify({ template_id: templateId, email: email }),
         credentials: 'include',
       });
       

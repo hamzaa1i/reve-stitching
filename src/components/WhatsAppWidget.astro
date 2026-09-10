@@ -298,11 +298,11 @@ const {
 
       if (labelClose) {
         // Clone to remove any stale listeners from previous page
-        var newClose = labelClose.cloneNode(true);
-        labelClose.parentNode.replaceChild(newClose, labelClose);
+        var newClose = labelClose.cloneNode(true) as HTMLElement;
+        labelClose.parentNode?.replaceChild(newClose, labelClose);
         labelClose = newClose;
 
-        labelClose.addEventListener('click', (e) => {
+        newClose.addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
           label.classList.add('wa-widget__label--hidden');

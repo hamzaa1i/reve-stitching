@@ -48,7 +48,10 @@ export const GET: APIRoute = async ({ params, request, cookies }) => {
   }
 
   const url = new URL(request.url);
-  const after = url.searchParams.get('after') || '1970-01-01T00:00:00.000Z';
+  const rawAfter = url.searchParams.get('after') || '1970-01-01T00:00:00.000Z';
+  const parsedAfter = new Date(rawAfter);
+  if (Number.isNaN(parsedAfter.getTime())) return json({ error: 'Invalid after timestamp' }, 400);
+  const after = parsedAfter.toISOString();
 
   const supabase = getSupabase();
 
@@ -72,7 +75,8 @@ export const GET: APIRoute = async ({ params, request, cookies }) => {
     .eq('session_id', sessionId)
     .eq('sender', 'visitor')
     .gt('created_at', after)
-    .order('created_at', { ascending: true });
+    .order('created_at', { ascending: true })
+    .limit(100);
 
   if (msgErr) {
     console.error('[Admin Chat] Poll error:', msgErr);

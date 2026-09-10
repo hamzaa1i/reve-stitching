@@ -22,6 +22,8 @@ import { createClient } from '@supabase/supabase-js';
 import { getAdminFromCookies } from '../../../../../lib/auth';
 import { truncate, sanitizeString } from '../../../../../lib/security';
 import { json } from '../../../../../lib/utils';
+import { isSameOriginRequest } from '../../../../../lib/admin-operations';
+import { z } from 'zod';
 
 export const prerender = false;
 
@@ -44,6 +46,7 @@ export const POST: APIRoute = async ({ params, request, cookies }) => {
   if (!admin) {
     return json({ error: 'Unauthorized' }, 401);
   }
+  if (!isSameOriginRequest(request)) return json({ error: 'Cross-site request rejected' }, 403);
 
   const { id: sessionId } = params;
   if (!sessionId) {
@@ -59,6 +62,7 @@ export const POST: APIRoute = async ({ params, request, cookies }) => {
   }
 
   const action = new URL(request.url).searchParams.get('action');
+  if (action && action !== 'close') return json({ error: 'Unsupported action' }, 400);
   const supabase = getSupabase();
 
   // ── 3a. Close session action ──
@@ -107,13 +111,11 @@ export const POST: APIRoute = async ({ params, request, cookies }) => {
   }
 
   // ── 3b. Send message action (default) ──
-  const message = body?.message;
-  if (!message || typeof message !== 'string') {
-    return json({ error: 'Message is required' }, 400);
-  }
+  const parsed = z.object({ message: z.string().trim().min(1).max(2000) }).strict().safeParse(body);
+  if (!parsed.success) return json({ error: 'Message must be between 1 and 2,000 characters' }, 400);
 
   // Sanitize + truncate (defense-in-depth; the admin page also clamps client-side)
-  const cleanMessage = truncate(sanitizeString(message), 2000);
+  const cleanMessage = truncate(sanitizeString(parsed.data.message), 2000);
   if (cleanMessage.length < 1) {
     return json({ error: 'Message cannot be empty' }, 400);
   }
@@ -146,6 +148,11 @@ export const POST: APIRoute = async ({ params, request, cookies }) => {
   if (insertErr || !inserted) {
     console.error('[Admin Chat] Message insert error:', insertErr);
     return json({ error: 'Failed to send message' }, 500);
+  }
+
+  if (session.status === 'waiting') {
+    const { error: activateError } = await supabase.from('chat_sessions').update({ status: 'active' }).eq('id', sessionId).eq('status', 'waiting');
+    if (activateError) console.error('[Admin Chat] Session activation failed');
   }
 
   return json({ success: true, id: inserted.id, created_at: inserted.created_at });

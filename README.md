@@ -17,7 +17,7 @@
 
 | Layer | Technology |
 |---|---|
-| Framework | [Astro 5](https://astro.build/) (SSR) |
+| Framework | [Astro 6](https://astro.build/) (SSR) |
 | Styling | [Tailwind CSS](https://tailwindcss.com/) |
 | Animation | [GSAP 3](https://greensock.com/gsap/) + [Lenis](https://lenis.darkroom.engineering/) |
 | Database | [Supabase PostgreSQL](https://supabase.com/) |
@@ -61,11 +61,11 @@
 
 ### 🔐 Security
 
-- Row Level Security (RLS) enabled on all Supabase tables
+- Server-side Supabase access; production RLS policies must be verified from an exported schema
 - Service-role-only database access via server-side API routes
 - Rate limiting on public endpoints
 - Input sanitization and email validation
-- JWT-based admin authentication
+- HMAC-signed Admin authentication cookie and separate client-portal sessions
 - Lockout protection for repeated failed logins
 - Security headers:
   - `X-Frame-Options`
@@ -107,7 +107,7 @@ cd reve-stitching
 ### Install Dependencies
 
 ```bash
-npm install
+npm ci
 ```
 
 ---
@@ -199,6 +199,7 @@ CRON_SECRET=
 ```bash
 npm run dev       # Start dev server at localhost:4321
 npm run build     # Build production bundle
+npm run check     # Run Astro and TypeScript diagnostics
 npm run preview   # Preview production build locally
 ```
 
@@ -214,20 +215,25 @@ Run the required SQL statements in the Supabase SQL Editor.
 |---|---|
 | `quote_requests` | Quote submissions with AI analysis |
 | `chat_sessions` | Live chat session data |
+| `chat_messages` | Live chat message history |
 | `contact_submissions` | Contact form submissions |
+| `sample_requests` | Physical sample request workflow |
+| `email_log` | Automated follow-up delivery attempts |
 
 ---
 
 ## 🔒 Security Model
 
-All tables use **Row Level Security (RLS)** with deny-all policies enabled.
+Supabase tables are intended to use deny-by-default Row Level Security and are accessed by server-side routes with the service role. The separate client portal uses Turso/libSQL with application-enforced authorization, not Supabase RLS.
+
+> The repository does not currently contain the authoritative Supabase migrations, views, RPC definitions, or RLS policies. Export and review the production schema before adding fields or applying database changes. Do not infer production constraints from TypeScript alone.
 
 ### Architecture Rules
 
-- All database operations go through Astro API routes
-- Only the `service_role` key can access the database
+- Supabase operations run only in Astro server pages and API routes
+- The Supabase `service_role` key remains server-only
 - No direct client-side Supabase queries
-- Public anonymous access is blocked entirely
+- Public forms are mediated by validated server routes
 
 ### Relevant Files
 
@@ -323,10 +329,10 @@ to send automated follow-up emails for pending quotes.
 
 | Decision | Rationale |
 |---|---|
-| Service-role-only DB access | All database actions run through Astro API routes using `service_role`. No direct client-side queries allowed. |
+| Server-only Supabase access | Astro SSR pages and API routes use `service_role`; no browser bundle receives the key. |
 | Performance-adaptive animations | Hardware detection assigns `full`, `mid`, or `lite` animation tier based on CPU/memory capabilities. |
 | Reduced-motion bail-out | If `prefers-reduced-motion: reduce` is active, GSAP and Lenis never initialize. |
-| In-memory rate limiting | Lightweight `Map`-based limiter without Redis dependency. Suitable for current traffic scale. |
+| In-memory rate limiting | Best-effort per-instance protection only. A shared durable limiter is recommended before treating limits as globally enforced on serverless deployments. |
 
 ---
 

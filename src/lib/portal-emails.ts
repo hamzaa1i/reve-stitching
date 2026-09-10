@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { escapeHtml } from "./security";
 
 const resend = new Resend(import.meta.env.RESEND_API_KEY);
 
@@ -64,7 +65,7 @@ function emailWrapper(content: string): string {
 // ━━━ Account Approved ━━━
 export async function sendAccountApprovedEmail(to: string, name: string) {
   const content = `
-    <h2 style="color:white;font-size:22px;margin:0 0 12px">Welcome, ${name}! 🎉</h2>
+    <h2 style="color:white;font-size:22px;margin:0 0 12px">Welcome, ${escapeHtml(name)}! 🎉</h2>
     <p style="color:#a1a1aa;line-height:1.7;margin:0 0 24px">
       Your Reve Stitching client portal account has been activated.
       You can now log in to track your orders, download documents, and communicate with our team.
@@ -121,26 +122,26 @@ export async function sendStageUpdateEmail(
   notes: string | null,
   orderId: string,
 ) {
-  const label = stageLabels[stage] || stage;
+  const label = stageLabels[stage] || escapeHtml(stage);
   const emoji = stageEmoji[stage] || "📋";
 
   const content = `
     <h2 style="color:white;font-size:22px;margin:0 0 8px">${emoji} Order Update</h2>
-    <p style="color:#71717a;font-size:13px;margin:0 0 24px">PO: ${poNumber}</p>
+    <p style="color:#71717a;font-size:13px;margin:0 0 24px">PO: ${escapeHtml(poNumber)}</p>
 
     <div style="background:#18181b;border:1px solid #27272a;border-radius:12px;padding:20px;margin:0 0 24px">
       <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:#71717a;margin-bottom:8px">Current Stage</div>
       <div style="font-size:20px;font-weight:700;color:#22c55e">${label}</div>
-      ${notes ? `<p style="color:#a1a1aa;font-size:14px;margin:12px 0 0;line-height:1.6">${notes}</p>` : ""}
+      ${notes ? `<p style="color:#a1a1aa;font-size:14px;margin:12px 0 0;line-height:1.6">${escapeHtml(notes)}</p>` : ""}
     </div>
 
     <p style="color:#a1a1aa;line-height:1.7;margin:0 0 24px">
-      Hi ${name}, your order <strong style="color:white">${poNumber}</strong> has been updated.
+      Hi ${escapeHtml(name)}, your order <strong style="color:white">${escapeHtml(poNumber)}</strong> has been updated.
       Log in to your portal to view the full production timeline.
     </p>
 
     <div style="text-align:center;margin:32px 0">
-      <a href="https://revestitching.com/portal/orders/${orderId}"
+      <a href="https://revestitching.com/portal/orders/${encodeURIComponent(orderId)}"
          style="background:#16a34a;color:white;text-decoration:none;padding:14px 32px;border-radius:100px;font-weight:700;font-size:14px;letter-spacing:0.5px;display:inline-block">
         View Order Status
       </a>
@@ -151,7 +152,7 @@ export async function sendStageUpdateEmail(
     from: FROM,
     replyTo: REPLY_TO,
     to,
-    subject: `${emoji} ${label} — Order ${poNumber}`,
+    subject: `${emoji} ${stageLabels[stage] || stage} — Order ${poNumber}`.replace(/[\r\n]/g, ' '),
     html: emailWrapper(content),
   });
 }
@@ -166,12 +167,12 @@ export async function sendNewMessageEmail(
   const content = `
     <h2 style="color:white;font-size:22px;margin:0 0 8px">💬 New Message</h2>
     <p style="color:#a1a1aa;line-height:1.7;margin:0 0 20px">
-      Hi ${name}, you have a new message from the Reve Stitching team.
+      Hi ${escapeHtml(name)}, you have a new message from the Reve Stitching team.
     </p>
 
     <div style="background:#18181b;border:1px solid #27272a;border-left:3px solid #22c55e;border-radius:12px;padding:20px;margin:0 0 24px">
-      <div style="font-size:13px;font-weight:600;color:white;margin-bottom:8px">${subject || "Message from Reve Team"}</div>
-      <div style="color:#a1a1aa;font-size:14px;line-height:1.6">${preview}</div>
+      <div style="font-size:13px;font-weight:600;color:white;margin-bottom:8px">${escapeHtml(subject || "Message from Reve Team")}</div>
+      <div style="color:#a1a1aa;font-size:14px;line-height:1.6">${escapeHtml(preview)}</div>
     </div>
 
     <div style="text-align:center;margin:32px 0">
@@ -186,7 +187,7 @@ export async function sendNewMessageEmail(
     from: FROM,
     replyTo: REPLY_TO,
     to,
-    subject: subject ? `💬 ${subject}` : "💬 New message from Reve Stitching",
+    subject: subject ? `💬 ${subject}`.replace(/[\r\n]/g, ' ') : "💬 New message from Reve Stitching",
     html: emailWrapper(content),
   });
 }
@@ -202,12 +203,12 @@ export async function sendQuoteReadyEmail(
   const content = `
     <h2 style="color:white;font-size:22px;margin:0 0 8px">📋 Your Quote is Ready</h2>
     <p style="color:#a1a1aa;line-height:1.7;margin:0 0 20px">
-      Hi ${name}, your price quotation for <strong style="color:white">${productType}</strong> has been prepared.
+      Hi ${escapeHtml(name)}, your price quotation for <strong style="color:white">${escapeHtml(productType)}</strong> has been prepared.
     </p>
 
     <div style="background:#18181b;border:1px solid #27272a;border-radius:12px;padding:20px;margin:0 0 24px;text-align:center">
       <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:#71717a;margin-bottom:8px">Total Price</div>
-      <div style="font-size:32px;font-weight:700;color:#22c55e">${totalPrice} ${currency}</div>
+      <div style="font-size:32px;font-weight:700;color:#22c55e">${escapeHtml(totalPrice)} ${escapeHtml(currency)}</div>
     </div>
 
     <div style="text-align:center;margin:32px 0">
@@ -226,7 +227,7 @@ export async function sendQuoteReadyEmail(
     from: FROM,
     replyTo: REPLY_TO,
     to,
-    subject: `📋 Your quote for ${productType} is ready`,
+    subject: `📋 Your quote for ${productType} is ready`.replace(/[\r\n]/g, ' '),
     html: emailWrapper(content),
   });
 }

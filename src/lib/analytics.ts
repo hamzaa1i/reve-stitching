@@ -8,6 +8,11 @@ export interface QuoteAnalytics {
   pipelineValue: number;
   avgResponseTime: number; // in hours
   conversionRate: number; // percentage
+  limitations: {
+    financialPipelineAvailable: boolean;
+    responseTimeAvailable: boolean;
+    recordBreakdownsComplete: boolean;
+  };
 
   // Funnel Data
   funnel: {
@@ -53,74 +58,52 @@ export interface QuoteAnalytics {
 export async function getQuoteAnalytics(
   supabase: SupabaseClient
 ): Promise<QuoteAnalytics> {
-  // Fetch all quotes
-  const { data: quotes, error } = await supabase
+  // Fetch only fields needed for non-financial breakdowns. Supabase may cap the
+  // returned rows; the exact total count is kept separately.
+  const { data: quotes, error, count: exactTotal } = await supabase
     .from('quote_requests')
-    .select('*')
-    .order('created_at', { ascending: false });
+    .select('id,reference_number,company_name,status,created_at,destination,product_type,quantity', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .limit(1_000);
 
   if (error || !quotes) {
     console.error('❌ Error fetching quotes:', error);
     return getEmptyAnalytics();
   }
 
+  const now = new Date();
+  const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
+  const [thisMonthResult, activeResult, convertedResult] = await Promise.all([
+    supabase.from('quote_requests').select('id', { count: 'exact', head: true }).gte('created_at', startOfMonth),
+    supabase.from('quote_requests').select('id', { count: 'exact', head: true }).in('status', ['new', 'reviewed', 'quoted']),
+    supabase.from('quote_requests').select('id', { count: 'exact', head: true }).eq('status', 'converted'),
+  ]);
+
   console.log(`📊 Analyzing ${quotes.length} quotes...`);
 
   // Calculate date ranges
-  const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+  const startOfMonthDate = new Date(startOfMonth);
 
   // Filter quotes by date
   const quotesThisMonth = quotes.filter(
-    (q) => new Date(q.created_at) >= startOfMonth
+    (q) => new Date(q.created_at) >= startOfMonthDate
   );
 
-  // Active quotes (not closed/rejected)
-  const activeQuotes = quotes.filter(
-    (q) => q.status !== 'closed' && q.status !== 'rejected' && q.status !== 'lost'
-  );
-
-  // Calculate pipeline value (from estimated_price_range)
-  const pipelineValue = activeQuotes.reduce((sum, q) => {
-    if (!q.estimated_price_range) return sum;
-    // Parse "$6,000 - $8,500" format
-    const match = q.estimated_price_range.match(/\$?([\d,]+)/);
-    if (match) {
-      const value = parseInt(match[1].replace(/,/g, ''), 10);
-      return sum + value;
-    }
-    return sum;
-  }, 0);
-
-  // Calculate average response time
-  const quotesWithResponse = quotes.filter(
-    (q) => q.status !== 'new' && q.updated_at && q.created_at
-  );
-  const totalResponseTime = quotesWithResponse.reduce((sum, q) => {
-    const created = new Date(q.created_at).getTime();
-    const updated = new Date(q.updated_at).getTime();
-    const hours = (updated - created) / (1000 * 60 * 60);
-    return sum + hours;
-  }, 0);
-  const avgResponseTime =
-    quotesWithResponse.length > 0
-      ? totalResponseTime / quotesWithResponse.length
-      : 0;
+  const activeQuotes = quotes.filter((q) => ['new', 'reviewed', 'quoted'].includes(q.status));
 
   // Calculate conversion rate
-  const wonQuotes = quotes.filter((q) => q.status === 'won').length;
+  const wonQuotes = convertedResult.count ?? quotes.filter((q) => q.status === 'converted').length;
+  const totalQuotes = exactTotal ?? quotes.length;
   const conversionRate =
-    quotes.length > 0 ? (wonQuotes / quotes.length) * 100 : 0;
+    totalQuotes > 0 ? (wonQuotes / totalQuotes) * 100 : 0;
 
   // Funnel breakdown
   const funnel = {
     new: calculateFunnelStage(quotes, 'new'),
     reviewed: calculateFunnelStage(quotes, 'reviewed'),
     quoted: calculateFunnelStage(quotes, 'quoted'),
-    won: calculateFunnelStage(quotes, 'won'),
-    lost: calculateFunnelStage(quotes, 'lost'),
+    won: calculateFunnelStage(quotes, 'converted'),
+    lost: calculateFunnelStage(quotes, 'rejected'),
   };
 
   // Geographic breakdown
@@ -178,12 +161,17 @@ export async function getQuoteAnalytics(
     .slice(0, 5);
 
   return {
-    totalQuotes: quotes.length,
-    quotesThisMonth: quotesThisMonth.length,
-    activeQuotes: activeQuotes.length,
-    pipelineValue,
-    avgResponseTime: Math.round(avgResponseTime),
+    totalQuotes,
+    quotesThisMonth: thisMonthResult.count ?? quotesThisMonth.length,
+    activeQuotes: activeResult.count ?? activeQuotes.length,
+    pipelineValue: 0,
+    avgResponseTime: 0,
     conversionRate: Math.round(conversionRate * 10) / 10,
+    limitations: {
+      financialPipelineAvailable: false,
+      responseTimeAvailable: false,
+      recordBreakdownsComplete: (exactTotal ?? quotes.length) <= quotes.length,
+    },
     funnel,
     geography,
     products,
@@ -200,16 +188,7 @@ function calculateFunnelStage(
   status: string
 ): { count: number; value: number } {
   const stageQuotes = quotes.filter((q) => q.status === status);
-  const value = stageQuotes.reduce((sum, q) => {
-    if (!q.estimated_price_range) return sum;
-    const match = q.estimated_price_range.match(/\$?([\d,]+)/);
-    if (match) {
-      return sum + parseInt(match[1].replace(/,/g, ''), 10);
-    }
-    return sum;
-  }, 0);
-
-  return { count: stageQuotes.length, value };
+  return { count: stageQuotes.length, value: 0 };
 }
 
 /**
@@ -276,6 +255,11 @@ function getEmptyAnalytics(): QuoteAnalytics {
     pipelineValue: 0,
     avgResponseTime: 0,
     conversionRate: 0,
+    limitations: {
+      financialPipelineAvailable: false,
+      responseTimeAvailable: false,
+      recordBreakdownsComplete: true,
+    },
     funnel: {
       new: { count: 0, value: 0 },
       reviewed: { count: 0, value: 0 },

@@ -8,6 +8,9 @@ import { sampleApprovedEmail } from '../../../../../lib/email-templates/sample-a
 import { sampleShippedEmail } from '../../../../../lib/email-templates/sample-shipped';
 import { sampleStatusUpdateEmail } from '../../../../../lib/email-templates/sample-status-update';
 import type { SampleRequest } from '../../../../../lib/types/sample';
+import { z } from 'zod';
+import { isSameOriginRequest } from '../../../../../lib/admin-operations';
+import { json } from '../../../../../lib/utils';
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
@@ -18,21 +21,34 @@ const supabase = createClient(
 const resend = new Resend(process.env.RESEND_API_KEY!);
 
 export const PATCH: APIRoute = async ({ params, request, cookies }) => {
-  const admin = await getAdminFromCookies(cookies);
+  const admin = getAdminFromCookies(cookies);
   if (!admin) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return json({ error: 'Unauthorized' }, 401);
   }
+  if (!isSameOriginRequest(request)) return json({ error: 'Cross-site request rejected' }, 403);
+  if (!params.id) return json({ error: 'Missing sample request ID' }, 400);
 
   try {
     const { id } = params;
     const body = await request.json();
+    const nullableText = (max: number) => z.union([z.string().trim().max(max), z.null()]).transform((value) => value === '' ? null : value).optional();
+    const nullableDate = z.union([z.string().datetime(), z.literal(''), z.null()]).transform((value) => value || null).optional();
+    const parsed = z.object({
+      status: z.enum(['new', 'approved', 'production', 'shipped', 'delivered', 'converted', 'rejected']).optional(),
+      shipping_carrier: nullableText(120),
+      tracking_number: nullableText(200),
+      shipped_at: nullableDate,
+      delivered_at: nullableDate,
+      sample_fee: z.number().finite().min(0).max(1_000_000).optional(),
+      actual_cost: z.number().finite().min(0).max(1_000_000).nullable().optional(),
+      shipping_cost: z.number().finite().min(0).max(1_000_000).nullable().optional(),
+      is_free_sample: z.boolean().optional(),
+      admin_notes: nullableText(10_000),
+      rejection_reason: nullableText(2_000),
+    }).strict().safeParse(body);
+    if (!parsed.success) return json({ error: 'Invalid sample update' }, 422);
 
-    const { status, shipping_carrier, tracking_number, shipped_at, delivered_at,
-            sample_fee, actual_cost, shipping_cost, is_free_sample,
-            admin_notes, rejection_reason } = body;
+    const { status, shipping_carrier, tracking_number, shipped_at, delivered_at, sample_fee, actual_cost, shipping_cost, is_free_sample, admin_notes, rejection_reason } = parsed.data;
 
     // Fetch current record
     const { data: current, error: fetchError } = await supabase
@@ -42,10 +58,7 @@ export const PATCH: APIRoute = async ({ params, request, cookies }) => {
       .single();
 
     if (fetchError || !current) {
-      return new Response(JSON.stringify({ error: 'Sample request not found' }), {
-        status: 404,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return json({ error: 'Sample request not found' }, 404);
     }
 
     const sample = current as SampleRequest;
@@ -63,22 +76,22 @@ export const PATCH: APIRoute = async ({ params, request, cookies }) => {
     if (is_free_sample !== undefined) updateData.is_free_sample = is_free_sample;
     if (admin_notes !== undefined) updateData.admin_notes = admin_notes;
     if (rejection_reason !== undefined) updateData.rejection_reason = rejection_reason;
+    if (Object.keys(updateData).length === 0) return json({ error: 'No fields to update' }, 422);
 
-    const { data: updated, error: updateError } = await supabase
+    let updateQuery = supabase
       .from('sample_requests')
       .update(updateData)
-      .eq('id', id)
-      .select()
-      .single();
+      .eq('id', id!);
+    if (status && status !== sample.status) updateQuery = updateQuery.eq('status', sample.status);
+    const { data: updated, error: updateError } = await updateQuery.select().maybeSingle();
 
     if (updateError) {
       console.error('Update error:', updateError);
-      return new Response(JSON.stringify({ error: 'Failed to update sample request' }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return json({ error: 'Failed to update sample request' }, 500);
     }
+    if (!updated) return json({ error: 'This sample changed in another session. Reload and try again.' }, 409);
 
+    let notificationStatus: 'not_applicable' | 'sent' | 'failed' = 'not_applicable';
     // Send status notification emails
     if (status && status !== sample.status) {
       try {
@@ -114,27 +127,24 @@ export const PATCH: APIRoute = async ({ params, request, cookies }) => {
         }
 
         if (emailContent) {
-          await resend.emails.send({
+          const { error: emailError } = await resend.emails.send({
             from: 'Reve Stitching <notifications@revestitching.com>',
             to: sample.email,
             subject: emailContent.subject,
             html: emailContent.html,
           });
+          if (emailError) throw emailError;
+          notificationStatus = 'sent';
         }
       } catch (emailErr) {
         console.error('Status email error:', emailErr);
+        notificationStatus = 'failed';
       }
     }
 
-    return new Response(JSON.stringify({ success: true, data: updated }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return json({ success: true, data: updated, notificationStatus });
   } catch (err) {
     console.error('Status update error:', err);
-    return new Response(JSON.stringify({ error: 'Internal server error' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return json({ error: 'Internal server error' }, 500);
   }
 };

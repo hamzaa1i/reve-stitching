@@ -4,16 +4,18 @@ import { createClient } from '@supabase/supabase-js';
 import { checkAndSendFollowUps } from '../../../lib/services/follow-up-emails';
 import { getAdminFromCookies } from '../../../lib/auth';
 import { json } from '../../../lib/utils';
+import { isSameOriginRequest } from '../../../lib/admin-operations';
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ cookies }) => {
+export const POST: APIRoute = async ({ cookies, request }) => {
   // Admin auth
   const admin = getAdminFromCookies(cookies);
   if (!admin) {
     console.error('[Trigger Follow-ups] Unauthorized access attempt');
     return json({ success: false, error: 'Unauthorized' }, 401);
   }
+  if (!isSameOriginRequest(request)) return json({ success: false, error: 'Cross-site request rejected' }, 403);
 
   console.log(`[Trigger Follow-ups] Manual trigger by admin: ${admin.sub}`);
 
@@ -34,13 +36,12 @@ export const POST: APIRoute = async ({ cookies }) => {
         emailsSent: result.emailsSent,
         errors: result.errors,
       },
-      details: result.details,
     });
   } catch (error) {
     console.error('[Trigger Follow-ups] Error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: 'Follow-up processing failed',
     }, 500);
   }
 };

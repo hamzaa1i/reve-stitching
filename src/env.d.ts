@@ -13,10 +13,9 @@ declare namespace App {
       avatarUrl?: string | null;
     };
     admin?: {
-      id: string;
-      email: string;
-      name: string;
-      role: string;
+      sub: string;
+      iat: number;
+      exp: number;
     };
   }
 }

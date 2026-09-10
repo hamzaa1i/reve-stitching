@@ -4,6 +4,8 @@ import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { getAdminFromCookies } from '../../../lib/auth';
 import { json } from '../../../lib/utils';
+import { isSameOriginRequest } from '../../../lib/admin-operations';
+import { z } from 'zod';
 
 export const prerender = false;
 
@@ -13,6 +15,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   if (!admin) {
     return json({ success: false, error: 'Unauthorized' }, 401);
   }
+  if (!isSameOriginRequest(request)) return json({ success: false, error: 'Cross-site request rejected' }, 403);
 
   // 2) Read body
   let body: any;
@@ -22,12 +25,9 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     return json({ success: false, error: 'Invalid JSON body' }, 400);
   }
 
-  const id = String(body?.id || '');
-  const paused = Boolean(body?.paused);
-
-  if (!id) {
-    return json({ success: false, error: 'Missing quote id' }, 400);
-  }
+  const parsed = z.object({ id: z.string().trim().min(1).max(128), paused: z.boolean() }).strict().safeParse(body);
+  if (!parsed.success) return json({ success: false, error: 'Invalid automation update' }, 400);
+  const { id, paused } = parsed.data;
 
   // 3) Supabase service role
   const supabase = createClient(
@@ -51,7 +51,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
   if (error) {
     console.error('[Quote Automation] Update failed:', error);
-    return json({ success: false, error: error.message }, 500);
+    return json({ success: false, error: 'Automation setting could not be updated' }, 500);
   }
 
   console.log(
