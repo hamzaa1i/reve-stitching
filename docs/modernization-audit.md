@@ -17,7 +17,7 @@ Production data was not changed. No database migration was applied. The reposito
 | Public corporate site | Astro pages with Tailwind, GSAP/Lenis, quote/sample/contact/chat widgets | Static/SSR |
 | Admin authentication | HMAC-signed HttpOnly cookie checked by middleware and APIs | Environment credentials |
 | Admin operations | Astro SSR pages and server API routes | Supabase service role |
-| Quotes | Public wizard, file uploads, AI analysis, follow-up automation, ERPNext lead attempt | Supabase, GitHub Models, Resend, ERPNext |
+| Quotes | Public wizard, file uploads, AI analysis, follow-up automation, ERPNext lead attempt | Supabase, Gemini Developer API, Resend, ERPNext |
 | Contact submissions | Public contact and exit-intent capture | Supabase `contact_submissions` |
 | Live chat | Visitor token ownership, polling, admin replies | Supabase `chat_sessions` / `chat_messages` |
 | Samples | Public request and Admin status workflow | Supabase `sample_requests`, Resend |
