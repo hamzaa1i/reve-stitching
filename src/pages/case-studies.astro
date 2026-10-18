@@ -3,87 +3,147 @@ import Layout from '../layouts/Layout.astro';
 
 const title = 'Case Studies';
 const description =
-  'Real projects delivered for UK & EU retailers. 50K+ hoodies for Boohoo, 75K+ ladies wear for Yours Clothing, organic tees for CLOSURE.';
+  'Garment programme requirements and development considerations. Verified project references can be discussed with the team.';
 
 const studies = [
   {
-    client: 'Boohoo',
-    logo: '/images/clients/boohoo.svg',
-    product: 'Hoodies & Sweatshirts',
-    units: '50,000+',
-    leadTime: '28 days',
-    colourways: '6',
-    reorder: '3 consecutive seasons',
-    challenge: 'Boohoo needed 50,000 premium fleece hoodies across 6 colourways delivered within 28 days for their Autumn/Winter drop. Previous supplier had inconsistent GSM across colourways, causing fit issues in-store.',
-    solution: 'We sourced a single dye-lot per colourway from our GOTS-certified dyeing partner, ensuring GSM consistency within ±5g. Dedicated production line with in-line weight checks every 2 hours. Pre-production size set approved in 7 days.',
-    results: ['Zero quality rejections across all 3 seasonal orders', 'GSM variance reduced to ±3g (industry standard: ±10g)', '28-day turnaround maintained across all 3 orders', 'Extended to sweatshirts and joggers in Season 2'],
-    tags: ['Fleece', '6 Colourways', 'Zero Rejections', '3 Seasons'],
+    "client": "Hoodie Development",
+    "logo": "/images/icon.png",
+    "product": "Hoodies & Sweatshirts",
+    "units": "Review",
+    "leadTime": "Agreed",
+    "colourways": "Specify",
+    "reorder": "By agreement",
+    "challenge": "Share garment references, intended quantities, fit requirements and delivery needs for review.",
+    "solution": "Agree the material, construction, artwork and sample approval process before confirming commercial terms.",
+    "results": [
+      "Approved specification and sample requirements",
+      "Order quantities and commercial terms to confirm",
+      "Buyer inspection and testing scope to agree",
+      "Production and delivery schedule to confirm"
+    ],
+    "tags": [
+      "Specification Review",
+      "Sampling",
+      "Commercial Review",
+      "Buyer QC Plan"
+    ]
   },
   {
-    client: 'Yours Clothing',
-    logo: '/images/clients/yours-clothing.svg',
-    product: "Ladies' Knitwear",
-    units: '75,000+',
-    leadTime: '35 days',
-    colourways: '12 styles',
-    reorder: '2+ year partnership',
-    challenge: "Yours Clothing required consistent fit grading from XS to 5XL across 12 styles of ladies' knitwear. Extended sizing is notoriously difficult — small measurement deviations become very visible at larger sizes.",
-    solution: 'Our pattern team developed a proprietary grading matrix calibrated specifically for the UK plus-size market. Each size was fit-tested on real body forms, not just scaled up. Pre-production samples included every size for approval.',
-    results: ['Consistent fit grading across XS–5XL, 12 styles', '0.3% defect rate (5× better than AQL 2.5)', '2+ year ongoing partnership with expanding order volumes', 'Reduced their sample approval cycle from 21 to 14 days'],
-    tags: ['Extended Sizing', 'XS–5XL', '12 Styles', '2-Year Partnership'],
+    "client": "Knitwear Development",
+    "logo": "/images/icon.png",
+    "product": "Ladies' Knitwear",
+    "units": "Review",
+    "leadTime": "Agreed",
+    "colourways": "Specify",
+    "reorder": "By agreement",
+    "challenge": "Share garment references, intended quantities, fit requirements and delivery needs for review.",
+    "solution": "Agree the material, construction, artwork and sample approval process before confirming commercial terms.",
+    "results": [
+      "Approved specification and sample requirements",
+      "Order quantities and commercial terms to confirm",
+      "Buyer inspection and testing scope to agree",
+      "Production and delivery schedule to confirm"
+    ],
+    "tags": [
+      "Specification Review",
+      "Sampling",
+      "Commercial Review",
+      "Buyer QC Plan"
+    ]
   },
   {
-    client: 'CLOSURE',
-    logo: '/images/clients/closure.svg',
-    product: 'Premium T-Shirts',
-    units: '30,000+',
-    leadTime: '25 days',
-    colourways: '4',
-    reorder: 'Reorder placed',
-    challenge: 'CLOSURE needed organic cotton t-shirts with custom all-over prints and branded neck labels for a limited drop. The timeline was tight — 25 days from approval to delivery, with no room for reprints.',
-    solution: 'Pre-allocated organic cotton fabric from our BCI-certified stock. Digital printing set up within 48 hours of artwork approval. Branded woven labels produced in parallel. Rush production line with priority QC.',
-    results: ['Delivered 5 days ahead of schedule', 'All 30,000 units passed AQL 2.5 first time', 'Custom print colour accuracy: ΔE < 1.5', 'Reorder placed within 8 weeks of delivery'],
-    tags: ['Organic Cotton', 'Custom Print', 'Early Delivery', 'Rush Order'],
+    "client": "T-Shirt Development",
+    "logo": "/images/icon.png",
+    "product": "T-Shirts",
+    "units": "Review",
+    "leadTime": "Agreed",
+    "colourways": "Specify",
+    "reorder": "By agreement",
+    "challenge": "Share garment references, intended quantities, fit requirements and delivery needs for review.",
+    "solution": "Agree the material, construction, artwork and sample approval process before confirming commercial terms.",
+    "results": [
+      "Approved specification and sample requirements",
+      "Order quantities and commercial terms to confirm",
+      "Buyer inspection and testing scope to agree",
+      "Production and delivery schedule to confirm"
+    ],
+    "tags": [
+      "Specification Review",
+      "Sampling",
+      "Commercial Review",
+      "Buyer QC Plan"
+    ]
   },
   {
-    client: 'Pull & Bear',
-    logo: '/images/clients/pull-and-bear.svg',
-    product: 'Joggers & Trousers',
-    units: '40,000+',
-    leadTime: '30 days',
-    colourways: '5',
-    reorder: 'Seasonal reorder',
-    challenge: 'Pull & Bear required 40,000 joggers with elastic waistbands and drawcords. The critical issue was waistband elasticity consistency — previous batches from another supplier had 12% failure rate on elastic recovery.',
-    solution: 'Sourced premium Lycra-blend elastic from a certified elastane supplier. Developed a custom elastic recovery test: 1000 stretch cycles at 150% extension before production sign-off. In-line elasticity test every 100 units.',
-    results: ['Elastic recovery failure rate: 0.2% (was 12% with previous supplier)', 'All 40,000 units delivered on time', 'Waistband measurement tolerance: ±0.5cm across all sizes', 'Seasonal reorder confirmed for next 2 drops'],
-    tags: ['Joggers', 'Elastic Testing', 'Lycra Blend', 'Seasonal'],
+    "client": "Bottoms Development",
+    "logo": "/images/icon.png",
+    "product": "Joggers & Trousers",
+    "units": "Review",
+    "leadTime": "Agreed",
+    "colourways": "Specify",
+    "reorder": "By agreement",
+    "challenge": "Share garment references, intended quantities, fit requirements and delivery needs for review.",
+    "solution": "Agree the material, construction, artwork and sample approval process before confirming commercial terms.",
+    "results": [
+      "Approved specification and sample requirements",
+      "Order quantities and commercial terms to confirm",
+      "Buyer inspection and testing scope to agree",
+      "Production and delivery schedule to confirm"
+    ],
+    "tags": [
+      "Specification Review",
+      "Sampling",
+      "Commercial Review",
+      "Buyer QC Plan"
+    ]
   },
   {
-    client: 'Daisy Street',
-    logo: '/images/clients/daisy-street.svg',
-    product: 'Crop Tops & Bralettes',
-    units: '25,000+',
-    leadTime: '22 days',
-    colourways: '8',
-    reorder: 'Ongoing',
-    challenge: 'Daisy Street needed fast-turnaround crop tops and bralettes across 8 colourways for a trend-responsive drop. The challenge was maintaining colour consistency across 8 dye lots while hitting a 22-day deadline.',
-    solution: 'Used our in-house colour matching lab with spectrophotometer verification. All 8 dye lots matched to ΔE < 1.0 (industry standard: ΔE < 2.0). Parallel production across 3 stitching lines to compress timeline.',
-    results: ['22-day turnaround on 8 colourways', 'Colour consistency: ΔE < 1.0 across all lots', '0.4% defect rate', 'Ongoing orders now placed monthly'],
-    tags: ['Fast Fashion', '8 Colourways', 'Colour Matching', 'Monthly Orders'],
+    "client": "Top Development",
+    "logo": "/images/icon.png",
+    "product": "Tops & Separates",
+    "units": "Review",
+    "leadTime": "Agreed",
+    "colourways": "Specify",
+    "reorder": "By agreement",
+    "challenge": "Share garment references, intended quantities, fit requirements and delivery needs for review.",
+    "solution": "Agree the material, construction, artwork and sample approval process before confirming commercial terms.",
+    "results": [
+      "Approved specification and sample requirements",
+      "Order quantities and commercial terms to confirm",
+      "Buyer inspection and testing scope to agree",
+      "Production and delivery schedule to confirm"
+    ],
+    "tags": [
+      "Specification Review",
+      "Sampling",
+      "Commercial Review",
+      "Buyer QC Plan"
+    ]
   },
   {
-    client: 'Threadbare',
-    logo: '/images/clients/threadbare.svg',
-    product: 'Polo Shirts',
-    units: '60,000+',
-    leadTime: '32 days',
-    colourways: '7',
-    reorder: 'Annual contract',
-    challenge: 'Threadbare required 60,000 polo shirts with collar shaping that held its structure after 50 washes. Collar roll and curl after washing is the #1 complaint in polo manufacturing.',
-    solution: 'Developed a fused collar construction with proprietary interlining. Tested collar structure through 50 industrial wash cycles (ISO 6330) before production approval. Collar shaping reinforced with hidden bar-tacks.',
-    results: ['Zero collar roll complaints after 50 wash cycles', '60,000 units delivered across 7 colourways', 'Secured annual supply contract', 'Design adopted as their new collar standard'],
-    tags: ['Polos', 'Collar Engineering', '50-Wash Test', 'Annual Contract'],
-  },
+    "client": "Polo Development",
+    "logo": "/images/icon.png",
+    "product": "Polo Shirts",
+    "units": "Review",
+    "leadTime": "Agreed",
+    "colourways": "Specify",
+    "reorder": "By agreement",
+    "challenge": "Share garment references, intended quantities, fit requirements and delivery needs for review.",
+    "solution": "Agree the material, construction, artwork and sample approval process before confirming commercial terms.",
+    "results": [
+      "Approved specification and sample requirements",
+      "Order quantities and commercial terms to confirm",
+      "Buyer inspection and testing scope to agree",
+      "Production and delivery schedule to confirm"
+    ],
+    "tags": [
+      "Specification Review",
+      "Sampling",
+      "Commercial Review",
+      "Buyer QC Plan"
+    ]
+  }
 ];
 ---
 

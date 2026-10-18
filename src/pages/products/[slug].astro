@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { enquiryUrl, commercialPolicy } from '../../lib/catalogue/policy';
 import { products } from '../../data/products';
 import WhatsAppWidget from '../../components/WhatsAppWidget.astro';
 
@@ -49,7 +50,7 @@ const processSteps = [
 
 <Layout
   title={`${product.name} — Manufacturing`}
-  description={`${product.description} MOQ: ${product.moq} pieces. Lead time: ${product.leadTime}. SEDEX certified, ${product.certifications.join(', ')}.`}
+  description={`${product.description} Production minimums, testing and schedule are confirmed with your quotation.`}
   ogImage={product.gallery[0]}
 >
 
@@ -84,15 +85,15 @@ const processSteps = [
 
           <div class="mt-8 flex flex-wrap items-center gap-3" data-animate="fade-up" data-delay="0.2">
             <a
-              href={`/quote/?product=${product.slug}`}
+              href={enquiryUrl('quote', product.slug)}
               class="inline-flex items-center gap-2 rounded-full bg-green-600 px-8 py-4 text-sm font-bold uppercase tracking-wider text-white shadow-lg shadow-green-600/20 transition-all hover:bg-green-700 dark:bg-green-500 dark:text-zinc-950 dark:hover:bg-green-400"
               data-magnetic
             >
               Get Quote for {product.category}
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
             </a>
-            <a href="/products#calculate" class="px-5 py-4 text-sm font-medium uppercase tracking-wider text-zinc-400 transition-colors hover:text-zinc-900 dark:text-white/50 dark:hover:text-white">
-              Calculate Cost
+            <a href={enquiryUrl('samples', product.slug)} class="px-5 py-4 text-sm font-medium uppercase tracking-wider text-zinc-400 transition-colors hover:text-zinc-900 dark:text-white/50 dark:hover:text-white">
+              Request a Sample
             </a>
           </div>
 
@@ -125,8 +126,8 @@ const processSteps = [
           <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-green-500/10">
             <svg class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg>
           </div>
-          <div class="font-serif text-2xl font-bold text-zinc-900 dark:text-white">{product.moq}<span class="text-green-600 dark:text-green-400">+</span></div>
-          <div class="mt-1 text-xs font-medium uppercase tracking-wider text-zinc-500">Pieces MOQ</div>
+          <div class="font-serif text-2xl font-bold text-zinc-900 dark:text-white">{product.moq}<span class="text-green-600 dark:text-green-400"></span></div>
+          <div class="mt-1 text-xs font-medium uppercase tracking-wider text-zinc-500">Production MOQ</div>
         </div>
 
         <div class="rounded-2xl border border-zinc-200 bg-zinc-50 p-6 text-center dark:border-zinc-800 dark:bg-zinc-900" data-animate="fade-up" data-delay="0.08">
@@ -149,8 +150,8 @@ const processSteps = [
           <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-green-500/10">
             <svg class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"/></svg>
           </div>
-          <div class="font-serif text-2xl font-bold text-zinc-900 dark:text-white">{product.rating}<span class="text-green-600 dark:text-green-400">/5</span></div>
-          <div class="mt-1 text-xs font-medium uppercase tracking-wider text-zinc-500">Quality Rating</div>
+          <div class="font-serif text-2xl font-bold text-zinc-900 dark:text-white">Review<span class="text-green-600 dark:text-green-400"></span></div>
+          <div class="mt-1 text-xs font-medium uppercase tracking-wider text-zinc-500">Buyer QC Plan</div>
         </div>
       </div>
     </div>
@@ -167,7 +168,7 @@ const processSteps = [
           {product.category} <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Production Journey</span>
         </h2>
         <p class="mx-auto mt-3 max-w-lg text-sm text-zinc-500 dark:text-zinc-400" data-animate="fade-up" data-delay="0.12">
-          Every {product.category.toLowerCase()} passes through seven critical stages before reaching your warehouse.
+          Discuss the process route for your garment, including which stages are handled by agreed specialist partners.
         </p>
       </div>
 
@@ -260,7 +261,7 @@ const processSteps = [
         <div class="grid grid-cols-2 gap-3" data-animate="fade-left" data-delay="0.15">
           {product.gallery.map((img, i) => (
             <div class={`overflow-hidden rounded-2xl bg-zinc-200 dark:bg-zinc-800 ${i === 0 ? 'col-span-2 aspect-[16/9]' : 'aspect-[4/3]'}`}>
-              <img src={img} alt={`${product.name} — view ${i + 1}`} class="h-full w-full object-cover transition-transform duration-500 hover:scale-105" loading="lazy" decoding="async" width="1200" height="800" />
+              <img src={img} alt={`${product.name} — illustrative category image ${i + 1}`} class="h-full w-full object-cover transition-transform duration-500 hover:scale-105" loading="lazy" decoding="async" width="1200" height="800" />
             </div>
           ))}
         </div>
@@ -276,11 +277,11 @@ const processSteps = [
         Ready to Manufacture {product.category}?
       </h2>
       <p class="mx-auto mt-4 max-w-lg text-zinc-400" data-animate="fade-up" data-delay="0.1">
-        Get a detailed quote within 24 hours. MOQ from {product.moq} pieces, lead time {product.leadTime}.
+        {commercialPolicy.moq} {commercialPolicy.leadTime}
       </p>
       <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row" data-animate="fade-up" data-delay="0.15">
         <a
-          href={`/quote/?product=${product.slug}`}
+          href={enquiryUrl('quote', product.slug)}
           class="inline-flex items-center gap-2 rounded-full bg-green-500 px-8 py-4 text-sm font-bold uppercase tracking-wider text-zinc-950 shadow-lg transition-all hover:bg-green-400"
           data-magnetic
         >
@@ -302,28 +303,11 @@ const processSteps = [
     </div>
   </section>
 
-  <!-- Product Schema -->
+  <!-- Manufacturing service schema: no retail stock/price assertion. -->
   <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "Product",
-    "name": product.name,
-    "description": product.description,
-    "image": product.gallery,
-    "manufacturer": {
-      "@type": "Organization",
-      "name": "Reve Stitching",
-      "url": "https://revestitching.com"
-    },
-    "offers": {
-      "@type": "Offer",
-      "priceCurrency": "USD",
-      "availability": "https://schema.org/InStock",
-      "eligibleQuantity": {
-        "@type": "QuantitativeValue",
-        "minValue": product.moq,
-        "unitCode": "C62"
-      }
-    }
+    '@context':'https://schema.org', '@type':'Service',
+    name:product.name, description:product.description, url:canonicalURL.href,
+    provider:{'@type':'Organization',name:'Reve Stitching',url:'https://www.revestitching.com'}
   })} />
   <WhatsAppWidget />
 </Layout>

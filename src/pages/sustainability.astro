@@ -3,85 +3,85 @@ import Layout from '../layouts/Layout.astro';
 
 const title = 'Sustainability & Ethics';
 const description =
-  'SEDEX certified, GOTS organic, BCI member. Ethical manufacturing with fair wages, safe conditions, and sustainable practices. Faisalabad, Pakistan.';
+  'Responsible sourcing requirements, scheme guidance and order-specific compliance information for garment development.';
 
 const certifications = [
   {
-    name: 'SEDEX',
-    image: '/images/certifications/sedex.svg',
-    description: 'Ethical trade audit passed. Transparent supply chain practices verified by independent assessors.',
+    "name": "SEDEX",
+    "image": "/images/certifications/sedex.svg",
+    "description": "Sedex membership and SMETA audits are not certification or pass/fail status. Review the relevant site report and findings."
   },
   {
-    name: 'GOTS',
-    image: '/images/certifications/gots.svg',
-    description: 'Global Organic Textile Standard. Certified for organic fibre processing, manufacturing, and labelling.',
+    "name": "GOTS",
+    "image": "/images/certifications/gots.svg",
+    "description": "Organic textile claims depend on current certificate holder, site and process scope. No site or product certification is asserted here."
   },
   {
-    name: 'BCI',
-    image: '/images/certifications/bci.svg',
-    description: 'Better Cotton Initiative member. Committed to more sustainable cotton farming practices.',
+    "name": "Better Cotton",
+    "image": "/images/certifications/bci.svg",
+    "description": "Review sourcing arrangements and permitted claims under the applicable programme. Membership is not asserted here."
   },
   {
-    name: 'GRS',
-    image: '/images/certifications/grs.svg',
-    description: 'Global Recycled Standard. Verified recycled content in materials and responsible manufacturing.',
+    "name": "GRS",
+    "image": "/images/certifications/grs.svg",
+    "description": "Review current recycled-content certification scope and chain documents before agreeing claims."
   },
   {
-    name: 'OCS',
-    image: '/images/certifications/ocs.svg',
-    description: 'Organic Content Standard. Third-party verification of organic material content in finished products.',
+    "name": "OCS",
+    "image": "/images/certifications/ocs.svg",
+    "description": "Review current organic-content evidence and chain documents for the relevant product."
   },
   {
-    name: 'RCS',
-    image: '/images/certifications/rcs.svg',
-    description: 'Recycled Content Standard. Independently verified recycled input materials.',
+    "name": "RCS",
+    "image": "/images/certifications/rcs.svg",
+    "description": "Review current recycled input evidence and permitted claims for the relevant material."
   },
   {
-    name: 'ISO 9001',
-    image: '/images/certifications/iso-9001.svg',
-    description: 'Quality management system certified. Consistent processes, continuous improvement, customer satisfaction.',
+    "name": "ISO 9001",
+    "image": "/images/certifications/iso-9001.svg",
+    "description": "Quality-management certification must be checked for current holder, site and scope before relying on it."
   },
   {
-    name: 'Higg Index',
-    image: '/images/certifications/higg-index.svg',
-    description: 'Sustainability measurement tool. Tracking environmental and social impact across our facility.',
+    "name": "Higg Index",
+    "image": "/images/certifications/higg-index.svg",
+    "description": "Assessment tools do not themselves constitute product certification. Review the applicable assessment and period."
   },
   {
-    name: 'SGS',
-    image: '/images/certifications/sgs.svg',
-    description: 'SGS-verified testing and compliance. Independent quality and safety assurance.',
-  },
+    "name": "SGS",
+    "image": "/images/certifications/sgs.svg",
+    "description": "Testing and inspection reports are specific to their sample, method and date. No blanket certification is asserted."
+  }
 ];
 
 const pillars = [
   {
     title: 'Fair Wages',
-    body: 'All employees receive above-minimum-wage compensation with annual reviews, performance bonuses, and overtime pay compliant with Pakistani labour law and international standards.',
+    body: "Discuss wage, hours and labour-record requirements for the relevant site and production period.",
     icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"/>',
   },
   {
     title: 'Safe Working Conditions',
-    body: 'Climate-controlled production floor, fire safety systems, emergency exits, regular safety drills, and PPE provided to all workers. Annual third-party safety audits.',
+    body: "Review safety requirements, site responsibilities and supporting documents with the buyer.",
     icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>',
   },
   {
     title: 'No Child Labour',
-    body: 'Zero tolerance policy. Age verification for all employees. Regular audits by SEDEX and international buyers confirm full compliance.',
+    body: "Child labour is unacceptable. Review age-verification requirements and relevant evidence for the intended site.",
     icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/>',
   },
   {
     title: 'Water Reduction',
-    body: 'Closed-loop water recycling system on our dyeing line reduces freshwater consumption by 40%. All wastewater treated before discharge.',
+    body: "Review water use and wastewater responsibilities for relevant processes and partner sites. Any numerical reduction claim requires evidence.",
     icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/>',
   },
   {
     title: 'Energy Efficiency',
-    body: 'LED lighting throughout the facility. Energy-efficient motors on all knitting machines. Solar panels planned for 2025 installation to cover 30% of energy needs.',
+    body: "Discuss energy information and the scope of any efficiency measures. No percentage reduction or solar capacity is claimed.",
     icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/>',
   },
   {
     title: 'Waste Reduction',
-    body: 'Fabric cutting waste below 8%. All cotton scraps recycled into industrial wiping cloths. Zero fabric waste to landfill since 2022.',
+    body: "Review cutting waste handling, reuse and disposal arrangements. Any numerical diversion or reduction claim requires current evidence.",
     icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"/>',
   },
 ];
@@ -125,10 +125,10 @@ const pillars = [
       <div class="mb-14 text-center" data-animate="fade-up">
         <span class="mb-3 inline-block text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400">Certifications</span>
         <h2 class="font-serif text-2xl font-bold text-zinc-900 dark:text-white sm:text-4xl">
-          Independently <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Verified</span>
+          Compliance <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Review</span>
         </h2>
         <p class="mx-auto mt-3 max-w-lg text-sm text-zinc-500 dark:text-zinc-400">
-          Third-party audited. Annually renewed. Available for your compliance team to review.
+          Scheme guidance only: review current holder, site, scope and status before agreeing any claim. These cards do not assert certification.
         </p>
       </div>
 
@@ -140,7 +140,7 @@ const pillars = [
             data-delay={String(i * 0.06)}
           >
             <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-white shadow-sm dark:bg-zinc-800">
-              <img src={cert.image} alt={`${cert.name} certification`} data-fallback-text={cert.name} class="h-8 w-8 object-contain" width="32" height="32" loading="lazy" />
+              <img src={cert.image} alt={`${cert.name} scheme reference`} data-fallback-text={cert.name} class="h-8 w-8 object-contain" width="32" height="32" loading="lazy" />
             </div>
             <h3 class="mb-2 text-sm font-bold text-zinc-900 dark:text-white">{cert.name}</h3>
             <p class="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{cert.description}</p>
@@ -196,11 +196,11 @@ const pillars = [
 
           <div class="mt-8 space-y-4" data-animate="fade-up" data-delay="0.2">
             {[
-              { label: 'Yarn sourced from', value: 'Certified spinners in Punjab & Sindh' },
-              { label: 'Fabric knitted at', value: 'Our in-house facility, Faisalabad' },
-              { label: 'Dyeing & finishing at', value: 'GOTS-certified partner units within 10km' },
+              { label: 'Yarn sourced from', value: 'Supplier route to agree' },
+              { label: 'Fabric knitted at', value: 'Process location to confirm' },
+              { label: 'Dyeing & finishing at', value: 'Partner and certificate scope to confirm' },
               { label: 'Garment manufacturing at', value: 'Reve Stitching, Faisalabad — single site' },
-              { label: 'Quality inspection at', value: 'In-house QC lab, AQL 2.5 standard' },
+              { label: 'Quality inspection at', value: 'Inspection and laboratory arrangements to agree' },
             ].map((item) => (
               <div class="flex items-start gap-3">
                 <div class="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-500/10">
@@ -216,13 +216,13 @@ const pillars = [
         </div>
 
         <div class="rounded-2xl border border-zinc-200 bg-zinc-50 p-8 dark:border-zinc-800 dark:bg-zinc-900" data-animate="fade-left" data-delay="0.15">
-          <h3 class="mb-6 text-sm font-bold uppercase tracking-wider text-zinc-900 dark:text-white">Transparency Metrics</h3>
+          <h3 class="mb-6 text-sm font-bold uppercase tracking-wider text-zinc-900 dark:text-white">Documentation Review</h3>
           <div class="space-y-6">
             {[
-              { label: 'Supply chain visibility', value: '100%', color: 'bg-green-500' },
-              { label: 'Tier 1 suppliers audited', value: '100%', color: 'bg-green-500' },
-              { label: 'Tier 2 suppliers audited', value: '85%', color: 'bg-green-400' },
-              { label: 'Traceability to farm level', value: '60%', color: 'bg-emerald-400' },
+              { label: 'Supply chain visibility', value: 'Review', color: 'bg-green-500' },
+              { label: 'Tier 1 suppliers audited', value: 'Review', color: 'bg-green-500' },
+              { label: 'Tier 2 suppliers audited', value: 'Review', color: 'bg-green-400' },
+              { label: 'Traceability to farm level', value: 'Review', color: 'bg-emerald-400' },
             ].map((metric) => (
               <div>
                 <div class="mb-1.5 flex items-center justify-between">
@@ -230,12 +230,12 @@ const pillars = [
                   <span class="text-sm font-bold text-zinc-900 dark:text-white">{metric.value}</span>
                 </div>
                 <div class="h-2 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
-                  <div class={`h-full rounded-full ${metric.color}`} style={`width: ${metric.value}`}></div>
+                  <div class={`h-full rounded-full ${metric.color}`} style="width: 0%"></div>
                 </div>
               </div>
             ))}
           </div>
-          <p class="mt-6 text-xs text-zinc-400 dark:text-zinc-500">Figures based on 2024 internal audit. Updated annually.</p>
+          <p class="mt-6 text-xs text-zinc-400 dark:text-zinc-500">Supporting scope and records must be confirmed for the relevant order. No percentage audit-coverage claim is made.</p>
         </div>
       </div>
     </div>

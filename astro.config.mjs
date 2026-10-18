@@ -8,12 +8,14 @@ import sitemap from '@astrojs/sitemap';
 // ─────────────────────────────────────────────────────────────────────────────
 import 'dotenv/config';
 import { checkEnvOrExit } from './src/lib/env.ts';
-checkEnvOrExit();
+// Review builds render public content without requiring live operational secrets.
+const reviewBuild = process.env.VERCEL_ENV === 'preview' || (process.env.VERCEL_ENV !== 'production' && process.env.CATALOGUE_REVIEW_MODE === 'true');
+if (!reviewBuild) checkEnvOrExit();
 
 export default defineConfig({
   output: 'server',
   adapter: vercel(),
-  site: 'https://revestitching.com',
+  site: 'https://www.revestitching.com',
   integrations: [sitemap({
     filter: (page) => {
       const path = new URL(page).pathname;

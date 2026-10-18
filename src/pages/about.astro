@@ -10,39 +10,39 @@ const timeline = [
   },
   {
     num: '02',
-    year: '2020',
-    title: 'SEDEX Certification',
-    description: 'Achieved SEDEX compliance within the first year, demonstrating our commitment to ethical manufacturing, worker welfare, and responsible supply chain practices.',
+    year: 'Trade',
+    title: 'Ethical Trade',
+    description: 'Discuss site-level ethical trade documentation and buyer requirements. Sedex membership and SMETA audit completion are not certification or pass/fail status.',
   },
   {
     num: '03',
-    year: '2021',
+    year: 'Skills',
     title: 'SGS Training Program',
-    description: 'Partnered with SGS to implement comprehensive workforce training, ensuring every team member maintains AQL 1.5-4.0 quality standards on every production run.',
+    description: 'Quality requirements, training arrangements and inspection responsibilities are agreed against the garment specification.',
   },
   {
     num: '04',
-    year: '2022',
+    year: 'Factory',
     title: 'Production Expansion',
-    description: 'Expanded our facility with 150+ modern machines, increasing monthly production capacity to 150,000+ garments while maintaining precision quality standards.',
+    description: 'Review the production route, equipment requirements and available capacity for your intended programme.',
   },
   {
     num: '05',
-    year: '2023',
+    year: 'Process',
     title: 'Full Composite Knitwear',
     description: 'Expanded in-house capabilities across cutting, stitching, finishing, and quality control — managing every stage from raw fabric to finished garment, with trusted partners for knitting and dyeing.',
   },
   {
     num: '06',
-    year: '2024',
+    year: 'Markets',
     title: 'Global Recognition',
     description: 'Expanded our client portfolio to include major international fashion brands across Europe, serving Boohoo, Pull&Bear, Yours Clothing, and more.',
   },
   {
     num: '07',
-    year: '2025',
+    year: 'Digital',
     title: 'Sustainability & Automation',
-    description: 'Launched our green manufacturing initiative with energy-efficient processes, sustainable material sourcing, and advanced ERP-powered automation.',
+    description: 'Discuss material sourcing requirements and the operational records available for your programme. Environmental performance figures require current supporting evidence.',
   },
 ];
 
@@ -72,47 +72,47 @@ const leaders = [
 
 const certifications = [
   {
-    name: 'SEDEX',
-    fullName: 'SEDEX Members Ethical Trade Audit',
-    desc: 'Ethical trade audit certified — ensuring fair wages, safe working conditions, and responsible supply chain practices across our facility.',
-    color: '#0066CC',
-    darkColor: '#3B82F6',
+    "name": "Ethical Trade",
+    "fullName": "Sedex / SMETA terminology",
+    "desc": "Sedex membership and SMETA audits are not certification. Review relevant site, report scope and findings.",
+    "color": "#0066CC",
+    "darkColor": "#3B82F6"
   },
   {
-    name: 'GOTS',
-    fullName: 'Global Organic Textile Standard',
-    desc: 'Certified for organic textile production — meeting the world’s leading standard for processing organic fibers.',
-    color: '#4CAF50',
-    darkColor: '#22C55E',
+    "name": "Organic Scope",
+    "fullName": "Organic textile evidence",
+    "desc": "Any organic claim requires current evidence covering the relevant holder, materials and processes.",
+    "color": "#4CAF50",
+    "darkColor": "#22C55E"
   },
   {
-    name: 'OEKO-TEX',
-    fullName: 'OEKO-TEX Standard 100',
-    desc: 'Every component tested for harmful substances — guaranteeing garments are free from chemicals harmful to human health.',
-    color: '#00838F',
-    darkColor: '#06B6D4',
+    "name": "Chemical Safety",
+    "fullName": "Buyer test requirements",
+    "desc": "Confirm applicable chemical limits, test reports and scheme scope for the intended market.",
+    "color": "#00838F",
+    "darkColor": "#06B6D4"
   },
   {
-    name: 'BCI',
-    fullName: 'Better Cotton Initiative',
-    desc: 'Licensed to source Better Cotton — supporting more sustainable cotton farming practices worldwide.',
-    color: '#2E7D32',
-    darkColor: '#4ADE80',
+    "name": "Cotton Sourcing",
+    "fullName": "Material chain evidence",
+    "desc": "Confirm fibre content and the documentation needed for any sourcing claim.",
+    "color": "#2E7D32",
+    "darkColor": "#4ADE80"
   },
   {
-    name: 'ISO 9001',
-    fullName: 'ISO 9001:2015',
-    desc: 'Quality management system certified — demonstrating consistent processes, continuous improvement, and customer satisfaction.',
-    color: '#1565C0',
-    darkColor: '#60A5FA',
+    "name": "Quality Systems",
+    "fullName": "Current document review",
+    "desc": "Review any quality-management certificate for its holder, site, scope and current validity.",
+    "color": "#1565C0",
+    "darkColor": "#60A5FA"
   },
   {
-    name: 'WRAP',
-    fullName: 'Worldwide Responsible Accredited Production',
-    desc: 'Compliant with WRAP’s 12 principles — ensuring lawful, ethical, and safe manufacturing practices.',
-    color: '#E65100',
-    darkColor: '#FB923C',
-  },
+    "name": "Site Review",
+    "fullName": "Facility-specific information",
+    "desc": "Share buyer requirements so relevant site-level evidence can be reviewed before commitments.",
+    "color": "#E65100",
+    "darkColor": "#FB923C"
+  }
 ];
 
 /* ⚠️ Replace with real factory photography when available */
@@ -189,7 +189,7 @@ const factoryPhotos = [
             Reve Stitching is a leading 100% export-oriented knitted garment manufacturer, strategically located in Faisalabad — the heart of Pakistan's textile industry.
           </p>
           <p class="mt-4 text-base leading-relaxed text-zinc-500 dark:text-zinc-400 sm:text-lg" data-animate="fade-up" data-delay="0.2">
-            From a modest beginning in 2019, we've grown into a full composite knitwear facility with 150+ modern machines and a monthly production capacity exceeding 150,000 garments.
+            From garment development to production coordination, we review the process route, current capacity and material requirements for each programme.
           </p>
 
           <!-- Stat cards with hover interaction -->
@@ -202,8 +202,8 @@ const factoryPhotos = [
               data-tilt-glare
               data-magnetic
             >
-              <div class="text-2xl font-bold text-green-600 transition-transform duration-300 group-hover:scale-110 dark:text-green-400">150K+</div>
-              <div class="mt-1 text-xs font-medium text-zinc-500">Monthly Capacity</div>
+              <div class="text-2xl font-bold text-green-600 transition-transform duration-300 group-hover:scale-110 dark:text-green-400">Review</div>
+              <div class="mt-1 text-xs font-medium text-zinc-500">Order Capacity</div>
             </div>
             <div
               class="group rounded-xl border border-zinc-200 bg-white px-6 py-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-green-500/30 hover:shadow-lg hover:shadow-green-600/10 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-green-400/30 dark:hover:shadow-green-400/5"
@@ -213,8 +213,8 @@ const factoryPhotos = [
               data-tilt-glare
               data-magnetic
             >
-              <div class="text-2xl font-bold text-green-600 transition-transform duration-300 group-hover:scale-110 dark:text-green-400">150+</div>
-              <div class="mt-1 text-xs font-medium text-zinc-500">Modern Machines</div>
+              <div class="text-2xl font-bold text-green-600 transition-transform duration-300 group-hover:scale-110 dark:text-green-400">Plan</div>
+              <div class="mt-1 text-xs font-medium text-zinc-500">Production Route</div>
             </div>
             <div
               class="group rounded-xl border border-zinc-200 bg-white px-6 py-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-green-500/30 hover:shadow-lg hover:shadow-green-600/10 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-green-400/30 dark:hover:shadow-green-400/5"
@@ -535,10 +535,10 @@ const factoryPhotos = [
       <div class="mb-14 text-center">
         <span class="mb-3 inline-block text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400" data-animate="fade-up">Certifications & Standards</span>
         <h2 id="certs-heading" class="font-serif text-2xl font-bold text-zinc-900 dark:text-white sm:text-4xl lg:text-5xl" data-animate="fade-up" data-delay="0.08">
-          Certified <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Excellence</span>
+          Compliance <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Review</span>
         </h2>
         <p class="mx-auto mt-4 max-w-xl text-base text-zinc-500 dark:text-zinc-400" data-animate="fade-up" data-delay="0.16">
-          Internationally recognized certifications that guarantee quality, ethics, and sustainability in every garment we produce.
+          Review the relevant scheme, certificate holder, site, scope and current status for your order. The topics below do not assert site or product certification.
         </p>
       </div>
 
@@ -592,17 +592,17 @@ const factoryPhotos = [
             Uncompromising <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Quality</span> Standards
           </h2>
           <p class="mt-5 text-base leading-relaxed text-zinc-500 dark:text-zinc-400 sm:text-lg" data-animate="fade-up" data-delay="0.16">
-            Quality is the cornerstone of everything we do. Our SGS-trained workforce maintains AQL 1.5-4.0 standards across every production run.
+            Quality begins with the approved sample and specification. Agree inspection levels, defect classifications, sampling plans and reporting requirements for your order.
           </p>
 
           <div class="mt-8 space-y-4" data-animate="fade-up" data-delay="0.2">
             {[
-              'AQL 1.5-4.0 quality standards on every order',
-              'SGS-trained quality control team',
-              'Multi-stage inspection process (14 checkpoints)',
-              'SEDEX-compliant ethical manufacturing',
-              'Dedicated quality lab with modern testing equipment',
-              'Full traceability from raw material to finished product',
+              'Buyer-approved acceptance sampling plan',
+              'Agreed quality responsibilities',
+              'Inspection stages defined for the order',
+              'Relevant ethical sourcing documentation',
+              'Testing methods and laboratory arrangements by agreement',
+              'Required traceability records reviewed with the buyer',
             ].map((item) => (
               <div class="flex items-start gap-3">
                 <div class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-500/10">
@@ -635,7 +635,7 @@ const factoryPhotos = [
           Digitally <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Integrated</span> Manufacturing
         </h2>
         <p class="mt-4 text-base leading-relaxed text-zinc-500 dark:text-zinc-400" data-animate="fade-up" data-delay="0.16">
-          We don't just manufacture — we track every stage digitally. Our custom ERP system brings transparency, accuracy, and speed to every order.
+          Digital tools support operational work. Ask which records and updates are available for your programme.
         </p>
       </div>
 
@@ -653,7 +653,7 @@ const factoryPhotos = [
             </svg>
           </span>
           <h3 class="text-lg font-bold text-zinc-900 dark:text-white">ERP Production Tracking</h3>
-          <p class="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">Custom-built ERP system tracks every order from fabric issuance through cutting, stitching, and final dispatch in real time.</p>
+          <p class="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">Digital records support material and order coordination. Confirm the available workflow and reporting scope for your programme.</p>
         </div>
 
         <div
@@ -668,7 +668,7 @@ const factoryPhotos = [
             </svg>
           </span>
           <h3 class="text-lg font-bold text-zinc-900 dark:text-white">Digital Quality Logs</h3>
-          <p class="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">Every inspection, measurement check, and AQL audit is digitally recorded — full traceability from raw material to shipment.</p>
+          <p class="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">Agree which inspection, measurement and audit records are required and how they will be shared.</p>
         </div>
 
         <div
@@ -682,8 +682,8 @@ const factoryPhotos = [
               <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z" />
             </svg>
           </span>
-          <h3 class="text-lg font-bold text-zinc-900 dark:text-white">150+ Modern Machines</h3>
-          <p class="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">Computerised knitting, automatic cutting, and precision stitching equipment — built for speed, accuracy, and scale.</p>
+          <h3 class="text-lg font-bold text-zinc-900 dark:text-white">Production Equipment</h3>
+          <p class="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">Review equipment and process requirements with our team, including any agreed specialist partner stages.</p>
         </div>
 
         <div
@@ -698,7 +698,7 @@ const factoryPhotos = [
             </svg>
           </span>
           <h3 class="text-lg font-bold text-zinc-900 dark:text-white">Data-Driven Dashboards</h3>
-          <p class="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">Automated reports on production output, fabric consumption, and delivery timelines — no manual spreadsheets or guesswork.</p>
+          <p class="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">Agree useful reporting on production progress, material status and delivery planning for your project.</p>
         </div>
 
       </div>
