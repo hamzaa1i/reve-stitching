@@ -1,0 +1,59 @@
+---
+import CatalogueImage from './CatalogueImage.astro';
+import type { CatalogueMedia } from '../data/catalogue-media';
+import { enquiryUrl } from '../lib/catalogue/policy';
+interface Props { samples: CatalogueMedia[]; }
+const { samples } = Astro.props;
+---
+<div class="sample-grid" data-sample-gallery>
+  {samples.map(sample => <article class="sample-card" id={sample.sampleId}>
+    <figure>
+      <a class="sample-image" href={sample.images.at(-1)!.src} data-gallery-open data-gallery-title={sample.title} data-gallery-alt={sample.alt} data-gallery-id={sample.sampleId} aria-label={`Enlarge ${sample.title}`}>
+        <CatalogueImage sample={sample} />
+        <span class="enlarge-label">View photograph <span aria-hidden="true">↗</span></span>
+      </a>
+      <figcaption><span class="eyebrow">Reve sample · {sample.sampleId.toUpperCase()}</span><h3>{sample.title}</h3><p>Actual garment example. Use as a reference for your own specification.</p></figcaption>
+    </figure>
+    <div class="card-links"><a href={enquiryUrl('quote', sample.categorySlug, sample.sampleId)}>Quote this reference <span aria-hidden="true">→</span></a><a href={enquiryUrl('samples', sample.categorySlug, sample.sampleId)}>Request sample</a></div>
+  </article>)}
+</div>
+<dialog class="sample-viewer" aria-label="Sample photograph viewer" data-sample-viewer>
+  <div class="viewer-toolbar"><p data-viewer-title></p><button type="button" data-viewer-close aria-label="Close photograph viewer">Close <span aria-hidden="true">×</span></button></div>
+  <div class="viewer-photo"><img data-viewer-image alt="" /></div>
+  <div class="viewer-toolbar"><button type="button" data-viewer-prev aria-label="Previous sample photograph">← Previous</button><p data-viewer-count aria-live="polite"></p><button type="button" data-viewer-next aria-label="Next sample photograph">Next →</button></div>
+  <p class="viewer-hint">Each photograph is a separate sample view. Use the arrow keys or swipe to browse; Escape closes.</p>
+</dialog>
+<script>
+function initGallery() {
+  const dialog = document.querySelector<HTMLDialogElement>('[data-sample-viewer]');
+  if (!dialog || dialog.dataset.ready) return;
+  dialog.dataset.ready = 'true';
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-gallery-open]'));
+  const image = dialog.querySelector<HTMLImageElement>('[data-viewer-image]')!;
+  let current = 0;
+  let opener: HTMLElement | null = null;
+  function show(index: number) {
+    current = (index + links.length) % links.length;
+    const link = links[current];
+    image.src = link.href; image.alt = link.dataset.galleryAlt || '';
+    dialog!.querySelector('[data-viewer-title]')!.textContent = link.dataset.galleryTitle || '';
+    dialog!.querySelector('[data-viewer-count]')!.textContent = `${current + 1} / ${links.length}`;
+    for (const button of dialog!.querySelectorAll<HTMLButtonElement>('[data-viewer-prev],[data-viewer-next]')) button.disabled = links.length < 2;
+  }
+  links.forEach((link, index) => link.addEventListener('click', event => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault(); opener = link; show(index); dialog.showModal();
+    dialog.querySelector<HTMLButtonElement>('[data-viewer-close]')?.focus();
+  }));
+  dialog.querySelector('[data-viewer-close]')?.addEventListener('click', () => dialog.close());
+  dialog.querySelector('[data-viewer-prev]')?.addEventListener('click', () => show(current - 1));
+  dialog.querySelector('[data-viewer-next]')?.addEventListener('click', () => show(current + 1));
+  dialog.addEventListener('keydown', event => { if (event.key === 'ArrowRight') { event.preventDefault(); show(current + 1); } if (event.key === 'ArrowLeft') { event.preventDefault(); show(current - 1); } });
+  dialog.addEventListener('close', () => { image.removeAttribute('src'); opener?.focus(); });
+  let start = 0;
+  dialog.addEventListener('pointerdown', event => { start = event.clientX; });
+  dialog.addEventListener('pointerup', event => { const delta = event.clientX - start; if (Math.abs(delta) > 70 && event.pointerType === 'touch') show(current + (delta < 0 ? 1 : -1)); });
+}
+document.addEventListener('astro:page-load', initGallery);
+initGallery();
+</script>

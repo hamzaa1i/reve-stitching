@@ -5,7 +5,7 @@ import Footer from '../components/Footer.astro';
 import ChatWidget from '../components/ChatWidget.astro';
 import WhatsAppWidget from '../components/WhatsAppWidget.astro';
 import DarkModeScript from '../components/DarkModeScript.astro';
-import ScrollProgress from '../components/ScrollProgress.astro';
+import { isReviewMode } from '../lib/review-mode';
 import PageTransition from '../components/PageTransition.astro';
 import '../styles/global.css';
 
@@ -17,7 +17,7 @@ interface Props {
 
 const {
   title,
-  description = 'Reve Stitching — Leading 100% export-oriented knitted garment manufacturer in Faisalabad, Pakistan. 300K+ monthly capacity, SEDEX compliant, AQL 1.5-4.0.',
+  description = 'Reve Stitching — knitted garment manufacturing in Faisalabad, Pakistan. Explore real samples and discuss your collection.',
   ogImage = '/images/hero/about.webp',
 } = Astro.props;
 
@@ -98,10 +98,10 @@ const ogImageURL = new URL(ogImage, Astro.site);
 
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
-      "@type": "ManufacturingBusiness",
+      "@type": "Organization",
       "name": "Reve Stitching",
-      "url": "https://revestitching.com",
-      "description": "Leading 100% export-oriented knitted garment manufacturer based in Faisalabad, Pakistan.",
+      "url": "https://www.revestitching.com",
+      "description": "Knitted garment manufacturer based in Faisalabad, Pakistan.",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "Chak No. 196/R.B, Ghona Road",
@@ -114,7 +114,7 @@ const ogImageURL = new URL(ogImage, Astro.site);
       "openingHoursSpecification": {
         "@type": "OpeningHoursSpecification",
         "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
-        "opens": "08:00",
+        "opens": "09:00",
         "closes": "18:00"
       }
     })} />
@@ -136,6 +136,7 @@ const ogImageURL = new URL(ogImage, Astro.site);
   <body class="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-300">
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[10000] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-zinc-950 focus:shadow-lg">Skip to main content</a>
     <Header />
+    {isReviewMode() && <aside class="bg-green-950 px-5 py-2 text-center text-xs text-white" aria-label="Review preview">Review preview — enquiries and account access are disabled. Nothing is sent.</aside>}
 
     <main class="flex-1 relative z-[1] overflow-x-hidden" id="main-content">
       <slot />
@@ -146,7 +147,7 @@ const ogImageURL = new URL(ogImage, Astro.site);
     <!-- WhatsAppWidget removed from global layout -->
     <!-- Add it manually to: homepage, products, quote, contact, samples -->
 
-    <ScrollProgress />
+
     <PageTransition />
 
     <script>

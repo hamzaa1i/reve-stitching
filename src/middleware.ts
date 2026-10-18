@@ -1,7 +1,9 @@
+import { isReviewMode, reviewResponse } from './lib/review-mode';
 import { defineMiddleware } from "astro:middleware";
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const path = context.url.pathname;
+  if (isReviewMode() && (path.startsWith('/api/') || path.startsWith('/admin') || path.startsWith('/portal'))) return reviewResponse();
 
   // ━━━ Portal API routes — set user but don't redirect ━━━
   if (path.startsWith("/api/portal/")) {

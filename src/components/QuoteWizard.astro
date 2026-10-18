@@ -5,6 +5,9 @@
  * NOW WITH: Price Calculator pre-fill integration
  */
 
+import { catalogueMedia } from '../data/catalogue-media';
+import { categories, commercialPolicy } from '../lib/catalogue/policy';
+
 export interface QuoteFormData {
   selectedProduct: string;
   fabricType: string;
@@ -24,28 +27,12 @@ export interface QuoteFormData {
   additionalNotes: string;
 }
 
-interface Product {
-  id: string;
-  name: string;
-  moq: number;
-  priceRange: string;
-}
-
-const products: Product[] = [
-  { id: "t-shirts",    name: "Premium Cotton T-Shirts", moq: 500, priceRange: "$3.50 – $8.00" },
-  { id: "polo-shirts", name: "Corporate Polo Shirts",   moq: 300, priceRange: "$5.00 – $12.00" },
-  { id: "hoodies",     name: "Premium Hoodies",         moq: 250, priceRange: "$8.00 – $18.00" },
-  { id: "joggers",     name: "Athletic Joggers",        moq: 400, priceRange: "$6.00 – $15.00" },
-  { id: "sweatshirts", name: "Sweatshirts Collection",  moq: 350, priceRange: "$7.00 – $16.00" },
-  { id: "ladies-wear", name: "Ladies' Wear",            moq: 300, priceRange: "$4.00 – $14.00" },
-  { id: "kids-wear",   name: "Kids' Wear Range",        moq: 500, priceRange: "$3.00 – $10.00" },
-  { id: "custom",      name: "Custom / Other",          moq: 200, priceRange: "Get a Quote" },
-];
+const products = categories.map(c => ({ id: c.quoteId, name: c.name, minimum: commercialPolicy.minimumEnquiryQuantity }));
 
 const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
 ---
 
-<section id="quote-wizard-section" class="bg-gray-50 py-16 dark:bg-zinc-950 sm:py-24">
+<section id="quote-wizard-section" data-sample-map={JSON.stringify(catalogueMedia.map(s=>[s.sampleId,s.categorySlug]))} class="bg-gray-50 py-16 dark:bg-zinc-950 sm:py-24">
   <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
 
     <!-- ─── Section Header ─── -->
@@ -57,13 +44,14 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
         Request a Custom Quote
       </h2>
       <p class="mx-auto mt-3 max-w-2xl text-lg text-gray-600 dark:text-zinc-400">
-        Tell us what you need and we'll respond within 24 hours with a detailed quotation.
+        Tell us what you need and our team will review your specifications.
       </p>
     </div>
 
     <!-- ════════════════════════════════════════════
          PRE-FILL BANNER (shown when URL params exist)
          ════════════════════════════════════════════ -->
+    <p id="catalogue-context" class="px-6 pt-4 text-sm text-green-800 dark:text-green-300" aria-live="polite"></p>
     <div id="prefill-banner" class="mb-6 hidden rounded-xl border-2 border-green-200 bg-green-50 p-4 shadow-sm dark:border-green-800 dark:bg-green-900/20" role="alert">
       <div class="flex items-start gap-3">
         <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-600">
@@ -72,8 +60,8 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
           </svg>
         </div>
         <div class="flex-1">
-          <p class="text-sm font-semibold text-green-900 dark:text-green-300">We've pre-filled your selections from the calculator</p>
-          <p class="mt-1 text-xs text-green-700 dark:text-green-400">Review and adjust the details below, then continue to submit your quote.</p>
+          <p class="text-sm font-semibold text-green-900 dark:text-green-300">Your catalogue enquiry</p>
+          <p class="mt-1 text-xs text-green-700 dark:text-green-400">Review your category and requirements below. Production minimums and pricing are confirmed with your quotation.</p>
         </div>
         <button
           type="button"
@@ -143,7 +131,7 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
                 type="button"
                 class="product-card group relative flex flex-col items-center rounded-xl border-2 border-gray-200 bg-white p-4 text-center transition-all duration-200 hover:border-green-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-green-400"
                 data-product-id={p.id}
-                data-product-moq={p.moq}
+                data-product-minimum={p.minimum}
                 aria-pressed="false"
                 aria-label={`Select ${p.name}`}
               >
@@ -162,9 +150,9 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
                 </div>
                 <span class="text-sm font-semibold text-gray-900 dark:text-white">{p.name}</span>
                 <span class="mt-1 rounded bg-green-50 px-2 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900/30 dark:text-green-400">
-                  MOQ: {p.moq}
+                  Specification-based enquiry
                 </span>
-                <span class="mt-1 text-xs text-gray-500 dark:text-zinc-400">{p.priceRange}</span>
+                <span class="mt-1 text-xs text-gray-500 dark:text-zinc-400">Tailored quotation</span>
                 {/* selected indicator */}
                 <div class="selected-badge pointer-events-none absolute -right-1.5 -top-1.5 hidden h-6 w-6 items-center justify-center rounded-full bg-green-800 text-white dark:bg-green-600">
                   <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
@@ -194,6 +182,7 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
                 <option value="terry-fleece">Terry Fleece</option>
                 <option value="lycra-rib">Lycra Rib</option>
                 <option value="interlock">Interlock</option>
+                <option value="pique">Pique</option>
                 <option value="custom-fabric">Custom Fabric</option>
               </select>
             </div>
@@ -221,11 +210,12 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
               <div>
                 <label for="quantity" class="block text-sm font-medium text-gray-700 dark:text-zinc-300">
                   Quantity <span class="text-red-500">*</span>
-                  <span id="moq-hint" class="ml-1 text-xs font-normal text-gray-400 dark:text-zinc-500">(Min: 200)</span>
+                  <span id="moq-hint" class="ml-1 text-xs font-normal text-gray-400 dark:text-zinc-500">(Enquiry quantity)</span>
                 </label>
-                <input type="number" id="quantity" name="quantity" min="200" placeholder="e.g. 1000"
+                <input type="number" id="quantity" name="quantity" min="1" max="10000000" step="1" placeholder="e.g. 1000"
                   class="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-sm transition focus:border-green-700 focus:outline-none focus:ring-2 focus:ring-green-600/30 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white dark:focus:border-green-500 dark:focus:ring-green-500/30"
                 />
+                <p class="mt-2 text-xs text-gray-500 dark:text-zinc-400">{commercialPolicy.moq}</p>
               </div>
               <div>
                 <label for="color-qty" class="block text-sm font-medium text-gray-700 dark:text-zinc-300">Number of Colors</label>
@@ -402,7 +392,7 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
             <!-- File Upload — Tech Pack -->
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-zinc-300">
-                Upload Reference Images or Tech Pack 
+                Upload Reference Images or Tech Pack
                 <span class="text-xs font-normal text-gray-400 dark:text-zinc-500">(Optional)</span>
               </label>
               <p class="mb-2 text-xs text-gray-500 dark:text-zinc-400">
@@ -426,7 +416,7 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
             <!-- File Upload — Reference Images -->
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-zinc-300">
-                Additional Images 
+                Additional Images
                 <span class="text-xs font-normal text-gray-400 dark:text-zinc-500">(Optional)</span>
               </label>
               <p class="mb-2 text-xs text-gray-500 dark:text-zinc-400">
@@ -441,7 +431,7 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
               >
                 <svg class="mx-auto h-8 w-8 text-gray-400 dark:text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.41a2.25 2.25 0 013.182 0l2.909 2.91m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
                 <p class="mt-2 text-sm text-gray-600 dark:text-zinc-400"><span class="font-semibold text-green-800 dark:text-green-400">Click to upload</span> or drag &amp; drop</p>
-                <p class="mt-1 text-xs text-gray-400 dark:text-zinc-500">PNG, JPG — Multiple files allowed, max 10 MB each</p>
+                <p class="mt-1 text-xs text-gray-400 dark:text-zinc-500">PNG, JPG, WebP — up to 5 images, max 5 MB each</p>
                 <input type="file" id="refimg-input" class="hidden" accept=".png,.jpg,.jpeg,.webp" multiple />
               </div>
               <ul id="refimg-list" class="mt-2 space-y-1"></ul>
@@ -482,9 +472,9 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
 
           <div class="mx-auto mt-6 max-w-sm rounded-xl bg-green-50 p-5 dark:bg-green-900/20">
             <p class="text-sm text-gray-600 dark:text-zinc-400">Your reference number</p>
-            <p id="ref-number" class="mt-1 text-xl font-bold tracking-wide text-green-800 dark:text-green-400">RVS-2025-00000</p>
+            <p id="ref-number" class="mt-1 text-xl font-bold tracking-wide text-green-800 dark:text-green-400">Reference assigned after submission</p>
             <p class="mt-3 text-sm text-gray-600 dark:text-zinc-400">
-              ⏱ We'll respond within <span class="font-semibold text-green-800 dark:text-green-400">24 hours</span> with a detailed quotation.
+              Your request is an enquiry. Pricing, minimums and scheduling are confirmed after our team reviews the specification.
             </p>
           </div>
 
@@ -656,6 +646,7 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
 
 <!-- ─── Client Script ─── -->
 <script>
+  import { resolveCategory, isEnquiryQuantity, enquiryContextNote } from '../lib/catalogue/policy';
   function initQuoteWizard() {
     // Prevent double initialization
     const wizard = document.getElementById('quote-wizard-section');
@@ -670,6 +661,7 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
     const urlParams = new URLSearchParams(window.location.search);
     const prefilledData = {
       product: urlParams.get('product'),
+      sample: urlParams.get('sample'),
       quantity: urlParams.get('quantity'),
       fabric: urlParams.get('fabric'),
       customizations: urlParams.get('customizations')?.split(',').filter(Boolean) || [],
@@ -712,7 +704,7 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
 
     const formData: Record<string, any> = {
       selectedProduct: "",
-      productMOQ: 200,
+      minimumEnquiryQuantity: 1,
       fabricType: "",
       gsmRange: 180,
       quantity: "",
@@ -754,6 +746,7 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
       'terry_fleece': 'terry-fleece',
       'lycra_rib': 'lycra-rib',
       'interlock': 'interlock',
+      'pique': 'pique',
       'custom_fabric': 'custom-fabric',
       // Also support direct formats
       'single-jersey': 'single-jersey',
@@ -801,33 +794,44 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
 
       // ── 1. Product Selection (Step 1) ──
       if (prefilledData.product) {
-        const productId = prefilledData.product.toLowerCase().replace(/ /g, '-');
-        const productCard = $(`.product-card[data-product-id="${productId}"]`);
-        
+        const category = resolveCategory(prefilledData.product);
+        const productId = category?.quoteId || '';
+        const sampleMap = new Map<string,string>(JSON.parse(wizard!.dataset.sampleMap || '[]'));
+        formData.catalogueCategory = category?.slug || '';
+        formData.catalogueSample = prefilledData.sample && sampleMap.get(prefilledData.sample) === category?.slug ? prefilledData.sample : '';
+        if (prefilledData.sample && !formData.catalogueSample) { const error = document.getElementById('step1-error'); if(error) {error.textContent = 'The sample reference does not match this collection. Choose a category to continue with a general enquiry.';error.classList.remove('hidden');} }
+        const context = document.getElementById('catalogue-context');
+        if (context) context.textContent = enquiryContextNote(category?.slug, formData.catalogueSample);
+        if (!category) {
+          const error = document.getElementById('step1-error');
+          if (error) { error.textContent = 'This product reference was not recognised. Please select a category below.'; error.classList.remove('hidden'); }
+        }
+        const productCard = productId ? $(`.product-card[data-product-id="${productId}"]`) : null;
+
         if (productCard) {
           // Deselect all
           $$('.product-card').forEach(c => c.setAttribute('aria-pressed', 'false'));
           // Select this one
           productCard.setAttribute('aria-pressed', 'true');
           productCard.classList.add('prefill-highlight');
-          
+
           formData.selectedProduct = productId;
-          formData.productMOQ = Number(productCard.dataset.productMoq) || 200;
-          
+          formData.minimumEnquiryQuantity = Number(productCard.dataset.productMinimum) || 1;
+
           // Update MOQ hint in step 2
           const moqHint = $("#moq-hint");
-          if (moqHint) moqHint.textContent = `(Min: ${formData.productMOQ})`;
+          if (moqHint) moqHint.textContent = `(Enquiry quantity; bulk minimum confirmed with quote)`;
           const qtyInput = $<HTMLInputElement>("#quantity");
-          if (qtyInput) qtyInput.min = String(formData.productMOQ);
-          
+          if (qtyInput) qtyInput.min = String(formData.minimumEnquiryQuantity);
+
           // Update WhatsApp widget
           if (typeof (window as any).__waUpdateProduct === 'function') {
             const pName = productNames[formData.selectedProduct] || formData.selectedProduct;
             (window as any).__waUpdateProduct(pName);
           }
-          
+
           console.log(`✅ Pre-selected product: ${productId}`);
-          
+
           // Remove highlight after 2s
           setTimeout(() => productCard.classList.remove('prefill-highlight'), 2000);
         } else {
@@ -851,7 +855,7 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
       if (prefilledData.fabric) {
         const fabricValue = fabricMap[prefilledData.fabric] || prefilledData.fabric;
         const fabricSelect = $<HTMLSelectElement>('#fabric-type');
-        
+
         if (fabricSelect) {
           fabricSelect.value = fabricValue;
           fabricSelect.classList.add('prefill-highlight');
@@ -866,29 +870,25 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
         prefilledData.customizations.forEach((customId) => {
           const mappedId = customizationMap[customId] || customId;
           const checkbox = $<HTMLInputElement>(`input[name="customizations"][value="${mappedId}"]`);
-          
+
           if (checkbox) {
             checkbox.checked = true;
             formData.customizations.push(mappedId);
-            
+
             // Highlight the parent card
             const card = checkbox.closest('.customization-card');
             if (card) {
               card.classList.add('prefill-highlight');
               setTimeout(() => card.classList.remove('prefill-highlight'), 2000);
             }
-            
+
             console.log(`✅ Pre-checked customization: ${mappedId}`);
           }
         });
       }
 
-      // ── 5. Clean URL (remove query params) ──
-      if (hasPrefilledData) {
-        const cleanUrl = window.location.pathname;
-        window.history.replaceState({}, document.title, cleanUrl);
-        console.log('✅ URL params cleaned');
-      }
+      // Retain canonical URL context for refresh, copied links and browser history.
+
     }
 
     // Apply pre-fill on initialization
@@ -1011,8 +1011,8 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
       if (step === 2) {
         const errors: string[] = [];
         if (!formData.fabricType) errors.push("Please select a fabric type.");
-        if (!formData.quantity || Number(formData.quantity) < formData.productMOQ) {
-          errors.push(`Quantity must be at least ${formData.productMOQ} (minimum order).`);
+        if (!isEnquiryQuantity(formData.quantity)) {
+          errors.push(`Enter a whole-number enquiry quantity from 1 to 10,000,000. Bulk minimums are confirmed with your quote.`);
         }
         if (formData.sizeRange.length === 0) errors.push("Please select at least one size.");
         if (errors.length) {
@@ -1067,6 +1067,20 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
       return true;
     }
 
+    function retainCatalogueContext() {
+      const category = resolveCategory(formData.selectedProduct);
+      if (!category) return;
+      const url = new URL(location.href);
+      url.searchParams.set('product', category.slug);
+      if (formData.catalogueSample) url.searchParams.set('sample', formData.catalogueSample); else url.searchParams.delete('sample');
+      if (isEnquiryQuantity(formData.quantity)) url.searchParams.set('quantity', formData.quantity); else url.searchParams.delete('quantity');
+      if (formData.fabricType) url.searchParams.set('fabric', formData.fabricType); else url.searchParams.delete('fabric');
+      if (formData.customizations.length) url.searchParams.set('customizations', formData.customizations.join(',')); else url.searchParams.delete('customizations');
+      history.replaceState({}, '', url);
+    }
+    wizard.addEventListener('change', retainCatalogueContext);
+    wizard.addEventListener('input', retainCatalogueContext);
+
     // ───────────────── STEP 1: Product Cards ─────────────────
     $$(".product-card").forEach((card) => {
       card.addEventListener("click", () => {
@@ -1075,13 +1089,19 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
         // select this
         card.setAttribute("aria-pressed", "true");
         formData.selectedProduct = (card as HTMLElement).dataset.productId!;
-        formData.productMOQ = Number((card as HTMLElement).dataset.productMoq) || 200;
+        const nextCategory = resolveCategory(formData.selectedProduct)?.slug;
+        if (nextCategory !== formData.catalogueCategory) formData.catalogueSample = '';
+        formData.catalogueCategory = nextCategory;
+        retainCatalogueContext();
+        const context = document.getElementById('catalogue-context');
+        if (context) context.textContent = enquiryContextNote(nextCategory, formData.catalogueSample);
+        formData.minimumEnquiryQuantity = Number((card as HTMLElement).dataset.productMinimum) || 1;
 
         // update MOQ hint in step 2
         const moqHint = $("#moq-hint");
-        if (moqHint) moqHint.textContent = `(Min: ${formData.productMOQ})`;
+        if (moqHint) moqHint.textContent = `(Enquiry quantity; bulk minimum confirmed with quote)`;
         const qtyInput = $<HTMLInputElement>("#quantity");
-        if (qtyInput) qtyInput.min = String(formData.productMOQ);
+        if (qtyInput) qtyInput.min = String(formData.minimumEnquiryQuantity);
 
         // hide error
         $("#step1-error")?.classList.add("hidden");
@@ -1166,7 +1186,7 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
     // Set min date on date input
     const dateInput = $<HTMLInputElement>("#delivery-date")!;
     const minDate = new Date();
-    minDate.setDate(minDate.getDate() + 30);
+    // Requested date is an enquiry preference, not a promised lead time.
     dateInput.min = minDate.toISOString().split("T")[0];
 
     dateInput.addEventListener("change", (e) => {
@@ -1207,12 +1227,12 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
             note.classList.remove("hidden");
             // update min date
             const rush = new Date();
-            rush.setDate(rush.getDate() + 15);
+            // No unapproved rush lead-time guarantee.
             dateInput.min = rush.toISOString().split("T")[0];
           } else {
             note.classList.add("hidden");
             const norm = new Date();
-            norm.setDate(norm.getDate() + 30);
+            // Schedule is confirmed by the team.
             dateInput.min = norm.toISOString().split("T")[0];
           }
         }
@@ -1307,6 +1327,10 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
       }
 
       // click to upload
+      drop.setAttribute("role", "button");
+      drop.tabIndex = 0;
+      drop.setAttribute("aria-label", stateKey === "techPackFiles" ? "Upload tech pack" : "Upload reference images");
+      drop.addEventListener("keydown", event => { if(event.key === "Enter" || event.key === " ") {event.preventDefault();input.click();} });
       drop.addEventListener("click", () => input.click());
       drop.addEventListener("keydown", (e) => {
         if ((e as KeyboardEvent).key === "Enter" || (e as KeyboardEvent).key === " ") {
@@ -1389,24 +1413,24 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
 
     async function submitQuote() {
       const btnNext = document.getElementById('btn-next') as HTMLButtonElement;
-      
+
       btnNext.disabled = true;
       btnNext.textContent = 'Processing files…';
-      
+
       try {
         // ── Convert files to Base64 ──
         let techPackBase64: string | null = null;
         let techPackName: string | null = null;
-        
+
         if (formData.techPackFiles.length > 0) {
           const file = formData.techPackFiles[0];
           techPackBase64 = await fileToBase64(file);
           techPackName = file.name;
         }
-        
+
         const referenceImagesBase64: string[] = [];
         const referenceImageNames: string[] = [];
-        
+
         for (const img of formData.referenceImages) {
           referenceImagesBase64.push(await fileToBase64(img));
           referenceImageNames.push(img.name);
@@ -1439,6 +1463,8 @@ const stepLabels = ["Product", "Specs", "Customize", "Delivery", "Contact"];
           email: formData.email,
           phone: formData.phone,
           additionalNotes: formData.additionalNotes,
+          catalogueCategory: formData.catalogueCategory || resolveCategory(formData.selectedProduct)?.slug,
+          catalogueSample: formData.catalogueSample || undefined,
           techPackBase64: techPackBase64,
           techPackName: techPackName,
           referenceImagesBase64: referenceImagesBase64,

@@ -1,16 +1,17 @@
+import { categories } from '../catalogue/policy';
 // src/lib/types/sample.ts
 
 export interface SampleRequest {
     id: string;
     reference_number: string;
-  
+
     company_name: string;
     contact_person: string;
     email: string;
     phone: string | null;
     country: string;
     shipping_address: string;
-  
+
     product_type: string;
     fabric_type: string | null;
     gsm: number | null;
@@ -18,28 +19,28 @@ export interface SampleRequest {
     size: string | null;
     quantity: number;
     special_requirements: string | null;
-  
+
     linked_quote_id: string | null;
-  
+
     sample_fee: number;
     actual_cost: number | null;
     shipping_cost: number | null;
     is_free_sample: boolean;
-  
+
     shipping_carrier: string | null;
     tracking_number: string | null;
     shipped_at: string | null;
     delivered_at: string | null;
-  
+
     status: SampleStatus;
-  
+
     admin_notes: string | null;
     rejection_reason: string | null;
-  
+
     created_at: string;
     updated_at: string;
   }
-  
+
   export type SampleStatus =
     | 'new'
     | 'approved'
@@ -48,7 +49,7 @@ export interface SampleRequest {
     | 'delivered'
     | 'converted'
     | 'rejected';
-  
+
   export interface SampleSubmission {
     company_name: string;
     contact_person: string;
@@ -65,7 +66,7 @@ export interface SampleRequest {
     special_requirements?: string;
     linked_quote_id?: string;
   }
-  
+
   export interface SampleStatusUpdate {
     status?: SampleStatus;
     shipping_carrier?: string;
@@ -79,7 +80,7 @@ export interface SampleRequest {
     admin_notes?: string;
     rejection_reason?: string;
   }
-  
+
   export const SAMPLE_STATUS_CONFIG: Record<SampleStatus, { label: string; color: string; bg: string; border: string }> = {
     new: { label: 'New', color: 'text-blue-700', bg: 'bg-blue-50', border: 'border-blue-200' },
     approved: { label: 'Approved', color: 'text-yellow-700', bg: 'bg-yellow-50', border: 'border-yellow-200' },
@@ -89,24 +90,18 @@ export interface SampleRequest {
     converted: { label: 'Converted', color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200' },
     rejected: { label: 'Rejected', color: 'text-red-700', bg: 'bg-red-50', border: 'border-red-200' },
   };
-  
-  export const PRODUCT_TYPES = [
-    { value: 'hoodie', label: 'Hoodie' },
-    { value: 'tshirt', label: 'T-Shirt' },
-    { value: 'polo', label: 'Polo Shirt' },
-    { value: 'joggers', label: 'Joggers' },
-    { value: 'sweatshirt', label: 'Sweatshirt' },
-  ];
-  
+
+  export const PRODUCT_TYPES = categories.map(c => ({ value: c.sampleId, label: c.name }));
+
   export const FABRIC_TYPES = [
     { value: 'cotton', label: '100% Cotton' },
     { value: 'polyester', label: 'Polyester' },
     { value: 'blend', label: 'Cotton-Poly Blend' },
     { value: 'fleece', label: 'Fleece' },
   ];
-  
+
   export const SIZE_OPTIONS = ['S', 'M', 'L', 'XL', 'XXL', 'Custom'];
-  
+
   export const COUNTRIES = [
     'Afghanistan', 'Albania', 'Algeria', 'Argentina', 'Australia', 'Austria',
     'Bahrain', 'Bangladesh', 'Belgium', 'Brazil', 'Canada', 'Chile', 'China',
