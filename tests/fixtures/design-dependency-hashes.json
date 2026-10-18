@@ -1,0 +1,7 @@
+{
+  "src/styles/global.css": "ded36480a6b1dbb0021db7b80fc9bcc50f577713755e3c77b0aab85ddd9fe9d9",
+  "src/scripts/animations.js": "07023a81a7630a913178afb008a66e7617429d84910eb3725e7c990bc0ccae28",
+  "tailwind.config.mjs": "51b77bcedc71f80c3cfaf29e92e2df3f8ada4da6644ffbb007aebb6ebba783c0",
+  "src/components/DarkModeScript.astro": "9bfda5d0f7c5221a0999d3d097b4b65ef35641af8a75d74f07fd7fd80a4efeb8",
+  "src/components/PageTransition.astro": "f0c789a0c228e57c5b87459ed44225890636e084320d140d6f443b0b4b84dde0"
+}

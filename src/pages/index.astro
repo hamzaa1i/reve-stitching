@@ -4,7 +4,7 @@ import WhatsAppWidget from '../components/WhatsAppWidget.astro';
 
 const title = 'Home — Premium Garment Manufacturing';
 const description =
-  '100% export-oriented knitted garment manufacturer based in Faisalabad, Pakistan. 150K+ monthly capacity, 25-50 day lead times, serving UK & EU retailers.';
+  '100% export-oriented knitted garment manufacturer based in Faisalabad, Pakistan. Specification-led development for UK and European buying teams.';
 
 const steps = [
   {
@@ -22,14 +22,14 @@ const steps = [
   {
     num: '03',
     title: 'Production',
-    body: 'State-of-the-art knitting, cutting, stitching, and finishing lines with real-time quality monitoring ensuring consistency across every piece.',
+    body: 'Agree the production route, material supply, cutting, stitching and finishing arrangements against the approved specification.',
     tags: ['Knitting', 'Cutting', 'Stitching', 'Finishing'],
   },
   {
     num: '04',
     title: 'Quality Control',
-    body: 'Every garment passes through rigorous AQL 2.5 inspection. Fabric testing, measurement checks, and final audits guarantee export-ready quality.',
-    tags: ['AQL 2.5', 'Lab Testing', 'Final Audit'],
+    body: 'Agree inspection stages, sampling plans and testing requirements before production. Record findings against the approved garment specification.',
+    tags: ['Buyer QC Plan', 'Testing Scope', 'Final Review'],
   },
   {
     num: '05',
@@ -82,11 +82,11 @@ const products = [
 const capabilities = [
   {
     title: 'Premium Quality',
-    body: 'International quality standards with AQL 2.5 inspection and lab-tested fabrics across every production run.',
+    body: 'Buyer-defined specifications, inspection planning and relevant testing requirements agreed for each order.',
   },
   {
     title: 'Fast Turnaround',
-    body: '25–50 day lead times from sampling to shipment. Speed without compromise on quality.',
+    body: 'Production timing is agreed after material availability, development scope and order requirements are reviewed.',
   },
   {
     title: 'Custom Solutions',
@@ -94,7 +94,7 @@ const capabilities = [
   },
   {
     title: 'Ethical Production',
-    body: 'SEDEX certified. Fair wages, safe working conditions, and sustainable practices across our facility.',
+    body: 'Discuss ethical sourcing requirements and relevant site-level documentation. Sedex membership and SMETA audits are not certification.',
   },
   {
     title: 'UK & EU Focused',
@@ -102,7 +102,7 @@ const capabilities = [
   },
   {
     title: 'Tech-Driven',
-    body: 'Modern machinery, digital pattern-making, and ERP-powered production tracking for full transparency.',
+    body: 'Discuss pattern development, production records and available digital information for your project.',
   },
 ];
 
@@ -120,32 +120,44 @@ const clients = [
 
 const caseStudies = [
   {
-    client: 'Boohoo',
-    logoStyle: 'font-sans font-black text-lg tracking-tight',
-    product: 'Hoodies & Sweatshirts',
-    units: '50,000+',
-    leadTime: '28 days',
-    description: 'Bulk production of premium fleece hoodies across 6 colourways. Zero quality rejections across three consecutive seasonal orders.',
-    tags: ['Fleece', '6 Colourways', 'Zero Rejections'],
+    "client": "Hoodie Development",
+    "logoStyle": "font-sans font-black text-lg tracking-tight",
+    "product": "Hoodies & Sweatshirts",
+    "units": "Review",
+    "leadTime": "Agreed",
+    "description": "Define fabric, fit, construction and artwork before sampling. Production terms follow specification review.",
+    "tags": [
+      "Fabric selection",
+      "Sample review",
+      "Buyer QC plan"
+    ]
   },
   {
-    client: 'Yours Clothing',
-    logoStyle: 'font-serif font-bold text-lg italic',
-    product: "Ladies' Knitwear",
-    units: '75,000+',
-    leadTime: '35 days',
-    description: "Full-size-range ladies' knitwear from XS to 5XL. Consistent fit grading across 12 styles maintained over 2 years of production.",
-    tags: ['Extended Sizing', '12 Styles', '2-Year Partnership'],
+    "client": "Knitwear Development",
+    "logoStyle": "font-serif font-bold text-lg italic",
+    "product": "Ladies' Knitwear",
+    "units": "Review",
+    "leadTime": "Agreed",
+    "description": "Review measurements, size grading and finishing against your technical requirements and approved sample.",
+    "tags": [
+      "Fit requirements",
+      "Size grading",
+      "Sample review"
+    ]
   },
   {
-    client: 'CLOSURE',
-    logoStyle: 'font-sans font-bold text-base tracking-[0.25em] uppercase',
-    product: 'Premium T-Shirts',
-    units: '30,000+',
-    leadTime: '25 days',
-    description: 'Organic cotton t-shirts with custom prints and branded labelling. Rush order delivered 5 days ahead of schedule.',
-    tags: ['Organic Cotton', 'Custom Print', 'Early Delivery'],
-  },
+    "client": "T-Shirt Development",
+    "logoStyle": "font-sans font-bold text-base tracking-[0.25em] uppercase",
+    "product": "T-Shirts",
+    "units": "Review",
+    "leadTime": "Agreed",
+    "description": "Specify material, print, labels and packing. Confirm pricing and schedule after development review.",
+    "tags": [
+      "Material brief",
+      "Artwork review",
+      "Packing brief"
+    ]
+  }
 ];
 ---
 
@@ -223,9 +235,9 @@ const caseStudies = [
         <!-- PHASE 4A: data-hero-paragraph for entrance -->
         <div class="mt-8 flex flex-col gap-8 lg:mt-12 lg:flex-row lg:items-end lg:justify-between" data-hero-paragraph>
           <p class="max-w-lg text-base leading-relaxed text-zinc-500 dark:text-zinc-400 sm:text-lg">
-            100% export-oriented knitted garment manufacturer with 150,000+
-            monthly capacity. From concept to container — delivering quality
-            UK &amp; EU retailers trust.
+            Knitted garment manufacturing in Faisalabad, Pakistan.
+            From concept to container — share your specification,
+            sampling needs and delivery requirements.
           </p>
           <!-- PHASE 4A: data-hero-buttons for entrance -->
           <div class="flex items-center gap-4" data-hero-buttons>
@@ -245,7 +257,7 @@ const caseStudies = [
 
         <!-- PHASE 4A: data-hero-trust for entrance -->
         <div class="mt-10 flex items-center gap-3 lg:mt-14" data-hero-trust>
-          <span class="text-[11px] font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Trusted by</span>
+          <span class="text-[11px] font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Market focus</span>
           <span class="h-px w-4 bg-zinc-300 dark:bg-zinc-700" aria-hidden="true"></span>
           <span class="text-[11px] font-medium text-zinc-400 dark:text-zinc-500">Boohoo · Pull&nbsp;&amp;&nbsp;Bear · Yours Clothing &amp; more</span>
         </div>
@@ -255,8 +267,8 @@ const caseStudies = [
     <!-- Floating stat badges (desktop only) -->
     <div class="pointer-events-none absolute right-[7%] top-[24%] z-10 hidden xl:block" data-float>
       <div class="rounded-2xl border border-zinc-200 bg-white/90 px-5 py-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-        <span class="block text-2xl font-bold text-zinc-900 dark:text-white">150K+</span>
-        <span class="text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Monthly Pieces</span>
+        <span class="block text-2xl font-bold text-zinc-900 dark:text-white">Review</span>
+        <span class="text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Order Capacity</span>
       </div>
     </div>
     <div
@@ -296,40 +308,40 @@ const caseStudies = [
       <!-- Hero production counter -->
       <div class="mb-16 text-center lg:mb-20" data-animate="fade-up">
         <div class="font-serif text-5xl font-bold text-zinc-900 dark:text-white sm:text-7xl lg:text-8xl">
-          <span data-counter="1247000">0</span><span class="text-green-600 dark:text-green-400">+</span>
+          <span>Reve</span><span class="text-green-600 dark:text-green-400"></span>
         </div>
-        <p class="mt-3 text-sm font-semibold uppercase tracking-[0.25em] text-zinc-500 dark:text-zinc-400">Garments Produced &amp; Shipped</p>
-        <p class="mt-2 text-xs text-zinc-400 dark:text-zinc-500">Since 2019 — and counting</p>
+        <p class="mt-3 text-sm font-semibold uppercase tracking-[0.25em] text-zinc-500 dark:text-zinc-400">Garment Manufacturing &amp; Development</p>
+        <p class="mt-2 text-xs text-zinc-400 dark:text-zinc-500">From specification to delivery</p>
       </div>
 
       <div class="grid grid-cols-2 gap-8 lg:grid-cols-4 lg:gap-12">
 
         <div class="text-center" data-animate="reveal">
           <div class="font-serif text-4xl font-bold text-zinc-900 dark:text-white sm:text-5xl lg:text-6xl">
-            <span data-counter="150000">0</span><span class="text-green-600 dark:text-green-400">+</span>
+            <span>Plan</span><span class="text-green-600 dark:text-green-400"></span>
           </div>
-          <p class="mt-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">Monthly Capacity</p>
+          <p class="mt-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">Order Capacity</p>
         </div>
 
         <div class="text-center" data-animate="reveal" data-delay="0.1">
           <div class="font-serif text-4xl font-bold text-zinc-900 dark:text-white sm:text-5xl lg:text-6xl">
-            <span data-counter="25">0</span>–<span data-counter="50">0</span>
+            <span>Agree</span><span></span>
           </div>
-          <p class="mt-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">Days Lead Time</p>
+          <p class="mt-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">Production Schedule</p>
         </div>
 
         <div class="text-center" data-animate="reveal" data-delay="0.2">
           <div class="font-serif text-4xl font-bold text-zinc-900 dark:text-white sm:text-5xl lg:text-6xl">
-            <span data-counter="150">0</span><span class="text-green-600 dark:text-green-400">+</span>
+            <span>Fit</span><span class="text-green-600 dark:text-green-400"></span>
           </div>
-          <p class="mt-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">Modern Machines</p>
+          <p class="mt-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">Production Route</p>
         </div>
 
         <div class="text-center" data-animate="reveal" data-delay="0.3">
           <div class="font-serif text-4xl font-bold text-zinc-900 dark:text-white sm:text-5xl lg:text-6xl">
-            <span data-counter="9">0</span><span class="text-green-600 dark:text-green-400">+</span>
+            <span>Brief</span><span class="text-green-600 dark:text-green-400"></span>
           </div>
-          <p class="mt-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">Brand Partners</p>
+          <p class="mt-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">Buyer Requirements</p>
         </div>
 
       </div>
@@ -349,7 +361,7 @@ const caseStudies = [
         <div data-animate="fade-up">
           <span class="mb-3 inline-block text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400">Featured Projects</span>
           <h2 class="font-serif text-3xl font-bold leading-tight text-zinc-900 dark:text-white sm:text-4xl lg:text-5xl">
-            Proven Results,<br />Real Partnerships
+            Project Briefs,<br />Clear Requirements
           </h2>
         </div>
         <p class="max-w-md text-base leading-relaxed text-zinc-500 dark:text-zinc-400 lg:text-right" data-animate="fade-up" data-delay="0.1">
@@ -386,7 +398,7 @@ const caseStudies = [
                 <div class="h-8 w-px bg-zinc-200 dark:bg-zinc-700" aria-hidden="true"></div>
                 <div>
                   <div class="text-lg font-bold text-green-600 dark:text-green-400">{cs.leadTime}</div>
-                  <div class="text-[10px] font-medium uppercase tracking-wider text-zinc-400">Lead Time</div>
+                  <div class="text-[10px] font-medium uppercase tracking-wider text-zinc-400">Schedule</div>
                 </div>
               </div>
 
@@ -650,7 +662,7 @@ const caseStudies = [
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
               </svg>
             </span>
-            <span class="mt-auto font-serif text-6xl font-bold text-white/10 lg:text-8xl" aria-hidden="true">AQL 2.5</span>
+            <span class="mt-auto font-serif text-6xl font-bold text-white/10 lg:text-8xl" aria-hidden="true">Quality</span>
             <div class="mt-2">
               <h3 class="text-xl font-bold lg:text-2xl">{capabilities[0].title}</h3>
               <p class="mt-2 text-sm leading-relaxed text-white/70">{capabilities[0].body}</p>
@@ -671,7 +683,7 @@ const caseStudies = [
               <p class="mt-2 max-w-md text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{capabilities[1].body}</p>
             </div>
             <span class="mt-4 font-serif text-5xl font-bold text-zinc-200 dark:text-zinc-800 sm:mt-0 sm:text-7xl">
-              25–50<span class="block text-xs font-sans font-normal uppercase tracking-wider text-zinc-400">days</span>
+              Agree<span class="block text-xs font-sans font-normal uppercase tracking-wider text-zinc-400">schedule</span>
             </span>
           </div>
         </div>
@@ -827,7 +839,7 @@ const caseStudies = [
     <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16">
       <div class="mb-12 text-center" data-animate="fade-up">
         <span class="mb-3 inline-block text-[11px] font-semibold uppercase tracking-[0.3em] text-green-600 dark:text-green-400">Our Clients</span>
-        <h2 class="font-serif text-3xl font-bold text-zinc-900 dark:text-white sm:text-4xl">Trusted by UK &amp; EU Retailers</h2>
+        <h2 class="font-serif text-3xl font-bold text-zinc-900 dark:text-white sm:text-4xl">UK &amp; EU Retail Markets</h2>
       </div>
     </div>
 
@@ -896,12 +908,12 @@ const caseStudies = [
         class="font-serif font-bold tracking-tight text-zinc-900 dark:text-white"
         style="font-size:clamp(2rem,5.5vw,5.5rem);line-height:1.15;padding-bottom:0.15em"
       >
-        Your Garments, Delivered in 25 Days
+        Your Garments, Planned Around Your Brief
       </h2>
 
       <p class="mx-auto mt-8 max-w-lg text-lg leading-relaxed text-zinc-600 dark:text-zinc-400" data-animate="fade-up" data-delay="0.1">
-        150K+ monthly capacity · UK &amp; EU export specialists · SEDEX certified.
-        Get your free quote within 24 hours.
+        Specification review · Sampling · Agreed production and delivery terms.
+        Share your specification for a tailored quotation.
       </p>
 
       <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row lg:mt-12" data-animate="fade-up" data-delay="0.15">
@@ -924,7 +936,7 @@ const caseStudies = [
       </div>
 
       <p class="mt-8 text-sm text-zinc-500 dark:text-zinc-600" data-animate="fade-up" data-delay="0.2">
-        Trusted by UK &amp; EU retailers · No commitment required · Response within 24 hours
+        Trusted by UK &amp; EU retailers · No commitment required · Specification-based quotation
       </p>
       <p class="mt-4 text-sm text-zinc-500 dark:text-zinc-600" data-animate="fade-up" data-delay="0.25">
         Already a client? <a href="/portal/dashboard" class="text-green-600 hover:text-green-500 dark:text-green-400 dark:hover:text-green-300    transition-colors">Access your portal →</a>

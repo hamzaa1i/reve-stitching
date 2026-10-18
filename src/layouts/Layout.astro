@@ -5,7 +5,6 @@ import Footer from '../components/Footer.astro';
 import ChatWidget from '../components/ChatWidget.astro';
 import WhatsAppWidget from '../components/WhatsAppWidget.astro';
 import DarkModeScript from '../components/DarkModeScript.astro';
-import ScrollProgress from '../components/ScrollProgress.astro';
 import PageTransition from '../components/PageTransition.astro';
 import '../styles/global.css';
 
@@ -17,7 +16,7 @@ interface Props {
 
 const {
   title,
-  description = 'Reve Stitching — Leading 100% export-oriented knitted garment manufacturer in Faisalabad, Pakistan. 300K+ monthly capacity, SEDEX compliant, AQL 1.5-4.0.',
+  description = 'Reve Stitching — Leading 100% export-oriented knitted garment manufacturer in Faisalabad, Pakistan. Specification-led development and manufacturing enquiries.',
   ogImage = '/images/hero/about.webp',
 } = Astro.props;
 
@@ -98,9 +97,9 @@ const ogImageURL = new URL(ogImage, Astro.site);
 
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
-      "@type": "ManufacturingBusiness",
+      "@type": "Organization",
       "name": "Reve Stitching",
-      "url": "https://revestitching.com",
+      "url": "https://www.revestitching.com",
       "description": "Leading 100% export-oriented knitted garment manufacturer based in Faisalabad, Pakistan.",
       "address": {
         "@type": "PostalAddress",
@@ -114,7 +113,7 @@ const ogImageURL = new URL(ogImage, Astro.site);
       "openingHoursSpecification": {
         "@type": "OpeningHoursSpecification",
         "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
-        "opens": "08:00",
+        "opens": "09:00",
         "closes": "18:00"
       }
     })} />
@@ -146,7 +145,6 @@ const ogImageURL = new URL(ogImage, Astro.site);
     <!-- WhatsAppWidget removed from global layout -->
     <!-- Add it manually to: homepage, products, quote, contact, samples -->
 
-    <ScrollProgress />
     <PageTransition />
 
     <script>

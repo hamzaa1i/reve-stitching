@@ -1,3 +1,5 @@
+import { resolveCategory, isEnquiryQuantity, enquiryContextNote } from '../../../lib/catalogue/policy';
+import { catalogueSamples } from '../../../data/sample-references';
 import type { APIRoute } from 'astro';
 import { getSupabase } from '../../../lib/supabase';
 import { generateReferenceNumber } from '../../../lib/services/reference';
@@ -97,7 +99,14 @@ export const POST: APIRoute = async ({ request }) => {
       return fallback;
     };
 
-    const product_type = truncate(sanitizeString(body.selectedProduct || ''), 100);
+    const category = resolveCategory(body.selectedProduct);
+    const requestedCategory = resolveCategory(body.catalogueCategory);
+    const sample = typeof body.catalogueSample === 'string' ? catalogueSamples.find(s => s.sampleId === body.catalogueSample) : undefined;
+    const product_type = category?.quoteId || '';
+    const catalogueCategory = requestedCategory?.quoteId === product_type ? requestedCategory : category;
+    if (body.catalogueSample && (!sample || sample.categorySlug !== catalogueCategory?.slug)) {
+      return Response.json({ success: false, error: 'The sample reference does not match this category. Please select the sample again.' }, { status: 422 });
+    }
     const fabric_type = truncate(sanitizeString(body.fabricType || ''), 100);
     const gsm = Number(body.gsmRange) || 0;
     const quantity = Number(body.quantity) || 0;
@@ -112,17 +121,16 @@ export const POST: APIRoute = async ({ request }) => {
     const contact_person = truncate(sanitizeString(body.contactPerson || ''), 200);
     const email = truncate((body.email || '').trim().toLowerCase(), 254);
     const phone = body.phone ? truncate(sanitizeString(body.phone), 50) : null;
-    const notes = body.additionalNotes
-      ? truncate(sanitizeString(body.additionalNotes), 3000)
-      : null;
+    const catalogueNote = enquiryContextNote(catalogueCategory?.slug, sample?.sampleId);
+    const notes = [catalogueNote, typeof body.additionalNotes === 'string' ? truncate(sanitizeString(body.additionalNotes), 3000) : ''].filter(Boolean).join('\n\n') || null;
 
     // Validate
     const errors: string[] = [];
-    if (!product_type) errors.push('Product type is required.');
+    if (!product_type) errors.push('Select a recognised product category.');
     if (!fabric_type) errors.push('Fabric type is required.');
     if (!gsm || gsm < 100 || gsm > 500)
       errors.push('GSM must be between 100 and 500.');
-    if (!quantity || quantity < 1) errors.push('Quantity is required.');
+    if (!isEnquiryQuantity(body.quantity)) errors.push('Enter a whole-number enquiry quantity from 1 to 10,000,000.');
     if (quantity > 10_000_000) errors.push('Quantity exceeds the supported maximum.');
     if (!sizes || sizes.length === 0)
       errors.push('At least one size is required.');

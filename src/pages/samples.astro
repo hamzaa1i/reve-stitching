@@ -64,7 +64,7 @@ const labelClass = 'mb-2 block text-sm font-semibold text-zinc-700 dark:text-zin
                 Your reference number is: <strong class="font-mono">{reference}</strong>
               </p>
               <p class="mt-1 text-sm text-green-600 dark:text-green-400/80">
-                We've sent a confirmation email. Our team will review your request within 1-2 business days.
+                Your request has been received for team review. Sample terms and timing are confirmed separately.
               </p>
             </div>
           </div>
@@ -81,20 +81,20 @@ const labelClass = 'mb-2 block text-sm font-semibold text-zinc-700 dark:text-zin
           </h2>
           <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
             <div>
-              <label class={labelClass}>Company Name *</label>
-              <input type="text" name="company_name" required placeholder="Your Company Ltd." class={inputClass} />
+              <label for="sample-company_name" class={labelClass}>Company Name *</label>
+              <input type="text" id="sample-company_name" name="company_name" required placeholder="Your Company Ltd." class={inputClass} />
             </div>
             <div>
-              <label class={labelClass}>Contact Person *</label>
-              <input type="text" name="contact_person" required placeholder="John Doe" class={inputClass} />
+              <label for="sample-contact_person" class={labelClass}>Contact Person *</label>
+              <input type="text" id="sample-contact_person" name="contact_person" required placeholder="John Doe" class={inputClass} />
             </div>
             <div>
-              <label class={labelClass}>Email *</label>
-              <input type="email" name="email" required placeholder="john@company.com" class={inputClass} />
+              <label for="sample-email" class={labelClass}>Email *</label>
+              <input type="email" id="sample-email" name="email" required placeholder="john@company.com" class={inputClass} />
             </div>
             <div>
-              <label class={labelClass}>Phone</label>
-              <input type="tel" name="phone" placeholder="+44 7700 000000" class={inputClass} />
+              <label for="sample-phone" class={labelClass}>Phone</label>
+              <input type="tel" id="sample-phone" name="phone" placeholder="+44 7700 000000" class={inputClass} />
             </div>
           </div>
         </div>
@@ -107,9 +107,9 @@ const labelClass = 'mb-2 block text-sm font-semibold text-zinc-700 dark:text-zin
           </h2>
           <div class="grid grid-cols-1 gap-5">
             <div>
-              <label class={labelClass}>Country *</label>
+              <label for="sample-country" class={labelClass}>Country *</label>
               <div class="relative">
-                <select name="country" required class={inputClass + ' appearance-none pr-10'}>
+                <select id="sample-country" name="country" required class={inputClass + ' appearance-none pr-10'}>
                   <option value="">Select country</option>
                   {COUNTRIES.map(c => <option value={c}>{c}</option>)}
                 </select>
@@ -117,8 +117,8 @@ const labelClass = 'mb-2 block text-sm font-semibold text-zinc-700 dark:text-zin
               </div>
             </div>
             <div>
-              <label class={labelClass}>Shipping Address *</label>
-              <textarea name="shipping_address" required rows="3" placeholder="Full shipping address including postal code"
+              <label for="sample-shipping_address" class={labelClass}>Shipping Address *</label>
+              <textarea id="sample-shipping_address" name="shipping_address" required rows="3" placeholder="Full shipping address including postal code"
                 class={inputClass + ' resize-y'}></textarea>
             </div>
           </div>
@@ -132,9 +132,9 @@ const labelClass = 'mb-2 block text-sm font-semibold text-zinc-700 dark:text-zin
           </h2>
           <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
             <div>
-              <label class={labelClass}>Product Type *</label>
+              <label for="sample-product_type" class={labelClass}>Product Type *</label>
               <div class="relative">
-                <select name="product_type" required class={inputClass + ' appearance-none pr-10'}>
+                <select id="sample-product_type" name="product_type" required class={inputClass + ' appearance-none pr-10'}>
                   <option value="">Select product</option>
                   {PRODUCT_TYPES.map(p => <option value={p.value}>{p.label}</option>)}
                 </select>
@@ -142,9 +142,9 @@ const labelClass = 'mb-2 block text-sm font-semibold text-zinc-700 dark:text-zin
               </div>
             </div>
             <div>
-              <label class={labelClass}>Fabric Type</label>
+              <label for="sample-fabric_type" class={labelClass}>Fabric Type</label>
               <div class="relative">
-                <select name="fabric_type" class={inputClass + ' appearance-none pr-10'}>
+                <select id="sample-fabric_type" name="fabric_type" class={inputClass + ' appearance-none pr-10'}>
                   <option value="">Select fabric</option>
                   {FABRIC_TYPES.map(f => <option value={f.value}>{f.label}</option>)}
                 </select>
@@ -152,17 +152,17 @@ const labelClass = 'mb-2 block text-sm font-semibold text-zinc-700 dark:text-zin
               </div>
             </div>
             <div>
-              <label class={labelClass}>Fabric Weight (GSM)</label>
-              <input type="number" name="gsm" min="100" max="500" placeholder="e.g., 280" class={inputClass} />
+              <label for="sample-gsm" class={labelClass}>Fabric Weight (GSM)</label>
+              <input type="number" id="sample-gsm" name="gsm" min="100" max="500" placeholder="e.g., 280" class={inputClass} />
             </div>
             <div>
-              <label class={labelClass}>Color</label>
-              <input type="text" name="color" placeholder="e.g., Navy Blue" class={inputClass} />
+              <label for="sample-color" class={labelClass}>Color</label>
+              <input type="text" id="sample-color" name="color" placeholder="e.g., Navy Blue" class={inputClass} />
             </div>
             <div>
-              <label class={labelClass}>Size</label>
+              <label for="sample-size" class={labelClass}>Size</label>
               <div class="relative">
-                <select name="size" class={inputClass + ' appearance-none pr-10'}>
+                <select id="sample-size" name="size" class={inputClass + ' appearance-none pr-10'}>
                   <option value="">Select size</option>
                   {SIZE_OPTIONS.map(s => <option value={s}>{s}</option>)}
                 </select>
@@ -170,8 +170,8 @@ const labelClass = 'mb-2 block text-sm font-semibold text-zinc-700 dark:text-zin
               </div>
             </div>
             <div>
-              <label class={labelClass}>Quantity (1-5) *</label>
-              <input type="number" name="quantity" required min="1" max="5" value="1" class={inputClass} />
+              <label for="sample-quantity" class={labelClass}>Quantity (1-5) *</label>
+              <input type="number" id="sample-quantity" name="quantity" required min="1" max="5" value="1" class={inputClass} />
             </div>
           </div>
         </div>
@@ -184,8 +184,8 @@ const labelClass = 'mb-2 block text-sm font-semibold text-zinc-700 dark:text-zin
           </h2>
           <div class="space-y-5">
             <div>
-              <label class={labelClass}>Special Requirements</label>
-              <textarea name="special_requirements" rows="3" placeholder="Any specific requirements or notes for your sample"
+              <label for="sample-special_requirements" class={labelClass}>Special Requirements</label>
+              <textarea id="sample-special_requirements" name="special_requirements" rows="3" placeholder="Any specific requirements or notes for your sample"
                 class={inputClass + ' resize-y'}></textarea>
             </div>
             <div>
@@ -236,8 +236,17 @@ const labelClass = 'mb-2 block text-sm font-semibold text-zinc-700 dark:text-zin
 </Layout>
 
 <script>
+  import { resolveCategory, enquiryContextNote } from '../lib/catalogue/policy';
   document.addEventListener('astro:page-load', () => {
     const form = document.getElementById('sampleForm') as HTMLFormElement;
+    const params = new URLSearchParams(location.search);
+    const category = resolveCategory(params.get('product'));
+    const sample = params.get('sample');
+    const originalCategory = category?.slug;
+    const select = form?.querySelector<HTMLSelectElement>('[name=product_type]');
+    if (category && select) select.value = category.sampleId;
+    const requirements = form?.querySelector<HTMLTextAreaElement>('[name=special_requirements]');
+    if (category && requirements && !requirements.value) requirements.value = enquiryContextNote(category.slug, sample);
     const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
     const errorMsg = document.getElementById('errorMsg') as HTMLDivElement;
     const hasQuoteCheckbox = document.getElementById('hasQuote') as HTMLInputElement;
@@ -260,6 +269,9 @@ const labelClass = 'mb-2 block text-sm font-semibold text-zinc-700 dark:text-zin
           if (value) data[key] = value;
         });
 
+        const selectedCategory = resolveCategory(data.product_type);
+        data.catalogueCategory = selectedCategory?.slug;
+        data.catalogueSample = selectedCategory?.slug === originalCategory ? sample : undefined;
         // Add Turnstile response token (Fix 2)
         const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]') as HTMLInputElement | null;
         if (turnstileResponse) {
@@ -275,7 +287,7 @@ const labelClass = 'mb-2 block text-sm font-semibold text-zinc-700 dark:text-zin
         const result = await res.json();
         if (!res.ok) throw new Error(result.error || 'Submission failed');
 
-        window.location.href = `/samples?success=true&ref=${result.data.reference_number}`;
+        window.location.href = `/samples?success=true&ref=${(result.data?.reference_number || result.reference_number)}`;
       } catch (err) {
         errorMsg.textContent = err instanceof Error ? err.message : 'Something went wrong';
         errorMsg.classList.remove('hidden');

@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ProductCard from '../components/ProductCard.astro';
-import PriceCalculator from '../components/PriceCalculator.astro';
+
 import { products, fabrics } from '../data/products';
 import WhatsAppWidget from '../components/WhatsAppWidget.astro';
 ---
@@ -47,21 +47,22 @@ import WhatsAppWidget from '../components/WhatsAppWidget.astro';
        ═══════════════════════════════════════ -->
   <section
     class="bg-white py-24 dark:bg-zinc-950 lg:py-32"
-    aria-label="Price calculator"
+    aria-label="Specification enquiry"
     id="calculate"
   >
     <div class="mx-auto max-w-[90rem] px-6 sm:px-8 lg:px-12 xl:px-16">
       <div class="mx-auto max-w-3xl">
         <div class="mb-10 text-center">
           <h2 class="text-2xl font-bold text-zinc-900 dark:text-white" data-animate="fade-up">
-            Calculate Your Order Cost
+            Plan Your Garment Enquiry
           </h2>
           <p class="mx-auto mt-3 max-w-md text-sm text-zinc-500 dark:text-zinc-400" data-animate="fade-up" data-delay="0.1">
             Select a product below, adjust quantity and options to see instant pricing estimates for your bulk order.
           </p>
         </div>
         <div class="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 p-6 shadow-lg shadow-zinc-900/5 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none sm:p-8" data-animate="fade-up" data-delay="0.15">
-          <PriceCalculator />
+          <p class="text-base text-zinc-500 dark:text-zinc-400">Pricing, production minimums and schedules depend on your specification. Share your garment, fabric, quantity and destination for a tailored quotation.</p>
+      <a href="/quote/" class="mt-6 inline-flex rounded-full bg-green-600 px-8 py-4 text-sm font-bold uppercase tracking-wider text-white hover:bg-green-700">Request a Tailored Quote</a>
         </div>
       </div>
     </div>
@@ -89,8 +90,6 @@ import WhatsAppWidget from '../components/WhatsAppWidget.astro';
             <ProductCard
               name={product.name}
               image={product.image}
-              rating={product.rating}
-              moq={product.moq}
               features={product.features}
               index={i}
               slug={product.slug}
@@ -157,7 +156,7 @@ import WhatsAppWidget from '../components/WhatsAppWidget.astro';
       <div class="flex flex-col items-center justify-between gap-8 lg:flex-row">
         <div>
           <h2 class="font-serif text-2xl font-bold text-white sm:text-3xl" data-animate="fade-up">Need Custom Specifications?</h2>
-          <p class="mt-2 text-zinc-400" data-animate="fade-up" data-delay="0.1">Send us your tech pack — we'll provide a detailed quote within 24 hours.</p>
+          <p class="mt-2 text-zinc-400" data-animate="fade-up" data-delay="0.1">Send us your tech pack so our team can review your requirements.</p>
         </div>
         <a
           href="/quote/"
