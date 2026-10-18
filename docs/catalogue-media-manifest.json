@@ -1,0 +1,2512 @@
+{
+  "version": 1,
+  "approvalDate": "2026-10-18",
+  "sourceCount": 28,
+  "notes": [
+    "Each record is an approved photographic sample view, not a separate SKU or product count.",
+    "No generated garment detail; colours and graphics retained; no upscaling.",
+    "Pillow/WebP versions can affect encoded byte hashes; recipes and source checksums are authoritative."
+  ],
+  "samples": [
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a027",
+      "sourceId": "A027",
+      "categorySlug": "t-shirts",
+      "title": "Grey script T-shirt",
+      "alt": "Grey short-sleeve T-shirt with Dsgn Studio script chest graphic on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a027-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a027-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a027-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.42 PM (12).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "9bc26633b1ab2212f3e251e97e0f8c341681a225888d7cacdec2b905933717e0",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a027-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 22186,
+          "sha256": "a8a8a0ca35eebbdc5cb43bf956014c688ab64c6726dcb842fbff700a8bc18324"
+        },
+        {
+          "src": "/images/catalogue/rs-a027-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 72284,
+          "sha256": "2bb739890752fc254e42c92c7e5a778bef82b80eb654878ed842202cc67e9b2a"
+        },
+        {
+          "src": "/images/catalogue/rs-a027-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 147670,
+          "sha256": "04457159cbcac8b06216600efb2ae8adac19d7a2bfd0d9fc4f4f3ea73b8ebd6b"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a040",
+      "sourceId": "A040",
+      "categorySlug": "t-shirts",
+      "title": "Charcoal 98 graphic T-shirt",
+      "alt": "Charcoal short-sleeve T-shirt with a large tonal 98 chest graphic on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a040-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a040-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a040-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.42 PM (24).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "8e084aeff0379ac1929d5406e60aaab00fbf3b4720a3190a35bb55b3fc979813",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a040-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 9678,
+          "sha256": "7c254a1d7a6c0edf2e114762457fead519562040d57ff47783ce8d2532481d3d"
+        },
+        {
+          "src": "/images/catalogue/rs-a040-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 25980,
+          "sha256": "d3b6b162859f6cb16f0e4c2ce3ae2af9b4a58c7737b095fddc0396c68d73bfff"
+        },
+        {
+          "src": "/images/catalogue/rs-a040-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 51788,
+          "sha256": "a767c411f44d442a874105407f8d816104a141b2c6f7f292498b7f8a2a29dc72"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a041",
+      "sourceId": "A041",
+      "categorySlug": "t-shirts",
+      "title": "Cream typographic T-shirt",
+      "alt": "Cream short-sleeve T-shirt with stacked black typography on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a041-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a041-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a041-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.42 PM (25).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "64a19f10a1cb3d46184c01c7aa394a96ede1b92dc8a37abe6644a9be042b934b",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a041-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 10876,
+          "sha256": "91ce58a1ee855d845bde38fe3cd9dad03dbc0526c3061b5fd263c8f5717e7987"
+        },
+        {
+          "src": "/images/catalogue/rs-a041-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 26986,
+          "sha256": "88f2e854cb8b68d31044b80ab63deeb3adfec1c97c49b4db522f20d1d1fc4cce"
+        },
+        {
+          "src": "/images/catalogue/rs-a041-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 50038,
+          "sha256": "fde22bf3204ae734761249c15f48ef24b9a5205d23520ea7c8523df7c55d419b"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a033",
+      "sourceId": "A033",
+      "categorySlug": "polo-shirts",
+      "title": "Contrast-collar rugby top",
+      "alt": "Black long-sleeve rugby-style top with a white collar and small chest graphic on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a033-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a033-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a033-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.42 PM (18).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "2cbc49f10637630326ff8c7dc29dedd7ab3c5dea4dfa0330307779fccb3b1e76",
+        "exactDuplicates": "A085"
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a033-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 7274,
+          "sha256": "4f37d1c7db006ed5e343fea60900e7f6258732a730d377471f9e27d46e08096e"
+        },
+        {
+          "src": "/images/catalogue/rs-a033-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 16990,
+          "sha256": "9fd2ad18fe45a253a02651719d382e38d48f209341bdc8e209352e69784a29af"
+        },
+        {
+          "src": "/images/catalogue/rs-a033-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 30554,
+          "sha256": "6c49d0cca946feab260dd3aac342bda0699bcc3b0a49850ab5d261ec4d5cbc8b"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a038",
+      "sourceId": "A038",
+      "categorySlug": "polo-shirts",
+      "title": "California 06 rugby top",
+      "alt": "Cream and navy long-sleeve rugby-style top with California 06 graphics and striped cuffs on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a038-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a038-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a038-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.42 PM (22).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "7de6b3bffac95a10e95b3b46963fb032c0a4cf8d1506133d4cb2beb6be9edefe",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a038-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 12174,
+          "sha256": "cd66b80362e8f98e67c7e1d5338005d6225db44b090c8cf6908bac316104474a"
+        },
+        {
+          "src": "/images/catalogue/rs-a038-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 27196,
+          "sha256": "155d36058a1c0cb58f8ad3270ed69cc1816198ec4218d53b61d0a64cd68ce8c5"
+        },
+        {
+          "src": "/images/catalogue/rs-a038-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 48200,
+          "sha256": "57c13e2eb9be19d6362471b82ba959fc091d2415894ed87005362684dac56eaf"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a049",
+      "sourceId": "A049",
+      "categorySlug": "polo-shirts",
+      "title": "Red striped rugby top",
+      "alt": "Red and cream wide-striped long-sleeve rugby-style top with a pointed collar on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a049-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a049-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a049-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.42 PM (32).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "7d7960967a2b5e6d0f9df1bc7667b5be40b0efeca23ac1e117ecbe0aa7083d92",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a049-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 10118,
+          "sha256": "d5e59dc50f9a52b59841c76cc01ab9a17cf1d0c0cb4a2a92330365c575ebfcab"
+        },
+        {
+          "src": "/images/catalogue/rs-a049-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 21066,
+          "sha256": "931596d8f5f3e8e41dec54825b3f45ceff330aeff8277a053f4d3a22b649f746"
+        },
+        {
+          "src": "/images/catalogue/rs-a049-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 37770,
+          "sha256": "2a2d36a9864c841c89b0c08322081c96ead92bd54b0f6aac2e193fa4cd0e8857"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a051",
+      "sourceId": "A051",
+      "categorySlug": "polo-shirts",
+      "title": "New York striped rugby top",
+      "alt": "Green and cream wide-striped long-sleeve rugby-style top with New York script on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a051-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a051-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a051-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.42 PM (34).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "c7cd49df039eb5a8e522da3592c6753035846516da981221cd3a9045fe5a699a",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a051-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 11098,
+          "sha256": "4b5ebfd632ad1e41bb75c7fdcfe7561aed10ff9265e97e2baba058ba6df39fb7"
+        },
+        {
+          "src": "/images/catalogue/rs-a051-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 24128,
+          "sha256": "62329a450606e3ca8da0978a67913b7112e3c083ead3d817bce88ccbeff44fa3"
+        },
+        {
+          "src": "/images/catalogue/rs-a051-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 42376,
+          "sha256": "88f7873ce379c4cf25f5c65cc977549248b1c95b2c1bed70f565be546d6f407f"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a046",
+      "sourceId": "A046",
+      "categorySlug": "hoodies",
+      "title": "Black script zip hoodie",
+      "alt": "Black full-zip hoodie with a white script chest graphic and ribbed hem on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a046-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a046-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a046-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.42 PM (3).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "3d92f67b95a84962d0d22b0c6c8984b1427015a9b6351d41bb695d2a6a9bb5ba",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a046-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 11282,
+          "sha256": "62de9b0a8bf1d20664529cb9d1f52b01cf7474f20728c7a57e8102ff744a462d"
+        },
+        {
+          "src": "/images/catalogue/rs-a046-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 35014,
+          "sha256": "a59cd2dfb704ead5f5a608391d4b7a77ea7dae22edb4e6e3d0ef82d1ff4f248f"
+        },
+        {
+          "src": "/images/catalogue/rs-a046-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 72530,
+          "sha256": "d72991f410ae022a09d5a8406d0096781b6b29e297c11948052413f0ba5b76d7"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a057",
+      "sourceId": "A057",
+      "categorySlug": "hoodies",
+      "title": "New York 06 hoodie",
+      "alt": "Grey pullover hoodie with New York State USA 06 chest graphics and a kangaroo pocket on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a057-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a057-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a057-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.42 PM (4).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "e3bb722b87d427b81992a867953c4948860431d5ecebca6db26bbf1fc6b544d6",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a057-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 9412,
+          "sha256": "b237bdd6c0dd334ed0dfdbfb76b3a02df8878d5e78469c2ece3a7a2d8cf08d6b"
+        },
+        {
+          "src": "/images/catalogue/rs-a057-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 24150,
+          "sha256": "0b5dbe999827fb99c4b7b4fa6eaf02158b1f92c9c820fee4b8513f8f3ae02321"
+        },
+        {
+          "src": "/images/catalogue/rs-a057-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 48096,
+          "sha256": "dd5de99a2e4bd81ba26e20fc5f932a15ef27941ad7c3d1f6f27e9644ffa193a3"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a071",
+      "sourceId": "A071",
+      "categorySlug": "hoodies",
+      "title": "Grey NYC zip hoodie",
+      "alt": "Grey full-zip hoodie with a stacked NYC 98 chest graphic on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a071-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a071-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a071-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.43 PM (8).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "66f5ad01a285b6f7837184540768a18daa1725df9b3474f0053e93b6969f2dc4",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a071-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 10990,
+          "sha256": "47cacde4e7f1007aa25872aa88990afa9ceb1448978dfe5a3e5c8a0b87f8952e"
+        },
+        {
+          "src": "/images/catalogue/rs-a071-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 30388,
+          "sha256": "0003a753eb0a5236e87bdb70f8a102416af93d302dd53a99718b9b670f856f52"
+        },
+        {
+          "src": "/images/catalogue/rs-a071-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 60442,
+          "sha256": "42efba6615b68ea9126aaf284cd32004f39db3627bde74768cad18b074ab8a22"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a030",
+      "sourceId": "A030",
+      "categorySlug": "joggers",
+      "title": "Charcoal wide-leg trousers",
+      "alt": "Plain charcoal wide-leg trousers with an elasticated waistband on a clip hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a030-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a030-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a030-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.42 PM (15).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "dc97d3126e1d2c36932df397d909386a940466094443d446dacd93d3988a4745",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a030-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 12206,
+          "sha256": "e9e17e1ac635d7ec3eed28c49350edc9e8d8430302971ec64dec5b2afdbd57cf"
+        },
+        {
+          "src": "/images/catalogue/rs-a030-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 39986,
+          "sha256": "adf4268d2c604ad64d24a46d1d03b73df74db86bd324bd85382800ec9aac93e4"
+        },
+        {
+          "src": "/images/catalogue/rs-a030-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 81850,
+          "sha256": "80e19a20f5a7df08e4a847cb48d08d19b3e4c5a2635502f4baeca1902a8d64e5"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a055",
+      "sourceId": "A055",
+      "categorySlug": "joggers",
+      "title": "Cropped drawstring trousers",
+      "alt": "Charcoal cropped wide-leg trousers with a drawstring waistband and side pocket on a clip hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a055-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a055-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a055-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.42 PM (38).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "1fcb773f0a3a3cc77e3db94409d946dffe6b2cc0215ccede04c430f6e7e6c683",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a055-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 13480,
+          "sha256": "89dd9d99c11a1c939f763979c39c5eea70f053e5fd68623c0244726db9790ef1"
+        },
+        {
+          "src": "/images/catalogue/rs-a055-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 34664,
+          "sha256": "123492e729bdab25fc33134377fbc5c559067fc0af8e98bae2adeb3a8bab20bc"
+        },
+        {
+          "src": "/images/catalogue/rs-a055-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 65824,
+          "sha256": "a1b0be1b325df921668a6cb19f71f7d74127751544480974bbbeca344f2906d5"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a065",
+      "sourceId": "A065",
+      "categorySlug": "joggers",
+      "title": "Washed wide-leg trousers",
+      "alt": "Washed charcoal wide-leg trousers with a drawstring waistband on a clip hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a065-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a065-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a065-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.43 PM (2).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "f65521e35974ec5b18479aa89215319fefd865b74b466911b63b477abdbba424",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a065-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 12366,
+          "sha256": "dc20b61dcf9feaf557008efb9fafca63eb3d5c2afe3564745f0cacf8221211aa"
+        },
+        {
+          "src": "/images/catalogue/rs-a065-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 32020,
+          "sha256": "ae64adfdf1e71cbcef7e448d68f0f0201fdbdf15993a30b21514ebb0aa7e8e72"
+        },
+        {
+          "src": "/images/catalogue/rs-a065-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 61508,
+          "sha256": "73ecbc83f28e2d4c3ed88cd726565ac3255f2d71f16465e835c32e9f4043046a"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a024",
+      "sourceId": "A024",
+      "categorySlug": "sweatshirts",
+      "title": "Contrast-sleeve raglan sweatshirt",
+      "alt": "Dark crew-neck sweatshirt with brown contrast raglan sleeves on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a024-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a024-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a024-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.42 PM (1).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "38374f04a9f3b4c4a65897802bbc5f93478cd183a18f162aa5589e563dd58d1d",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a024-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 6954,
+          "sha256": "5a380b980050e3303f4921945253d6b17981bb1f711286a71338ac900d9e4b39"
+        },
+        {
+          "src": "/images/catalogue/rs-a024-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 16568,
+          "sha256": "440ba832d169d9348e7a618a68657f983eaae1cb0b2f1adbc867b823e698248e"
+        },
+        {
+          "src": "/images/catalogue/rs-a024-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 30532,
+          "sha256": "d12a8ffa7dd49c67d8603cab40abd360955304e79e62c5bbf8be031599b78435"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a035",
+      "sourceId": "A035",
+      "categorySlug": "sweatshirts",
+      "title": "Grey script sweatshirt",
+      "alt": "Light grey crew-neck sweatshirt with a black Dsgn Studio script chest graphic on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a035-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a035-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a035-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.42 PM (2).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "463809466e169778d91a42f5b32cea4c61bb9f8854a65b2fa8372c065766cf4d",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a035-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 20108,
+          "sha256": "a9f828e4b6d5c86eddbc5e328213693f52e284931a7fcb41f7614ee0ea50d679"
+        },
+        {
+          "src": "/images/catalogue/rs-a035-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 60976,
+          "sha256": "05a9f59b5f691d6e9dcefc415366131e4f4069f1b03116a06d8d2025a48733d5"
+        },
+        {
+          "src": "/images/catalogue/rs-a035-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 123484,
+          "sha256": "d4ee3ca86439324d4b7d2ced647c1a3de6357afe38a2ab2310dea289529dc815"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a060",
+      "sourceId": "A060",
+      "categorySlug": "sweatshirts",
+      "title": "Black raglan sweatshirt",
+      "alt": "Black crew-neck sweatshirt with visible tonal raglan seam detailing on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a060-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a060-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a060-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.42 PM (7).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "b36d0213533b2490676c1a7d4cc0e8203821512c77ffb03827f05da795dfeb65",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a060-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 9720,
+          "sha256": "63fc1938fd9f76ed3957df835a89fe81aaec910d3504c7dbd697441eec2300ea"
+        },
+        {
+          "src": "/images/catalogue/rs-a060-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 32040,
+          "sha256": "ce6ba62469aa6e79253971438b4cef9940788114a236b34be52fe8035007513a"
+        },
+        {
+          "src": "/images/catalogue/rs-a060-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 67484,
+          "sha256": "df57786bdee7bc47d54b9e43ec44808188304dfa6b698b6a3c0ffc6c0269830d"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a104",
+      "sourceId": "A104",
+      "categorySlug": "ladies-wear",
+      "title": "Pink striped hooded sweatshirt",
+      "alt": "Pale pink hooded sweatshirt with horizontal light stripes and a front graphic on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a104-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a104-603.webp",
+          "width": 603,
+          "height": 804
+        }
+      ],
+      "originalFilename": "ppt/media/image20.png",
+      "sourceDeck": "Ladies Sample 23-05-26.pptx",
+      "sourceSlide": "13",
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 603,
+        "height": 793,
+        "sha256": "e488fcef5d48fc2761861f5e268b1e60a91159c37104ffb77945c3e180f65351",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a104-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 12290,
+          "sha256": "3623a8ff352f2062a67ee8f7523c07c20ab9531264d7c38cb03fbe83b351beb6"
+        },
+        {
+          "src": "/images/catalogue/rs-a104-603.webp",
+          "width": 603,
+          "height": 804,
+          "bytes": 23904,
+          "sha256": "e909d630cdbeb20c3fc74b2790b5745b5e9be8521fde9315a670f5646994de09"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [
+        "rs-a122"
+      ],
+      "sampleId": "rs-a121",
+      "sourceId": "A121",
+      "categorySlug": "ladies-wear",
+      "title": "Light grey graphic hoodie",
+      "alt": "Light grey hooded sweatshirt with pink DSGN Studio lettering and a kangaroo pocket on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a121-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a121-537.webp",
+          "width": 537,
+          "height": 717
+        }
+      ],
+      "originalFilename": "ppt/media/image36.png",
+      "sourceDeck": "Ladies Sample 23-05-26.pptx",
+      "sourceSlide": "22",
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 537,
+        "height": 734,
+        "sha256": "ca633b31dcf61066d0253e97592b794cd534803665ebda1e7e5a86ac342ccc2c",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a121-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 13730,
+          "sha256": "7e1428b93f9589a665bbdaf65931b8e9d6aca683ca66102de23b728c56c8d0c2"
+        },
+        {
+          "src": "/images/catalogue/rs-a121-537.webp",
+          "width": 537,
+          "height": 717,
+          "bytes": 24080,
+          "sha256": "6067fc98ad3f5aab83b68fd7465827a9fd1acb686faed466f56de430a66acc6f"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [
+        "rs-a121"
+      ],
+      "sampleId": "rs-a122",
+      "sourceId": "A122",
+      "categorySlug": "ladies-wear",
+      "title": "Light grey matching trousers",
+      "alt": "Light grey trousers with a drawstring waistband on a clip hanger, from the same sample presentation as the grey graphic hoodie.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a122-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a122-503.webp",
+          "width": 503,
+          "height": 670
+        }
+      ],
+      "originalFilename": "ppt/media/image37.png",
+      "sourceDeck": "Ladies Sample 23-05-26.pptx",
+      "sourceSlide": "22",
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 503,
+        "height": 842,
+        "sha256": "63213e1dc7ec3268290efaf54f081e9fb1d718e8f10fcf52b6e9ddc18f5ca9a3",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a122-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 13130,
+          "sha256": "4920cf348d7a4bf83262b76d85f718f0ee48ba094de84b2219802dd547a71a0a"
+        },
+        {
+          "src": "/images/catalogue/rs-a122-503.webp",
+          "width": 503,
+          "height": 670,
+          "bytes": 21770,
+          "sha256": "187e1f82cb9c22241624f4ace93b596b1cfb8906c40fe88cdbfffff042507c41"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a137",
+      "sourceId": "A137",
+      "categorySlug": "ladies-wear",
+      "title": "Tonal graphic hoodie",
+      "alt": "Grey pullover hoodie with tonal ATH CLUB 89 lettering on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a137-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a137-577.webp",
+          "width": 577,
+          "height": 769
+        }
+      ],
+      "originalFilename": "ppt/media/image3.png",
+      "sourceDeck": "Ladies Samples 16-05-26.pptx",
+      "sourceSlide": "2",
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 577,
+        "height": 753,
+        "sha256": "9a4b1128f744d234a563d731806b4b800399de71d673dcb5f04381ec55f6772b",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a137-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 11702,
+          "sha256": "0c3baff11b439b5463f66d11164f84fb5034d5646b3ceb96cef714436ab8ab44"
+        },
+        {
+          "src": "/images/catalogue/rs-a137-577.webp",
+          "width": 577,
+          "height": 769,
+          "bytes": 24488,
+          "sha256": "dc913691a7e2fd0422b5bb1bec33f3966ebfa8c1d0d01fab2ccc5ca87aadd4d1"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [
+        "rs-a165"
+      ],
+      "sampleId": "rs-a164",
+      "sourceId": "A164",
+      "categorySlug": "ladies-wear",
+      "title": "Striped collared top",
+      "alt": "Fine-striped short-sleeve collared top with an open V neckline on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a164-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a164-514.webp",
+          "width": 514,
+          "height": 685
+        }
+      ],
+      "originalFilename": "ppt/media/image24.png",
+      "sourceDeck": "Ladies Style Reve.pptx",
+      "sourceSlide": "8",
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 514,
+        "height": 773,
+        "sha256": "a385186195d573b9f1f54a9180a57fb3c1dc0f9cef7ad9cac3f921e42bed52f6",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a164-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 26518,
+          "sha256": "c5bbc0468488ba4cfb7b8613ee98d138f1277a3ec4433d93e13189a0ace394b7"
+        },
+        {
+          "src": "/images/catalogue/rs-a164-514.webp",
+          "width": 514,
+          "height": 685,
+          "bytes": 47098,
+          "sha256": "501115d0d15e140af5f8f5c6abf98833f5ce56f950e3a8667329ca593738d2f2"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [
+        "rs-a164"
+      ],
+      "sampleId": "rs-a165",
+      "sourceId": "A165",
+      "categorySlug": "ladies-wear",
+      "title": "Striped wide-leg trousers",
+      "alt": "Fine-striped wide-leg trousers on a clip hanger, from the same sample presentation as the striped collared top.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a165-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a165-434.webp",
+          "width": 434,
+          "height": 579
+        }
+      ],
+      "originalFilename": "ppt/media/image25.png",
+      "sourceDeck": "Ladies Style Reve.pptx",
+      "sourceSlide": "8",
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 434,
+        "height": 835,
+        "sha256": "1814e6603e452a32ba6707efa086da27af52678bcdd0f9322063304bc0ec845d",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a165-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 20382,
+          "sha256": "cd67e1fb532e1aa01faeb63aa265c29f5a0708e8b0fb4d881ca1ce3d41a45a72"
+        },
+        {
+          "src": "/images/catalogue/rs-a165-434.webp",
+          "width": 434,
+          "height": 579,
+          "bytes": 28242,
+          "sha256": "319e60e99c151e98b9b85c1b9c1c6d190238d6739f66fdaa96b1febd4de780f8"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a195",
+      "sourceId": "A195",
+      "categorySlug": "kids-wear",
+      "title": "Pink ROSES T-shirt",
+      "alt": "Pink short-sleeve ROSES graphic T-shirt photographed flat with its original sample tag.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a195-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a195-569.webp",
+          "width": 569,
+          "height": 759
+        }
+      ],
+      "originalFilename": "ppt/media/image12.png",
+      "sourceDeck": "PPT REVE 1.pptx",
+      "sourceSlide": "7",
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 569,
+        "height": 619,
+        "sha256": "ee166be3da68579af01b393b114a21fe5adba14aa4ef9d346418d09438222cc2",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a195-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 10470,
+          "sha256": "41c65661dfea71bb0c57e7e79331133a0f509ec53bea24bbd9757a19fdd5fa1a"
+        },
+        {
+          "src": "/images/catalogue/rs-a195-569.webp",
+          "width": 569,
+          "height": 759,
+          "bytes": 22384,
+          "sha256": "42a2a324f43e3b6b41a86665ff295be60d5c8415825d41ef944f65b5a1530dc7"
+        }
+      ],
+      "classificationNote": "Visual sample classification; no fibre, weight, lead-time or compliance inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a048",
+      "sourceId": "A048",
+      "categorySlug": "specialized-fabrics",
+      "title": "Washed sweatshirt development",
+      "alt": "Washed charcoal crew-neck sweatshirt with a tonal front graphic on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a048-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a048-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a048-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.42 PM (31).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "4bdd2b58ba9b1ca8c3a46d759d343a8d160e4a9c3819a303817c6e05becc0450",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a048-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 7198,
+          "sha256": "7071c8ad303f1e34dfba9042b18a1f9e01afa430ae50efefefd57fc886a8e0ab"
+        },
+        {
+          "src": "/images/catalogue/rs-a048-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 17344,
+          "sha256": "cb90d483b69be139e8bd8b6a3f6474ca18845299696d8c141b4007c198efb5d6"
+        },
+        {
+          "src": "/images/catalogue/rs-a048-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 32052,
+          "sha256": "69c39b4de6106dd86fbda725c5758686a206101515b3091a951865e2b59564cc"
+        }
+      ],
+      "classificationNote": "Finish and pattern development only; no fibre, technical-performance or certification inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a058",
+      "sourceId": "A058",
+      "categorySlug": "specialized-fabrics",
+      "title": "Camouflage zip-jacket development",
+      "alt": "Green and brown camouflage cropped full-zip collared jacket on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a058-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a058-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a058-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.42 PM (5).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "62062f7d9db6486e10e512b983034fb4a2f1fd52279d374db52726676d417b02",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a058-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 15976,
+          "sha256": "e90ceac3aad7123044f22cd7a89e3a3a68ec95307642e3887432fd925c5dd6bc"
+        },
+        {
+          "src": "/images/catalogue/rs-a058-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 35154,
+          "sha256": "474d52abcf6dc05ee61e5294f87c9f554231227c8d82e11c6331006668d5252d"
+        },
+        {
+          "src": "/images/catalogue/rs-a058-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 62328,
+          "sha256": "b88699a48ae7af21c0ca9fc812e7c9997e96b555a7d2060c9fea833928fcf225"
+        }
+      ],
+      "classificationNote": "Finish and pattern development only; no fibre, technical-performance or certification inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a059",
+      "sourceId": "A059",
+      "categorySlug": "specialized-fabrics",
+      "title": "Camouflage trouser development",
+      "alt": "Green and brown camouflage wide-leg trousers on a clip hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a059-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a059-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a059-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.42 PM (6).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "24ca5e5b550d2fc38d1f6596d31bd4cd8723b739f0d1375dbf8122ef2a9974fb",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a059-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 15732,
+          "sha256": "6d24a5d4a1d53916a7e4dbd1f2d6b0db180937d279832b0d21c0e0ed9bf2427f"
+        },
+        {
+          "src": "/images/catalogue/rs-a059-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 34306,
+          "sha256": "f26e0979ef5591fb3445091f362338dcd683a43d8482c4e40529934b3607ffc7"
+        },
+        {
+          "src": "/images/catalogue/rs-a059-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 61750,
+          "sha256": "35ce66e8152475b968e6f62d40be4c061f1fb516b9e80c4fa222486f749fc15b"
+        }
+      ],
+      "classificationNote": "Finish and pattern development only; no fibre, technical-performance or certification inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a061",
+      "sourceId": "A061",
+      "categorySlug": "specialized-fabrics",
+      "title": "Contrast-sleeve graphic development",
+      "alt": "Grey ICONIC graphic T-shirt with camouflage raglan sleeves on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a061-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a061-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a061-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.42 PM (8).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "ce6f0b657ea5c00227f976155cb601b6dbdc7e7b638a408b5913cea807b20910",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a061-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 20220,
+          "sha256": "8a87d0f5b8e95f49b5d9be4ae1f54141bfa29c33a7da8dfe7749a96075ed4261"
+        },
+        {
+          "src": "/images/catalogue/rs-a061-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 64722,
+          "sha256": "3608285ec2d75ca882da6e92dd6c25a6294337ecf235da3f601d1596a620e95f"
+        },
+        {
+          "src": "/images/catalogue/rs-a061-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 135018,
+          "sha256": "e63c399d214114a0db55040add1ade8a04e8f10823e1cf00d3180f12a1e3dfa8"
+        }
+      ],
+      "classificationNote": "Finish and pattern development only; no fibre, technical-performance or certification inference."
+    },
+    {
+      "relatedSampleIds": [],
+      "sampleId": "rs-a062",
+      "sourceId": "A062",
+      "categorySlug": "specialized-fabrics",
+      "title": "Camouflage T-shirt development",
+      "alt": "Green and brown camouflage short-sleeve T-shirt on a hanger.",
+      "images": [
+        {
+          "src": "/images/catalogue/rs-a062-360.webp",
+          "width": 360,
+          "height": 480
+        },
+        {
+          "src": "/images/catalogue/rs-a062-640.webp",
+          "width": 640,
+          "height": 853
+        },
+        {
+          "src": "/images/catalogue/rs-a062-960.webp",
+          "width": 960,
+          "height": 1280
+        }
+      ],
+      "originalFilename": "WhatsApp Image 2026-10-18 at 3.18.42 PM (9).jpeg",
+      "sourceDeck": null,
+      "sourceSlide": null,
+      "sourceApproval": {
+        "status": "owner-confirmed",
+        "date": "2026-10-18",
+        "scope": "Reve-manufactured; website publication and faithful enhancement authorized"
+      },
+      "enhancementRecipe": "faithful-v1",
+      "source": {
+        "width": 1200,
+        "height": 1600,
+        "sha256": "39b5982375ff180c0d7f4c871a4a24de9f0ba7bbfe1650e8c5b914e40ffa9a8b",
+        "exactDuplicates": null
+      },
+      "recipe": {
+        "version": "faithful-v1",
+        "orientation": "EXIF transpose",
+        "crop": "none",
+        "background": "original retained; neutral #efeeeb canvas padding only when needed",
+        "aspectRatio": "3:4",
+        "brightness": 1.045,
+        "contrast": 1.025,
+        "saturation": 1.0,
+        "whiteBalance": "unchanged to protect garment colour",
+        "sharpening": {
+          "radius": 0.6,
+          "percent": 65,
+          "threshold": 3
+        },
+        "webp": {
+          "quality": 84,
+          "method": 6,
+          "exact": true
+        },
+        "requestedWidths": [
+          360,
+          640,
+          960
+        ],
+        "upscaling": false,
+        "constructionGraphicsPreserved": true
+      },
+      "outputs": [
+        {
+          "src": "/images/catalogue/rs-a062-360.webp",
+          "width": 360,
+          "height": 480,
+          "bytes": 16242,
+          "sha256": "55aac071c6c0159492c958161c05f8d639701cea0f2db5aa04179bd3a65108bb"
+        },
+        {
+          "src": "/images/catalogue/rs-a062-640.webp",
+          "width": 640,
+          "height": 853,
+          "bytes": 43336,
+          "sha256": "32a9c25a4a2c4172e30f7ef2dccd1587f507f60b5346682a8415eac859c26278"
+        },
+        {
+          "src": "/images/catalogue/rs-a062-960.webp",
+          "width": 960,
+          "height": 1280,
+          "bytes": 81868,
+          "sha256": "ef8a16cee6db71ef5cc6da821ab5e964795f3b682dbe16f8b7baf87b04b82f08"
+        }
+      ],
+      "classificationNote": "Finish and pattern development only; no fibre, technical-performance or certification inference."
+    }
+  ]
+}

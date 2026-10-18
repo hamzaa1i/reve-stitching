@@ -21,7 +21,7 @@
   <svg id="chat-icon-close" class="w-6 h-6 absolute opacity-0 transition-all duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
     <path d="M6 18L18 6M6 6l12 12"/>
   </svg>
-  
+
   <!-- Notification dot -->
   <span id="chat-notification" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white border-2 border-white dark:border-green-500">
     1
@@ -36,7 +36,7 @@
   aria-hidden="true"
 >
   <div class="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl dark:shadow-2xl dark:shadow-black/50 border border-zinc-200 dark:border-zinc-700 overflow-hidden flex flex-col" style="height: min(600px, calc(100vh - 140px));">
-    
+
     <!-- ━━━ Chat Header ━━━ -->
     <div class="bg-green-600 dark:bg-green-500 px-5 py-4 flex items-center gap-3 shrink-0">
       <div class="relative">
@@ -50,7 +50,7 @@
       </div>
       <div class="flex-1">
         <h3 class="text-white font-semibold text-sm">Reve Stitching</h3>
-        <p class="text-green-200 text-xs">Online • Typically replies instantly</p>
+        <p class="text-green-200 text-xs">Manufacturing enquiries</p>
       </div>
       <!-- Reset Chat Button -->
       <button
@@ -125,7 +125,7 @@
       width: 100% !important;
       max-width: 100% !important;
     }
-    
+
     #chat-window > div {
       border-radius: 1rem 1rem 0 0 !important;
       height: calc(100vh - 80px) !important;
@@ -137,23 +137,23 @@
       display: none !important;
     }
   }
-  
+
   .typing-dot {
     animation: typingBounce 1.4s infinite ease-in-out both;
   }
   .typing-dot:nth-child(1) { animation-delay: 0s; }
   .typing-dot:nth-child(2) { animation-delay: 0.2s; }
   .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-  
+
   @keyframes typingBounce {
     0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
     40% { transform: scale(1); opacity: 1; }
   }
-  
+
   .chat-msg {
     animation: msgSlide 0.3s ease-out forwards;
   }
-  
+
   @keyframes msgSlide {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -209,332 +209,13 @@
 
     // ━━━ Bot Knowledge Base ━━━
     const botResponses: Record<string, { answer: string; followUp?: string[] }> = {
-
-      // Greetings
-      'hello|hi|hey|good morning|good afternoon|good evening|howdy|assalam|salam|hola': {
-        answer: "Hey! Welcome to Reve Stitching. What can I help you with today?",
-        followUp: ['Product range', 'MOQ details', 'Get a quote', 'Our team'],
-      },
-      'how are you|how r u|whats up|what\'s up': {
-        answer: "All good here. What can I help you with?",
-        followUp: ['Product range', 'MOQ details', 'Get a quote'],
-      },
-
-      // Identity
-      'who are you|who r u|what r u|what is your name|your name': {
-        answer: "I'm the virtual assistant for Reve Stitching. I can help with product info, quotes, or connect you with our team.",
-        followUp: ['Product range', 'MOQ details', 'Get a quote', 'Our team'],
-      },
-      'who made you|who built you|did hamza make|did hamza build|did hamza made|created you|who created you|made this chatbot|built this chatbot|made this website|built this website': {
-        answer: "Hamza Ali, our IT Lead & Digital Solutions Architect, built this chatbot along with our website, ERP system, and entire digital setup.\n\nPortfolio: hamzaalidev.vercel.app",
-        followUp: ['Our team', 'ERP system', 'Contact team'],
-      },
-
-      // Products
-      'product range|product line|what do you make|what do you manufacture|what products do you manufacture|catalog|catalogue|offering|garment type': {
-        answer: "We make 8 types of knitted garments:\n\n- T-Shirts (MOQ 500, 25-35 days)\n- Polo Shirts (MOQ 300, 30-40 days)\n- Hoodies (MOQ 250, 30-45 days)\n- Joggers (MOQ 400, 30-40 days)\n- Sweatshirts (MOQ 350, 25-40 days)\n- Ladies Wear (MOQ 300, 30-45 days)\n- Kids Wear (MOQ 500, 25-35 days)\n- Specialized Fabrics (MOQ 200, 35-50 days)\n\nAll customizable. Details at /products/",
-        followUp: ['T-shirt details', 'Hoodie details', 'Fabric types', 'Get a quote'],
-      },
-      'tshirt|t-shirt|t shirt|tee shirt': {
-        answer: "Premium cotton t-shirts. 120-220 GSM, combed cotton, pre-shrunk. MOQ 500. Fully customizable with print, embroidery, labels. Around $3-8/unit depending on specs.",
-        followUp: ['Get a quote', 'Polo details', 'Fabric types', 'Sample request'],
-      },
-      'polo shirt|polo': {
-        answer: "Corporate polo shirts in pique cotton. Reinforced collars, moisture management options. MOQ 300. Around $5-12/unit.",
-        followUp: ['Get a quote', 'T-shirt details', 'MOQ details'],
-      },
-      'hoodie|hoody|hooded': {
-        answer: "Premium hoodies in terry fleece or heavy jersey. 280-400 GSM. YKK zippers available. MOQ 250. Around $8-18/unit.",
-        followUp: ['Get a quote', 'Jogger details', 'Sweatshirt details'],
-      },
-      'jogger|joggers|track pant|sweatpant': {
-        answer: "Athletic joggers with moisture management fabric. Elastic cuffs, drawstring waist. MOQ 400. Around $6-14/unit.",
-        followUp: ['Get a quote', 'Hoodie details', 'Fabric types'],
-      },
-      'sweatshirt|crew neck|crewneck': {
-        answer: "Sweatshirts in double jersey or fleece. 240-380 GSM. Crew neck, half-zip, quarter-zip options. MOQ 350.",
-        followUp: ['Get a quote', 'Hoodie details', 'Fabric types'],
-      },
-      'ladies|women|woman|female': {
-        answer: "Ladies wear with modal blends and lycra rib options. Fitted tees, crop tops, bodysuits, lounge sets. MOQ 300.",
-        followUp: ['Get a quote', 'Kids wear', 'Fabric types'],
-      },
-      'kids wear|children|child wear|baby|infant|junior': {
-        answer: "Kids range in skin-friendly cotton with safe dyes. T-shirts, hoodies, joggers, sleepwear. MOQ 500.",
-        followUp: ['Get a quote', 'Ladies wear', 'Quality standards'],
-      },
-      'specialized|lurex|burnout|performance wear|technical fabric': {
-        answer: "Custom fabric development including Lurex, burnout, performance blends. MOQ 200 (our lowest).",
-        followUp: ['Get a quote', 'Fabric types', 'Sample request'],
-      },
-
-      // Factory & Operations
-      'capacity|production volume|per month|output|how many pieces': {
-        answer: "We produce 150,000 garments per month across 150+ machines. Expanding to 250,000 by end of 2026 with a new production floor.\n\nIn-house: cutting, stitching, sampling, printing, finishing.\nPartners: knitting and dyeing (all certified).",
-        followUp: ['Product range', 'Lead time', 'Get a quote'],
-      },
-      'in house|in-house|what do you do yourself|vertical|everything in house|full composite': {
-        answer: "In-house: cutting, stitching, sampling, printing, finishing.\n\nKnitting and dyeing are handled by our certified partner network (SEDEX, GOTS). This keeps quality control where it matters while using specialized facilities for heavy capital processes.",
-        followUp: ['Quality standards', 'Certifications', 'Get a quote'],
-      },
-      'knitting|do you knit|knit fabric': {
-        answer: "Knitting is done by our certified partner facilities, not in-house. All partners are audited (SEDEX, GOTS, BCI).",
-        followUp: ['Fabric types', 'Quality standards', 'Get a quote'],
-      },
-      'dyeing|do you dye|color fabric': {
-        answer: "Dyeing is handled by certified partner houses. We oversee AZO-free dyes, color fastness, and Pantone matching. All partners are GOTS and SEDEX certified.",
-        followUp: ['Fabric types', 'Quality standards', 'Certifications'],
-      },
-      'location|address|where are you|faisalabad|find you|map|factory address': {
-        answer: "Reve Stitching, Chak No. 196/R.B, Ghona Road, Faisalabad 38000, Pakistan. Factory visits welcome by appointment.",
-        followUp: ['Contact team', 'Factory tour', 'Our team'],
-      },
-      'erp|system|digital|software|computer system': {
-        answer: "Yeah, we run ERPNext for full factory management — production tracking, stock, gate passes, quality control, automated reports. Built and maintained by Hamza Ali.\n\nWe also use Zoho Mail and have a full digital setup.",
-        followUp: ['Quality standards', 'Our team', 'Get a quote'],
-      },
-      'segura|boohoo portal|supplier portal|compliance portal': {
-        answer: "We're integrated with Segura, Boohoo's supplier compliance portal, for fabric tracking and transparency.",
-        followUp: ['Certifications', 'Our clients', 'Quality standards'],
-      },
-
-      // People & Team
-      'team|management|leadership|owner|ceo|director|who runs|who owns': {
-        answer: "Our team:\n\n- Vasim Ahmad — CEO & Owner (UK)\n- Haroon Iqbal — Director, Operations (+92 334 6507556)\n- Abdul Basit — Director, Client Relations (+92 324 7326626)\n- Ghulam Jilani — General Manager\n- Fiaz Ahmad — Head of Accounts\n- Hamid Shahzad — Accounts Assistant\n- Ahmad Bilal & Bilal Saif — Merchandisers\n- Awais Ghafoor — Sales & Marketing\n- M. Shoaib Akram — HR\n- Khurram Mukhtar — Store Manager\n- Hamza Ali — IT Lead\n\nWant to speak with someone specific?",
-        followUp: ['Contact Basit', 'Contact Haroon', 'Request human', 'Our clients'],
-      },
-      'vasim|ceo|owner|chairman|boss': {
-        answer: "Vasim Ahmad is our CEO and owner. Based in Rochdale, UK. Handles UK/EU buyer relationships and strategic direction.",
-        followUp: ['Our team', 'Our clients', 'Contact team'],
-      },
-      'haroon|mamon|haroon iqbal': {
-        answer: "Haroon Iqbal — Director, Operations. Oversees Pakistan operations and client relations.\n\nharoon@revestitching.com | +92 334 6507556",
-        followUp: ['Contact Haroon', 'Our team', 'Request human'],
-      },
-      'basit|abdul basit|client relations': {
-        answer: "Abdul Basit — Director, Client Relations. Main contact for buyers and partnerships.\n\nabdul.basit@revestitching.com | +92 324 7326626",
-        followUp: ['Contact Basit', 'Get a quote', 'Sample request'],
-      },
-      'jilani|gm|general manager': {
-        answer: "Ghulam Jilani is our General Manager. Runs day-to-day factory operations.",
-        followUp: ['Our team', 'Factory tour', 'Capacity details'],
-      },
-      'fiaz ahmad|fiaz|head of accounts|accounts head|accounts manager': {
-        answer: "Fiaz Ahmad heads our Accounts department. Handles invoicing, payments, compliance, and banking.",
-        followUp: ['Payment terms', 'Our team', 'Request human'],
-      },
-      'hamid|hamid shahzad|accounts assistant|assistant accounts': {
-        answer: "Hamid Shahzad works in Accounts under Fiaz Ahmad. Handles bookkeeping, invoices, and payment tracking.",
-        followUp: ['Our team', 'Payment terms', 'Request human'],
-      },
-      'ahmad|ahmad bilal|merchandiser ahmad': {
-        answer: "Ahmad Bilal is a Merchandiser. Handles buyer orders, tech packs, and our Segura portal integration with Boohoo.",
-        followUp: ['Our team', 'Order process', 'Request human'],
-      },
-      'bilal|bilal saif|merchandiser bilal': {
-        answer: "Bilal Saif is a Merchandiser. Manages buyer accounts and order follow-ups.",
-        followUp: ['Our team', 'Order process', 'Request human'],
-      },
-      'umair|mian umair|new merchandiser': {
-        answer: "Mian Umair recently joined as a Merchandiser. Currently training on our ERP and buyer coordination.",
-        followUp: ['Our team', 'Order process', 'Request human'],
-      },
-      'awais|awais ghafoor|sales manager|marketing manager': {
-        answer: "Awais Ghafoor is our Sales & Marketing Manager. Handles new business development and buyer outreach.",
-        followUp: ['Our team', 'Contact team', 'Request human'],
-      },
-      'shoaib|shoaib akram|hr|human resources': {
-        answer: "M. Shoaib Akram manages HR. Oversees recruitment, payroll, and SEDEX compliance.",
-        followUp: ['Our team', 'Certifications', 'Request human'],
-      },
-      'amir|amir ramzan|amirch': {
-        answer: "Amir Ramzan Chaudhary is on our team. Reach him at amirch@revestitching.com.",
-        followUp: ['Our team', 'Contact team'],
-      },
-      'munaf|munaf bhai|munuf': {
-        answer: "Munaf Ahmad is a key UK-based contact. Involved in brand decisions and buyer introductions.",
-        followUp: ['Our team', 'Our clients', 'Contact team'],
-      },
-      'wahid|wahid ahmad|wahid sb': {
-        answer: "Wahid Ahmad is based in the UK. He's Vasim Ahmad's brother and works on new brand ventures.",
-        followUp: ['Our team', 'Contact team'],
-      },
-      'raheel': {
-        answer: "Raheel is part of our UK team. Reach him at raheel@revestitching.com.",
-        followUp: ['Our team', 'Contact team'],
-      },
-      'shehzad|shahzad|tech support|former it': {
-        answer: "Shehzad was our former IT consultant. He visits occasionally for infrastructure support. All current IT is handled by Hamza Ali.",
-        followUp: ['Our team', 'ERP system', 'Request human'],
-      },
-      'hamza|hamza ali|it department|developer|website|who built the website|who made the website|who handles it|who manages it|digital|it lead': {
-        answer: "Hamza Ali is our IT Lead & Digital Solutions Architect. He built and manages our entire digital infrastructure: website, ERP system, email setup, and brand identity. He's Khurram's son.\n\nPortfolio: hamzaalidev.vercel.app",
-        followUp: ['Our team', 'ERP system', 'Contact team'],
-      },
-      'khurram|store manager|store|warehouse': {
-        answer: "Khurram Mukhtar is our Store Manager. Handles all fabric, accessories, and trims inventory. He's Hamza Ali's father.",
-        followUp: ['Our team', 'ERP system', 'Request human'],
-      },
-
-      // MOQ & Ordering
-      'moq|minimum order|minimum quantity|order size|small order': {
-        answer: "MOQs per product:\n\n- T-Shirts: 500\n- Polo Shirts: 300\n- Hoodies: 250\n- Joggers: 400\n- Sweatshirts: 350\n- Ladies Wear: 300\n- Kids Wear: 500\n- Specialized: 200\n\nFlexible for first-time trial orders. All per style/color.",
-        followUp: ['Get a quote', 'Sample request', 'Lead time', 'Payment terms'],
-      },
-      'order process|how to order|place order|start order|ordering process': {
-        answer: "1. Send requirements\n2. We quote within 24 hours\n3. Sample development (7-10 days)\n4. You approve\n5. Bulk production (25-50 days depending on product)\n6. QC and shipping\n\nWant to start?",
-        followUp: ['Get a quote', 'Request human', 'Payment terms', 'Lead time'],
-      },
-      'payment|pay term|deposit|advance payment': {
-        answer: "New clients: 50% advance, 50% before shipment.\nEstablished clients: 30% advance, 70% against B/L.\n\nMethods: Bank transfer (TT) or Letter of Credit (L/C).",
-        followUp: ['Order process', 'Get a quote', 'Request human'],
-      },
-
-      // Fabric
-      'fabric|material|textile|cloth type': {
-        answer: "We work with single jersey, double jersey, terry fleece, lycra rib, interlock, and moisture management fabrics. Custom blends available too (Lurex, Modal, CVC, recycled polyester).",
-        followUp: ['Product range', 'Custom fabric', 'Get a quote'],
-      },
-      'cotton': {
-        answer: "We use 100% combed cotton, ring-spun, organic (GOTS), BCI, CVC blends, and poly-cotton. GSM range 120-400.",
-        followUp: ['Fabric types', 'Sustainability', 'Get a quote'],
-      },
-      'custom fabric|develop fabric|special fabric|custom blend': {
-        answer: "Yes. Custom yarn blends, GSM, finishes, and performance treatments. Development takes 2-3 weeks for sampling.",
-        followUp: ['Request human', 'Fabric types', 'Get a quote'],
-      },
-
-      // Quality
-      'quality|aql|inspection|quality control|quality standard|testing': {
-        answer: "We run AQL 2.5 with an internal target under 0.5% defect rate. SGS-trained QC team.\n\n5-step inspection: fabric, in-line, mid-line, final, pre-shipment.\n\n6 ISO lab tests on every order. Full traceability.\n\nMore at /quality/",
-        followUp: ['Certifications', 'Sample request', 'Get a quote'],
-      },
-
-      // Certifications
-      'certification|sedex|iso|gots|bci|compliance|ethical|grs|certification list': {
-        answer: "8 certifications: SEDEX, ISO 9001:2015, BCI, GOTS, OCS, GRS, RCS, Higg Index.\n\n6 sustainability pillars: fair wages, safe conditions, no child labour, water conservation, energy efficiency, waste reduction.\n\nMore at /sustainability/",
-        followUp: ['Quality standards', 'Our clients', 'Get a quote'],
-      },
-
-      // Pricing
-      'price|cost|pricing|quote|how much|rate|budget': {
-        answer: "Approximate ranges:\n- T-shirts: $3-8/unit\n- Polos: $5-12/unit\n- Hoodies: $8-18/unit\n- Joggers: $6-14/unit\n\nExact pricing depends on fabric, quantity, and customization. Get a proper quote at /quote/ — we respond within 24 hours.",
-        followUp: ['Request human', 'Send requirements', 'MOQ details'],
-      },
-
-      // Samples
-      'sample|prototype|before bulk|trial order': {
-        answer: "Yes. Share your requirements, we develop a sample in 7-10 business days. Up to 2 revision rounds included. Sample cost adjusts against your bulk order.\n\nRequest at /samples/ or through our quote wizard.",
-        followUp: ['Get a quote', 'Send requirements', 'Lead time', 'Request human'],
-      },
-
-      // Lead Time & Shipping
-      'lead time|delivery time|how long|turnaround|production time|timeline|deadline': {
-        answer: "By product:\n- T-Shirts: 25-35 days\n- Polos: 30-40 days\n- Hoodies: 30-45 days\n- Joggers: 30-40 days\n- Sweatshirts: 25-40 days\n- Ladies: 30-45 days\n- Kids: 25-35 days\n- Specialized: 35-50 days\n\nRush orders: 15-25 days possible. Samples: 7-10 days.",
-        followUp: ['Shipping details', 'Get a quote', 'Request human'],
-      },
-      'shipping|freight|fob|cif|delivery method|transport|logistics|what are your shipping options|shipping options': {
-        answer: "Sea freight from Karachi: UK 18-22 days, EU 20-28 days.\nAir freight: 3-7 days worldwide.\nTerms: FOB, CIF, DDP on request.\n\nAll export docs handled by us.",
-        followUp: ['Lead time', 'Get a quote', 'Request human'],
-      },
-
-      // Customization
-      'customization|customize|personalize|private label|own brand|own label': {
-        answer: "Full customization: screen printing (up to 12 colors), DTG, embroidery, heat transfer, sublimation. Plus custom labels, hang tags, and branded packaging.\n\nWe also do pattern development and tech pack assistance.",
-        followUp: ['Sample request', 'Get a quote', 'Send requirements'],
-      },
-      'logo': {
-        answer: "Embroidery, screen print, DTG, heat transfer, woven labels, rubber/silicone. Send us your logo file and we'll do a free mockup.",
-        followUp: ['Get a quote', 'Sample request', 'Send requirements'],
-      },
-
-      // Company Info
-      'about|tell me about|company info|history|background': {
-        answer: "Reve Stitching — garment manufacturer in Faisalabad, Pakistan. Founded 2019. 150,000+ garments/month. Export to UK and Europe.\n\nIn-house: cutting, stitching, sampling, printing, finishing.\n8 certifications. 1,247,000+ garments shipped.\n\nMore at /about/",
-        followUp: ['Our clients', 'Certifications', 'Factory tour', 'Get a quote'],
-      },
-      'factory tour|visit factory|see factory|can i visit your factory|visit your factory|facility': {
-        answer: "Factory visits welcome by appointment. Mon-Sat, 8 AM - 6 PM. Location: Chak No. 196/R.B, Ghona Road, Faisalabad.\n\nContact us to schedule.",
-        followUp: ['Contact team', 'Request human', 'Location details'],
-      },
-
-      // Clients
-      'client|brand|who do you work|partner|boohoo|customer|buyer': {
-        answer: "Our clients include Boohoo, CLOSURE, Yours Clothing, Pull & Bear, Daisy Street, Marshall Artist, Threadbare, Helme, and Forever Club.\n\nRecent results: Boohoo 50k units in 28 days, Yours Clothing 75k in 35 days, CLOSURE 30k in 25 days.\n\nFull case studies at /case-studies/",
-        followUp: ['Product range', 'Quality standards', 'Get a quote'],
-      },
-
-      // Contact
-      'contact|email|phone|call|reach|get in touch|whatsapp': {
-        answer: "Haroon Iqbal (Director, Operations): haroon@revestitching.com / +92 334 6507556\n\nAbdul Basit (Director, Client Relations): abdul.basit@revestitching.com / +92 324 7326626\n\nOr use the contact form at /contact/ and the quote wizard at /quote/",
-        followUp: ['Get a quote', 'Request human', 'Visit contact page'],
-      },
-      'contact basit|talk to basit|call basit|how can i contact abdul basit': {
-        answer: "Abdul Basit: abdul.basit@revestitching.com / +92 324 7326626. He handles all buyer inquiries.",
-        followUp: ['Get a quote', 'Sample request', 'Request human'],
-      },
-      'contact haroon|talk to haroon|call haroon': {
-        answer: "Haroon Iqbal: haroon@revestitching.com / +92 334 6507556. Oversees Pakistan operations.",
-        followUp: ['Get a quote', 'Our team', 'Request human'],
-      },
-
-      // Process
-      'manufacturing process|production process|how do you make|workflow': {
-        answer: "14 steps: product design, fabric inspection, pattern making, grading, marking, spreading, cutting, bundling, sewing, embroidery/printing, pressing, finishing, quality control (AQL 2.5), packing.\n\nChecks at every stage.",
-        followUp: ['Quality standards', 'Lead time', 'Get a quote'],
-      },
-
-      // Common questions
-      'send requirement|share requirement|how do i share my requirements|tech pack|send design|share design': {
-        answer: "Email haroon@revestitching.com or abdul.basit@revestitching.com with product type, fabric, colors, sizes, quantities, and print details.\n\nNo tech pack? A sketch or reference photo works. We help develop the full spec. Quote within 24 hours.",
-        followUp: ['Get a quote', 'Request human', 'Sample request'],
-      },
-      'why you|why not china|advantage|why choose|compare|competitor|better than': {
-        answer: "Lower MOQs from 200 pcs (vs 1000+ in China). Faster communication with EU/UK timezone alignment. Competitive pricing. GSP+ duty-free EU exports. AQL 2.5 quality. Full in-house control from cutting to finishing.",
-        followUp: ['Get a quote', 'Our clients', 'Quality standards'],
-      },
-
-      // Pleasantries
-      'thank|thanks|thx|appreciate|great job|awesome|perfect|wonderful': {
-        answer: "No problem. Anything else you need?",
-        followUp: ['Get a quote', 'Request human', 'Product range'],
-      },
-      'bye|goodbye|see you|talk later|that\'s all|done|no more': {
-        answer: "Thanks for reaching out. You can email abdul.basit@revestitching.com anytime or visit /contact/. Have a good one.",
-      },
-      'okay|sure|got it|understood|i see|alright|noted': {
-        answer: "Got it. Anything else?",
-        followUp: ['Get a quote', 'Request human', 'Product range'],
-      },
-
-      // Human request
-      'human|real person|agent|speak to someone|talk to someone|representative': {
-        answer: "__REQUEST_HUMAN__",
-      },
-
-      // Sustainability
-      'sustainability|sustainable|green|environment|ethical|eco': {
-        answer: "6 pillars: fair wages, safe conditions, no child labour, water conservation, energy efficiency, waste reduction.\n\n8 certifications: SEDEX, ISO 9001:2015, BCI, GOTS, OCS, GRS, RCS, Higg Index.\n\nDetails at /sustainability/",
-        followUp: ['Certifications', 'Quality standards', 'Get a quote'],
-      },
-
-      // Case studies
-      'case stud|success story|boohoo case|yours case|project example|past work': {
-        answer: "Boohoo: 50k units, 28 days. Yours Clothing: 75k units, 35 days. CLOSURE: 30k units, 25 days.\n\nFull details at /case-studies/",
-        followUp: ['Our clients', 'Get a quote', 'Quality standards'],
-      },
-
-      // Samples
-      'sample|prototype|before bulk|trial order|sample request': {
-        answer: "We do pre-production samples. Send requirements, we quote, develop in 7-10 days, ship to you. Up to 2 revisions included. Cost adjusts against bulk order.\n\nRequest at /samples/ or /quote/",
-        followUp: ['Get a quote', 'Send requirements', 'Lead time', 'Request human'],
-      },
-
-      // Quote wizard
-      'quote wizard|how to quote|online quote|get pricing|quote form': {
-        answer: "5-step wizard at /quote/: pick product, add specs, choose customization, set delivery, upload files. AI analysis included. Pre-fill with /quote/?product=hoodies",
-        followUp: ['Product range', 'Lead time', 'Sample request'],
-      },
+      'hello|hi|hey|salam': { answer: 'Welcome to Reve Stitching. Explore our actual garment samples at /products/ or share your requirements at /quote/.', followUp: ['Product range','Get a quote','Request human'] },
+      'product|hoodie|shirt|jogger|ladies|kids|fabric': { answer: 'Explore tees, collared tops, hoodies, sweatshirts, bottoms, women’s wear, kidswear and finish-development examples at /products/. Each photograph is an actual Reve-made sample. Your own specification is reviewed separately.', followUp: ['Get a quote','MOQ details'] },
+      'moq|minimum|quantity|price|cost|discount': { answer: 'Share your intended enquiry quantity. Bulk minimums depend on garment, fabric and colour split; trial and development enquiries are welcome. Pricing and production minimums are confirmed with your tailored quotation at /quote/.' },
+      'lead|time|delivery|shipping|sample': { answer: 'Sample scope, fees, production schedule and delivery arrangements are confirmed after review of your requirements. Start at /samples/ or /quote/.' },
+      'certif|sedex|smeta|quality|gots|sustainab|iso|sgs|compliance': { answer: 'Tell the team what standards and documentation your buyer requires. Site, material and product evidence is reviewed for the proposed order. Sedex membership and SMETA audits are not certifications or pass/fail awards. See /quality/ and /sustainability/.' },
+      'contact|team|email|address': { answer: 'Reve Stitching is based on Ghona Road, Faisalabad, Pakistan. Contact our team through /contact/.' },
+      'human|real person|agent|representative': { answer: '__REQUEST_HUMAN__' },
     };
 
     // ━━━ Quick Reply Map ━━━

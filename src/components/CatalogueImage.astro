@@ -1,0 +1,8 @@
+---
+import type { CatalogueMedia } from '../data/catalogue-media';
+interface Props { sample: CatalogueMedia; sizes?: string; priority?: boolean; }
+const { sample, sizes = '(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw', priority = false } = Astro.props;
+const image = sample.images.at(-1)!;
+---
+<img src={image.src} srcset={sample.images.map(i => `${i.src} ${i.width}w`).join(', ')} sizes={sizes} width={image.width} height={image.height} alt={sample.alt} loading={priority ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : 'auto'} decoding="async" onerror="this.hidden=true;this.nextElementSibling.hidden=false" />
+<span hidden class="image-fallback">{sample.title} — photograph unavailable. Sample details remain below.</span>

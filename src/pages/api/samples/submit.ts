@@ -1,3 +1,6 @@
+import { catalogueMedia } from '../../../data/catalogue-media';
+import { enquiryContextNote } from '../../../lib/catalogue/policy';
+import { resolveCategory } from '../../../lib/catalogue/policy';
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { generateSampleReference } from '../../../lib/services/sample-reference';
@@ -6,15 +9,9 @@ import { checkRateLimit, getClientIp, isHoneypotTriggered, sanitizeString, isVal
 
 export const prerender = false;
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { autoRefreshToken: false, persistSession: false } }
-);
-
-const resend = new Resend(process.env.RESEND_API_KEY!);
-
 export const POST: APIRoute = async ({ request }) => {
+  const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, { auth: { autoRefreshToken: false, persistSession: false } });
+  const resend = new Resend(process.env.RESEND_API_KEY!);
   // C-010 hotfix: rate limit + honeypot on public endpoint
   const ip = getClientIp(request);
   if (!checkRateLimit(ip, 3, 60_000)) {
@@ -58,8 +55,8 @@ export const POST: APIRoute = async ({ request }) => {
     if (!email?.trim()) errors.push('Email is required');
     if (!country?.trim()) errors.push('Country is required');
     if (!shipping_address?.trim()) errors.push('Shipping address is required');
-    if (!product_type?.trim()) errors.push('Product type is required');
-    if (!quantity || quantity < 1 || quantity > 5) errors.push('Quantity must be between 1 and 5');
+    if (!resolveCategory(product_type)) errors.push('Select a recognised product category');
+    if (!Number.isInteger(Number(quantity)) || Number(quantity) < 1 || Number(quantity) > 5) errors.push('Quantity must be between 1 and 5');
 
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       errors.push('Invalid email address');
@@ -72,6 +69,10 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
+    const category = resolveCategory(product_type)!;
+    const sample = catalogueMedia.find(s=>s.sampleId === body.catalogueSample);
+    if (body.catalogueSample && (!sample || sample.categorySlug !== category.slug)) return Response.json({ error: 'The sample reference does not match this category.' }, { status: 422 });
+    const contextNote = body.catalogueCategory ? enquiryContextNote(category.slug, sample?.sampleId) : '';
     const reference_number = generateSampleReference();
 
     const insertData: Record<string, unknown> = {
@@ -88,7 +89,7 @@ export const POST: APIRoute = async ({ request }) => {
       color: color ? s(color) : null,
       size: size ? s(size) : null,
       quantity: parseInt(quantity, 10),
-      special_requirements: special_requirements ? s(special_requirements) : null,
+      special_requirements: [contextNote, special_requirements ? s(special_requirements) : ''].filter(Boolean).join('\n\n') || null,
       linked_quote_id: linked_quote_id ? s(linked_quote_id) : null,
       status: 'new',
     };

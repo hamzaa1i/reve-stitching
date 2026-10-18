@@ -1,37 +1,20 @@
 ---
+import { commercialPolicy } from '../lib/catalogue/policy';
 import Layout from '../layouts/Layout.astro';
 import QuoteWizard from '../components/QuoteWizard.astro';
 
 import WhatsAppWidget from '../components/WhatsAppWidget.astro';
 
 const quoteFaqs = [
-  {
-    question: "What's your minimum order quantity (MOQ)?",
-    answer: '200–500 pieces per style/color. We are flexible for new partnerships — get in touch and we will work something out.',
-  },
-  {
-    question: 'Do you provide samples before production?',
-    answer: 'Yes — paid samples with a 7–10 business day turnaround. Up to two rounds of revisions are included at no additional cost.',
-  },
-  {
-    question: "What's the typical lead time?",
-    answer: '25–50 days from order confirmation, depending on order size, complexity, and fabric availability. Rush orders can be accommodated.',
-  },
-  {
-    question: 'What certifications do you hold?',
-    answer: 'BCI, GOTS, OCS, SEDEX, Higg Index, RCS, GRS, and ISO 9001:2015 — covering quality, sustainability, and ethical production.',
-  },
-  {
-    question: 'How quickly will I receive my quote?',
-    answer: 'Within 24 hours. Our team reviews every request manually and responds with a detailed quotation or follow-up questions.',
-  },
-  {
-    question: 'What file formats do you accept for tech packs?',
-    answer: 'PDF, AI, PSD, JPG, and PNG. You can also upload reference images — our AI will analyse them for fabric and construction details.',
-  },
+  { question: "What is the minimum order quantity?", answer: commercialPolicy.moq },
+  { question: "Can we develop a sample first?", answer: 'Share your reference and development requirements. Sample scope, fees, revisions and courier arrangements are confirmed by the team.' },
+  { question: "How is the production schedule agreed?", answer: commercialPolicy.leadTime },
+  { question: "What compliance information should I send?", answer: commercialPolicy.compliance },
+  { question: "How is my quotation prepared?", answer: 'Our team reviews your garment, material, artwork, quantities and destination before confirming commercial terms. An enquiry is not an order confirmation.' },
+  { question: "Which reference files can I provide?", answer: 'Provide a PDF tech pack or supported artwork/document file and up to five reference images. Follow the upload format and size guidance in the form.' },
 ];
 ---
-<Layout title="Request a Quote" description="Get a free quote from Reve Stitching. 150K+ monthly capacity, 25-50 day lead times, SEDEX certified. Response within 24 hours.">
+<Layout title="Request a Quote" description="Share your garment requirements with Reve Stitching for a tailored manufacturing quotation.">
   <!-- Trust signals header -->
   <section class="bg-zinc-50 dark:bg-zinc-900" aria-label="Trust signals">
     <div class="mx-auto max-w-[90rem] px-6 pt-28 sm:px-8 lg:px-12 xl:px-16 lg:pt-36">
@@ -43,28 +26,10 @@ const quoteFaqs = [
         Get Your <span class="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">Free Quote</span>
       </h1>
       <p class="mt-4 max-w-xl text-base leading-relaxed text-zinc-500 dark:text-zinc-400 sm:text-lg" data-animate="fade-up" data-delay="0.16">
-        Tell us about your project and receive a detailed quotation within 24 hours.
+        Share your specifications and intended quantities for a tailored quotation.
       </p>
 
-      <div class="mt-6 space-y-2.5 pb-8" data-animate="fade-up" data-delay="0.2">
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="inline-flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-3.5 py-1.5 text-xs font-semibold text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-400">
-            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
-            9+ Brand Partners
-          </span>
-          <span class="inline-flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-3.5 py-1.5 text-xs font-semibold text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-400">
-            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
-            SEDEX Certified
-          </span>
-          <span class="inline-flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-3.5 py-1.5 text-xs font-semibold text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-400">
-            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
-            Response within 24hrs
-          </span>
-        </div>
-        <p class="text-[11px] font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-          BCI · GOTS · OCS · GRS · RCS · ISO 9001
-        </p>
-      </div>
+      <p class="mt-6 text-sm text-zinc-500 dark:text-zinc-400">Specification review · Sample development · Tailored quotation</p>
     </div>
   </section>
 

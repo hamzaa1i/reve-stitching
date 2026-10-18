@@ -1,0 +1,7 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../styles/catalogue.css';
+interface Props { title:string; description:string; eyebrow?:string; }
+const {title,description,eyebrow='Reve Stitching'} = Astro.props;
+---
+<Layout title={title} description={description}><div class="catalogue"><nav class="cat-wrap breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">{title}</span></nav><section class="cat-section"><div class="cat-wrap"><p class="eyebrow">{eyebrow}</p><h1>{title}</h1><p class="max-w-3xl text-lg text-zinc-600 dark:text-zinc-300">{description}</p></div></section><slot /><section class="cat-section"><div class="cat-wrap cat-cta"><p class="eyebrow">Start a conversation</p><h2>Let’s work through your requirements.</h2><p>Share your garment brief, quantities and documentation needs with our team.</p><div class="cat-actions"><a class="cat-button" href="/quote/">Request a quote ↗</a><a class="cat-button secondary" href="/contact/">Contact the team</a></div></div></section></div></Layout>
